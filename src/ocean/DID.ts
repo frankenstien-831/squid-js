@@ -14,11 +14,10 @@ export default class DID {
      */
     public static parse(didString: string): DID {
         let did: DID
-        if (didString.startsWith(prefix)) {
-            const id = didString.split(prefix)[1]
-            if (!id.startsWith("0x")) {
-                did = new DID(id)
-            }
+        const didMatch = didString.match(/^did:op:([a-f0-9]{64})$/i)
+
+        if (didMatch) {
+            did = new DID(didMatch[1])
         }
 
         if (!did) {
