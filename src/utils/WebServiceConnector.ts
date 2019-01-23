@@ -1,4 +1,4 @@
-import fetch, { Response, RequestInit, BodyInit } from "node-fetch"
+import fetch, { BodyInit, RequestInit, Response } from "node-fetch"
 
 /**
  * Provides a common interface to web services.

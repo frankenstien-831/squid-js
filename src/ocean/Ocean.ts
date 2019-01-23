@@ -1,4 +1,4 @@
-import deprecated from 'deprecated-decorator';
+import deprecated from "deprecated-decorator"
 
 import AquariusProvider from "../aquarius/AquariusProvider"
 import SearchQuery from "../aquarius/query/SearchQuery"
@@ -82,9 +82,9 @@ export default class Ocean {
      * @param  {string} did Decentralized ID.
      * @return {Promise<DDO>}
      */
-    @deprecated('resolveAssetDID')
+    @deprecated("resolveAssetDID")
     public async resolveDID(did: string): Promise<DDO> {
-        return await this.resolveAssetDID(did);
+        return await this.resolveAssetDID(did)
     }
 
     /**
@@ -201,15 +201,15 @@ export default class Ocean {
      * @param  {string} serviceDefinitionId Service definition ID.
      * @param  {Account} consumer Consumer account.
      * @return {Promise<any>}
-     * 
+     *
      */
-    @deprecated('purchaseAssetService')
+    @deprecated("purchaseAssetService")
     public async signServiceAgreement(
         did: string,
         serviceDefinitionId: string,
         consumer: Account,
     ): Promise<any> {
-        return await this.purchaseAssetService(did, serviceDefinitionId, consumer);
+        return await this.purchaseAssetService(did, serviceDefinitionId, consumer)
     }
 
     /**
@@ -368,7 +368,6 @@ export default class Ocean {
     public async searchAssets(query: SearchQuery): Promise<DDO[]> {
         return AquariusProvider.getAquarius().queryMetadata(query)
     }
-
 
     /**
      * Search over the assets using a keyword.
