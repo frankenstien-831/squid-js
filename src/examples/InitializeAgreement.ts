@@ -57,15 +57,20 @@ import config from "./config"
 
     const service: Service = ddo.findServiceByType("Access")
 
-    await ocean
-        .initializeServiceAgreement(
-            ddo.id,
-            service.serviceDefinitionId,
-            serviceAgreementSignatureResult.serviceAgreementId,
-            serviceAgreementSignatureResult.serviceAgreementSignature,
-            (files) => Logger.log(`Got files, first files length in bytes: ${files[0].length}`),
-            consumer,
-        )
+    try {
+        await ocean
+            .initializeServiceAgreement(
+                ddo.id,
+                service.serviceDefinitionId,
+                serviceAgreementSignatureResult.serviceAgreementId,
+                serviceAgreementSignatureResult.serviceAgreementSignature,
+                (files) => Logger.log(`Got files, first files length in bytes: ${files[0].length}`),
+                consumer,
+            )
+    } catch(e) {
+        Logger.warn("Error on initializeServiceAgreement:", e)
+        process.exit(1)
+    }
 
     process.exit(0)
 })()
