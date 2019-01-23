@@ -5,8 +5,9 @@ import Service from "../ddo/Service"
 import DID from "../ocean/DID"
 import {Account, Logger, Ocean, ServiceAgreement} from "../squid"
 import config from "./config"
+import {runner} from "./runner"
 
-(async () => {
+async function exec() {
     const ocean: Ocean = await Ocean.getInstance(config)
 
     const publisher: Account = (await ocean.getAccounts())[0]
@@ -71,6 +72,6 @@ import config from "./config"
 
     const accessGranted = await serviceAgreement.grantAccess(did.getId(), did.getId(), publisher)
     Logger.log(`Asset access granted: ${accessGranted}`)
+}
 
-    process.exit(0)
-})()
+runner(exec)

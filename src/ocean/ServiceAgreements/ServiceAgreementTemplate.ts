@@ -58,15 +58,20 @@ export default class ServiceAgreementTemplate extends OceanBase {
             return false
         }
 
-        const receipt = await serviceAgreement
-            .setupAgreementTemplate(
-                this.template.id,
-                await this.getMethodReflections(),
-                dependencyMatrix,
-                Web3Provider.getWeb3().utils.fromAscii(this.template.templateName),
-                fulfillmentIndices,
-                this.template.fulfillmentOperator,
-                templateOwnerAddress)
+        let receipt
+        try {
+            receipt = await serviceAgreement
+                .setupAgreementTemplate(
+                    this.template.id,
+                    await this.getMethodReflections(),
+                    dependencyMatrix,
+                    Web3Provider.getWeb3().utils.fromAscii(this.template.templateName),
+                    fulfillmentIndices,
+                    this.template.fulfillmentOperator,
+                    templateOwnerAddress)
+        } catch (e) {
+            throw new Error(`Is not possible to setup the agreement template`)
+        }
 
         const {serviceTemplateId, provider} = receipt.events.SetupAgreementTemplate.returnValues
 

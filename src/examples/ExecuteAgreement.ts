@@ -4,8 +4,9 @@ import MetaDataBase from "../ddo/MetaDataBase"
 import Service from "../ddo/Service"
 import {Account, Logger, Ocean, ServiceAgreement} from "../squid"
 import config from "./config"
+import {runner} from "./runner"
 
-(async () => {
+async function exec() {
     const ocean: Ocean = await Ocean.getInstance(config)
 
     const publisher: Account = (await ocean.getAccounts())[0]
@@ -63,6 +64,6 @@ import config from "./config"
         consumer,
         publisher)
     Logger.log("ServiceAgreement Id:", serviceAgreement.getId())
+}
 
-    process.exit(0)
-})()
+runner(exec)
