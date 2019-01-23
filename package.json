@@ -12,7 +12,7 @@
     "lint": "tslint -c tslint.json 'src/**/*.ts' 'test/**/*.ts'",
     "start": "npm link @oceanprotocol/keeper-contracts @oceanprotocol/secret-store-client && npm run build:watch",
     "build": "npm run clean && npm run build:tsc && npm run build:dist",
-    "build:tsc": "tsc",
+    "build:tsc": "tsc --sourceMap",
     "build:dist": "cross-env NODE_ENV=production webpack",
     "build:watch": "tsc -w",
     "doc": "typedoc --mode modules --out ./doc/ ./src/",
