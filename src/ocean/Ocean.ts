@@ -245,7 +245,7 @@ export default class Ocean {
             const event: ContractEvent = EventListener.subscribe(
                 accessService.serviceAgreementContract.contractName,
                 accessService.serviceAgreementContract.events[0].name, {
-                    serviceAgreementId,
+                    serviceAgreementId: `0x${serviceAgreementId}`,
                 })
 
             event.listenOnce(async (data) => {
@@ -296,24 +296,26 @@ export default class Ocean {
         const accessEvent: ContractEvent = EventListener.subscribe(
             accessService.conditions[1].contractName,
             accessService.conditions[1].events[1].name, {})
+        const files = new Promise(resolve => {
+            accessEvent.listenOnce(async () => {
+                Logger.log("Awesome; got a AccessGranted Event. Let's download the asset files.")
+                const contentUrls = await SecretStoreProvider
+                    .getSecretStore()
+                    .decryptDocument(d.getId(), metadataService.metadata.base.contentUrls[0])
+                const serviceUrl: string = accessService.serviceEndpoint
+                Logger.log("Consuming asset files using service url: ", serviceUrl)
+                const files = []
 
-        accessEvent.listenOnce(async () => {
-            Logger.log("Awesome; got a AccessGranted Event. Let's download the asset files.")
-            const contentUrls = await SecretStoreProvider
-                .getSecretStore()
-                .decryptDocument(d.getId(), metadataService.metadata.base.contentUrls[0])
-            const serviceUrl: string = accessService.serviceEndpoint
-            Logger.log("Consuming asset files using service url: ", serviceUrl)
-            const files = []
+                for (const cUrl of contentUrls) {
+                    let url: string = serviceUrl + `?url=${cUrl}`
+                    url = url + `&serviceAgreementId=${serviceAgreementId}`
+                    url = url + `&consumerAddress=${consumer.getId()}`
+                    files.push(url)
+                }
 
-            for (const cUrl of contentUrls) {
-                let url: string = serviceUrl + `?url=${cUrl}`
-                url = url + `&serviceAgreementId=${serviceAgreementId}`
-                url = url + `&consumerAddress=${consumer.getId()}`
-                files.push(url)
-            }
-
-            cb(files)
+                cb(files)
+                resolve(files)
+            })
         })
 
         await BrizoProvider
@@ -324,6 +326,8 @@ export default class Ocean {
                 serviceDefinitionId,
                 serviceAgreementSignature,
                 consumer.getId())
+
+        await files
     }
 
     /**
