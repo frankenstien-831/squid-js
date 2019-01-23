@@ -8,6 +8,7 @@
     "test": "mocha",
     "test:watch": "mocha -w --watch-extensions js,ts,json",
     "test:cover": "nyc mocha",
+    "integration": "./src/examples/fire_lazers.sh",
     "clean": "rm -rf ./dist/ ./doc/ ./coverage ./.nyc_output",
     "lint": "tslint -c tslint.json 'src/**/*.ts' 'test/**/*.ts'",
     "start": "npm link @oceanprotocol/keeper-contracts @oceanprotocol/secret-store-client && npm run build:watch",
