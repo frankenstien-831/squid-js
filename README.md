@@ -72,7 +72,7 @@ const ocean: Ocean = await Ocean.getInstance({
 
 ### Examples
 
-* [Examples](/src/examples/squid)
+* [Examples](/src/examples/)
 * [Tuna](https://github.com/oceanprotocol/tuna/examples/squid)
 
 ## Development
