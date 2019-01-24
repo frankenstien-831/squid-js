@@ -249,7 +249,6 @@ export default class Ocean {
                 })
 
             event.listenOnce(async (data) => {
-
                 const sa: ServiceAgreement = new ServiceAgreement(data.returnValues.serviceAgreementId)
                 await sa.payAsset(
                     d.getId(),
@@ -263,7 +262,6 @@ export default class Ocean {
                 serviceAgreementId,
                 serviceAgreementSignature,
             }
-
         } catch (err) {
             Logger.error("Signing ServiceAgreement failed!", err)
         }

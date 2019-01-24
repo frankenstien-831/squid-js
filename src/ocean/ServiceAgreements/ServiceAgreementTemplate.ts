@@ -70,6 +70,7 @@ export default class ServiceAgreementTemplate extends OceanBase {
                     this.template.fulfillmentOperator,
                     templateOwnerAddress)
         } catch (e) {
+            Logger.error(e)
             throw new Error(`Is not possible to setup the agreement template`)
         }
 

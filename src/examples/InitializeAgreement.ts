@@ -69,8 +69,7 @@ async function exec() {
                 consumer,
             )
     } catch (e) {
-        Logger.warn("Error on initializeServiceAgreement:", e)
-        process.exit(1)
+        throw new Error(`"Error on initializeServiceAgreement: ${e}`)
     }
 }
 

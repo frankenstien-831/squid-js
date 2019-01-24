@@ -3,6 +3,7 @@ import * as EthJsUtils from "ethereumjs-util"
 import Keeper from "../keeper/Keeper"
 import Web3Provider from "../keeper/Web3Provider"
 import Balance from "../models/Balance"
+import Logger from "../utils/Logger"
 import OceanBase from "./OceanBase"
 
 /**
@@ -57,9 +58,15 @@ export default class Account extends OceanBase {
      * @return {Promise<number>}
      */
     public async requestTokens(amount: number): Promise<number> {
-        await (await Keeper.getInstance())
-            .market
-            .requestTokens(amount, this.id)
+        try {
+            await (await Keeper.getInstance())
+                .market
+                .requestTokens(amount, this.id)
+        } catch (e) {
+            Logger.error(e)
+            throw new Error("Error requesting tokens")
+
+        }
         return amount
     }
 
