@@ -49,7 +49,7 @@ export default class Brizo {
                     this.getPurchaseEndpoint(),
                     decodeURI(JSON.stringify(args)),
                 )
-        } catch(e) {
+        } catch (e) {
             throw new Error("HTTP request failed")
         }
     }

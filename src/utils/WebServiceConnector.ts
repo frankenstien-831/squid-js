@@ -36,7 +36,7 @@ export default class WebServiceConnector {
     }
 
     private async fetch(url: string, opts: RequestInit): Promise<Response> {
-        const result = await fetch(url, opts);
+        const result = await fetch(url, opts)
         if (!result.ok) {
             Logger.warn(`Error requesting [${opts.method}] ${url}`)
             Logger.warn(`Response message: \n${await result.text()}`)

@@ -68,7 +68,7 @@ async function exec() {
                 (files) => Logger.log(`Got files, first files length in bytes: ${files[0].length}`),
                 consumer,
             )
-    } catch(e) {
+    } catch (e) {
         Logger.warn("Error on initializeServiceAgreement:", e)
         process.exit(1)
     }

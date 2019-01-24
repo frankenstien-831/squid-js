@@ -296,7 +296,7 @@ export default class Ocean {
         const accessEvent: ContractEvent = EventListener.subscribe(
             accessService.conditions[1].contractName,
             accessService.conditions[1].events[1].name, {})
-        const files = new Promise(resolve => {
+        const filesPromise = new Promise((resolve) => {
             accessEvent.listenOnce(async () => {
                 Logger.log("Awesome; got a AccessGranted Event. Let's download the asset files.")
                 const contentUrls = await SecretStoreProvider
@@ -327,7 +327,7 @@ export default class Ocean {
                 serviceAgreementSignature,
                 consumer.getId())
 
-        await files
+        await filesPromise
     }
 
     /**

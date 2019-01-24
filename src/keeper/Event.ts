@@ -1,7 +1,7 @@
+import Logger from "../utils/Logger"
 import GenericContract from "./contracts/GenericContract"
 import EventListener from "./EventListener"
 import Web3Provider from "./Web3Provider"
-import Logger from "../utils/Logger"
 
 export default class Event {
 
