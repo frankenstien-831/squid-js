@@ -1,0 +1,17 @@
+{
+  "name": "Squid JavaScript",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oceanprotocol/squid-js.git"
+  },
+  "dependencies": [
+    {
+      "name": "keeper-contracts",
+      "version": "~0.5.3"
+    },
+    {
+      "name": "brizo",
+      "version": ">0.1.7"
+    }
+  ]
+}
