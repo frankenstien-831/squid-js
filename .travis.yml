@@ -29,7 +29,7 @@ script:
   - npm run report-coverage
   - npm run build
   - npm run doc
-  - ./src/examples/fire_lazers.sh
+  - npm run integration
 
 after_script:
   - greenkeeper-lockfile-upload

@@ -63,8 +63,12 @@ export default abstract class ContractBase {
                     value: args[i],
                 }
             })
+            Logger.error("-".repeat(40))
             Logger.error(`Sending transaction "${name}" on contract "${this.contractName}" failed.`)
-            Logger.error(`Parameters: ${JSON.stringify(mappedArgs, null, 2)} from: ${from}`)
+            Logger.error(`Error: ${err.message}`)
+            Logger.error(`From: ${from}`)
+            Logger.error(`Parameters: ${JSON.stringify(mappedArgs, null, 2)}`)
+            Logger.error("-".repeat(40))
             throw err
         }
     }

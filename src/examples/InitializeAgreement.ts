@@ -4,8 +4,9 @@ import MetaDataBase from "../ddo/MetaDataBase"
 import Service from "../ddo/Service"
 import {Account, Logger, Ocean} from "../squid"
 import config from "./config"
+import {runner} from "./runner"
 
-(async () => {
+async function exec() {
     const ocean: Ocean = await Ocean.getInstance(config)
 
     const publisher: Account = (await ocean.getAccounts())[1]
@@ -57,15 +58,19 @@ import config from "./config"
 
     const service: Service = ddo.findServiceByType("Access")
 
-    await ocean
-        .initializeServiceAgreement(
-            ddo.id,
-            service.serviceDefinitionId,
-            serviceAgreementSignatureResult.serviceAgreementId,
-            serviceAgreementSignatureResult.serviceAgreementSignature,
-            (files) => Logger.log(`Got files, first files length in bytes: ${files[0].length}`),
-            consumer,
-        )
+    try {
+        await ocean
+            .initializeServiceAgreement(
+                ddo.id,
+                service.serviceDefinitionId,
+                serviceAgreementSignatureResult.serviceAgreementId,
+                serviceAgreementSignatureResult.serviceAgreementSignature,
+                (files) => Logger.log(`Got files, first files length in bytes: ${files[0].length}`),
+                consumer,
+            )
+    } catch (e) {
+        throw new Error(`"Error on initializeServiceAgreement: ${e}`)
+    }
+}
 
-    process.exit(0)
-})()
+runner(exec)

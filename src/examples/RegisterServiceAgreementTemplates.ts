@@ -1,7 +1,8 @@
 import {Account, Logger, Ocean, ServiceAgreementTemplate, Templates} from "../squid"
 import config from "./config"
+import {runner} from "./runner"
 
-(async () => {
+async function exec() {
     const ocean: Ocean = await Ocean.getInstance(config)
 
     const templateOwner: Account = (await ocean.getAccounts())[0]
@@ -11,6 +12,6 @@ import config from "./config"
 
     Logger.log("ServiceAgreementTemplate registered:", serviceAgreementRegistered,
         "templateId:", serviceAgreementTemplate.getId())
+}
 
-    process.exit(0)
-})()
+runner(exec)

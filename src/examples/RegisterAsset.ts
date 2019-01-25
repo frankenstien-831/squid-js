@@ -3,8 +3,9 @@ import MetaData from "../ddo/MetaData"
 import MetaDataBase from "../ddo/MetaDataBase"
 import {Account, Logger, Ocean} from "../squid"
 import config from "./config"
+import {runner} from "./runner"
 
-(async () => {
+async function exec() {
     const ocean: Ocean = await Ocean.getInstance(config)
 
     const publisher: Account = (await ocean.getAccounts())[0]
@@ -41,6 +42,6 @@ import config from "./config"
 
     const ddo: DDO = await ocean.registerAsset(metaData, publisher)
     Logger.log(ddo.id)
+}
 
-    process.exit(0)
-})()
+runner(exec)
