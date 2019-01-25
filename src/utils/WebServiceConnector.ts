@@ -1,11 +1,12 @@
 import fetch, { BodyInit, RequestInit, Response } from "node-fetch"
+import Logger from "./Logger"
 
 /**
  * Provides a common interface to web services.
  */
 export default class WebServiceConnector {
 
-    public async post(url: string, payload: BodyInit): Promise<Response> {
+    public post(url: string, payload: BodyInit): Promise<Response> {
         return this.fetch(url, {
             method: "POST",
             body: payload,
@@ -15,7 +16,7 @@ export default class WebServiceConnector {
         })
     }
 
-    public async get(url: string): Promise<Response> {
+    public get(url: string): Promise<Response> {
         return this.fetch(url, {
             method: "GET",
             headers: {
@@ -24,7 +25,7 @@ export default class WebServiceConnector {
         })
     }
 
-    public async put(url: string, payload: BodyInit): Promise<Response> {
+    public put(url: string, payload: BodyInit): Promise<Response> {
         return this.fetch(url, {
             method: "PUT",
             body: payload,
@@ -35,6 +36,12 @@ export default class WebServiceConnector {
     }
 
     private async fetch(url: string, opts: RequestInit): Promise<Response> {
-        return fetch(url, opts)
+        const result = await fetch(url, opts)
+        if (!result.ok) {
+            Logger.error(`Error requesting [${opts.method}] ${url}`)
+            Logger.error(`Response message: \n${await result.text()}`)
+            throw result
+        }
+        return result
     }
 }

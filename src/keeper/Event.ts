@@ -1,7 +1,7 @@
+import Logger from "../utils/Logger"
 import GenericContract from "./contracts/GenericContract"
 import EventListener from "./EventListener"
 import Web3Provider from "./Web3Provider"
-// import Logger from "../utils/Logger"
 
 export default class Event {
 
@@ -40,6 +40,9 @@ export default class Event {
     private async handler(callback: any) {
         const contract = await GenericContract.getInstance(this.contractName)
 
+        if (this.lastBlock > await Web3Provider.getWeb3().eth.getBlockNumber()) {
+            return
+        }
         try {
             const events = await contract.getEventData(this.eventName, {
                 filter: this.filter,
@@ -52,7 +55,7 @@ export default class Event {
                 callback(events)
             }
         } catch (err) {
-            // Logger.log("err")
+            Logger.log(err)
         }
     }
 }

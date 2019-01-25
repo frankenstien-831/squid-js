@@ -42,12 +42,15 @@ export default class Brizo {
             consumerAddress,
         }
 
-        return WebServiceConnectorProvider
-            .getConnector()
-            .post(
-                this.getPurchaseEndpoint(),
-                decodeURI(JSON.stringify(args)),
-            )
-
+        try {
+            return await WebServiceConnectorProvider
+                .getConnector()
+                .post(
+                    this.getPurchaseEndpoint(),
+                    decodeURI(JSON.stringify(args)),
+                )
+        } catch (e) {
+            throw new Error("HTTP request failed")
+        }
     }
 }
