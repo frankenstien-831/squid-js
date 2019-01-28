@@ -60,7 +60,7 @@ export default class Account extends OceanBase {
     public async requestTokens(amount: number): Promise<number> {
         try {
             await (await Keeper.getInstance())
-                .market
+                .dispenser
                 .requestTokens(amount, this.id)
         } catch (e) {
             Logger.error(e)

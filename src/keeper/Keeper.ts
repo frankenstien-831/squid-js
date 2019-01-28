@@ -2,7 +2,7 @@ import OceanAuth from "./contracts/Auth"
 import AccessConditions from "./contracts/conditions/AccessConditions"
 import PaymentConditions from "./contracts/conditions/PaymentConditions"
 import DIDRegistry from "./contracts/DIDRegistry"
-import OceanMarket from "./contracts/Market"
+import Dispenser from "./contracts/Dispenser"
 import ServiceExecutionAgreement from "./contracts/ServiceExecutionAgreement"
 import OceanToken from "./contracts/Token"
 
@@ -26,7 +26,7 @@ export default class Keeper {
         if (Keeper.instance === null) {
             Keeper.instance = new Keeper()
 
-            Keeper.instance.market = await OceanMarket.getInstance()
+            Keeper.instance.dispenser = await Dispenser.getInstance()
             Keeper.instance.auth = await OceanAuth.getInstance()
             Keeper.instance.token = await OceanToken.getInstance()
             Keeper.instance.serviceAgreement = await ServiceExecutionAgreement.getInstance()
@@ -51,9 +51,9 @@ export default class Keeper {
 
     /**
      * Ocean Market smart contract instance.
-     * @type {OceanMarket}
+     * @type {Dispenser}
      */
-    public market: OceanMarket
+    public dispenser: Dispenser
 
     /**
      * Ocean Auth smart contract instance.

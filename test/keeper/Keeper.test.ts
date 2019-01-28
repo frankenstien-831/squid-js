@@ -16,8 +16,8 @@ describe("Keeper", () => {
 
     describe("public interface", () => {
 
-        it("should have market", () => {
-            assert(keeper.market !== null)
+        it("should have dispenser", () => {
+            assert(keeper.dispenser !== null)
         })
 
         it("should have auth", () => {
