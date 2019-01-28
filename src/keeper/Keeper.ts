@@ -1,4 +1,3 @@
-import OceanAuth from "./contracts/Auth"
 import AccessConditions from "./contracts/conditions/AccessConditions"
 import PaymentConditions from "./contracts/conditions/PaymentConditions"
 import DIDRegistry from "./contracts/DIDRegistry"
@@ -27,7 +26,6 @@ export default class Keeper {
             Keeper.instance = new Keeper()
 
             Keeper.instance.dispenser = await Dispenser.getInstance()
-            Keeper.instance.auth = await OceanAuth.getInstance()
             Keeper.instance.token = await OceanToken.getInstance()
             Keeper.instance.serviceAgreement = await ServiceExecutionAgreement.getInstance()
             Keeper.instance.accessConditions = await AccessConditions.getInstance()
@@ -54,12 +52,6 @@ export default class Keeper {
      * @type {Dispenser}
      */
     public dispenser: Dispenser
-
-    /**
-     * Ocean Auth smart contract instance.
-     * @type {OceanAuth}
-     */
-    public auth: OceanAuth
 
     /**
      * Service agreement smart contract instance.

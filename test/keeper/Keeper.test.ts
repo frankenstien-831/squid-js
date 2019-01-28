@@ -20,10 +20,6 @@ describe("Keeper", () => {
             assert(keeper.dispenser !== null)
         })
 
-        it("should have auth", () => {
-            assert(keeper.auth !== null)
-        })
-
         it("should have token", () => {
             assert(keeper.token !== null)
         })
