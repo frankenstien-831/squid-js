@@ -3,10 +3,10 @@ import MethodReflection from "../../models/MethodReflection"
 import DID from "../../ocean/DID"
 import ContractBase from "./ContractBase"
 
-export default class ServiceAgreement extends ContractBase {
+export default class ServiceExecutionAgreement extends ContractBase {
 
-    public static async getInstance(): Promise<ServiceAgreement> {
-        const serviceAgreement: ServiceAgreement = new ServiceAgreement("ServiceAgreement")
+    public static async getInstance(): Promise<ServiceExecutionAgreement> {
+        const serviceAgreement: ServiceExecutionAgreement = new ServiceExecutionAgreement("ServiceExecutionAgreement")
         await serviceAgreement.init()
         return serviceAgreement
     }
@@ -43,11 +43,17 @@ export default class ServiceAgreement extends ContractBase {
         return this.call("getAgreementStatus", [serviceDefinitionId])
     }
 
-    public async executeAgreement(serviceAgreementTemplateId: string, serviceAgreementSignatureHash: string,
-                                  consumerAddress: string, valueHashes: string[], timeoutValues: number[],
-                                  serviceAgreementId: string, did: DID, publisherAddress: string):
-        Promise<Receipt> {
-
+    public async executeAgreement(
+        serviceAgreementTemplateId: string,
+        serviceAgreementSignatureHash: string,
+        consumerAddress: string,
+        valueHashes: string[],
+        timeoutValues: number[],
+        serviceAgreementId: string,
+        did: DID,
+        publisherAddress: string,
+    ): Promise<Receipt> {
+console.log({serviceAgreementTemplateId, serviceAgreementSignatureHash, consumerAddress, valueHashes, timeoutValues, serviceAgreementId, did, publisherAddress})
         return this.send("executeAgreement", publisherAddress, [
             serviceAgreementTemplateId, serviceAgreementSignatureHash, consumerAddress, valueHashes,
             timeoutValues, "0x" + serviceAgreementId, "0x" + did.getId(),

@@ -48,6 +48,7 @@ export default class ServiceAgreement extends OceanBase {
             Logger.log("Executing SA with serviceAgreementId", serviceAgreementId)
         }
 
+
         const service: Service = ddo.findServiceById(serviceDefinitionId)
         const values: ValuePair[][] = ServiceAgreement.getValuesFromService(service, serviceAgreementId)
         const valueHashes: string[] = ServiceAgreement.createValueHashes(values)
@@ -98,30 +99,35 @@ export default class ServiceAgreement extends OceanBase {
         return serviceAgreementHashSignature
     }
 
-    private static async executeAgreement(did: DID,
-                                          ddo: DDO,
-                                          serviceDefinitionId: string,
-                                          serviceAgreementId: string,
-                                          valueHashes: string[],
-                                          timeoutValues: number[],
-                                          serviceAgreementHashSignature: string,
-                                          consumerAddress: string,
-                                          publisher: Account): Promise<ServiceAgreement> {
+    private static async executeAgreement(
+        did: DID,
+        ddo: DDO,
+        serviceDefinitionId: string,
+        serviceAgreementId: string,
+        valueHashes: string[],
+        timeoutValues: number[],
+        serviceAgreementHashSignature: string,
+        consumerAddress: string,
+        publisher: Account,
+    ): Promise<ServiceAgreement> {
 
         const {serviceAgreement} = await Keeper.getInstance()
 
+        console.log(1)
         const service: Service = ddo.findServiceById(serviceDefinitionId)
 
         if (!service.templateId) {
             throw new Error(`TemplateId not found in service "${service.type}" ddo.`)
         }
 
+        console.log(2)
         const templateActive = await serviceAgreement.getTemplateStatus(service.templateId)
 
         if (!templateActive) {
             throw new Error(`Template with id ${service.templateId} is not active.`)
         }
 
+        console.log(3)
         const executeAgreementReceipt = await serviceAgreement
             .executeAgreement(
                 service.templateId,
@@ -131,8 +137,10 @@ export default class ServiceAgreement extends OceanBase {
                 timeoutValues,
                 serviceAgreementId,
                 did,
-                publisher.getId())
+                publisher.getId(),
+            )
 
+        console.log(4)
         if (executeAgreementReceipt.events.ExecuteAgreement.returnValues.state === false) {
             throw new Error("executing service agreement failed.")
         }

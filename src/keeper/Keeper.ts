@@ -3,7 +3,7 @@ import AccessConditions from "./contracts/conditions/AccessConditions"
 import PaymentConditions from "./contracts/conditions/PaymentConditions"
 import DIDRegistry from "./contracts/DIDRegistry"
 import OceanMarket from "./contracts/Market"
-import ServiceAgreement from "./contracts/ServiceAgreement"
+import ServiceExecutionAgreement from "./contracts/ServiceExecutionAgreement"
 import OceanToken from "./contracts/Token"
 
 import Web3Provider from "./Web3Provider"
@@ -29,7 +29,7 @@ export default class Keeper {
             Keeper.instance.market = await OceanMarket.getInstance()
             Keeper.instance.auth = await OceanAuth.getInstance()
             Keeper.instance.token = await OceanToken.getInstance()
-            Keeper.instance.serviceAgreement = await ServiceAgreement.getInstance()
+            Keeper.instance.serviceAgreement = await ServiceExecutionAgreement.getInstance()
             Keeper.instance.accessConditions = await AccessConditions.getInstance()
             Keeper.instance.paymentConditions = await PaymentConditions.getInstance()
             Keeper.instance.didRegistry = await DIDRegistry.getInstance()
@@ -63,9 +63,9 @@ export default class Keeper {
 
     /**
      * Service agreement smart contract instance.
-     * @type {ServiceAgreement}
+     * @type {ServiceExecutionAgreement}
      */
-    public serviceAgreement: ServiceAgreement
+    public serviceAgreement: ServiceExecutionAgreement
 
     /**
      * Access conditions smart contract instance.
