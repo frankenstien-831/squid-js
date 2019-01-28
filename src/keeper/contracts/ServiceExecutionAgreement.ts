@@ -11,17 +11,18 @@ export default class ServiceExecutionAgreement extends ContractBase {
         return serviceAgreement
     }
 
-    public async setupAgreementTemplate(templateId: string,
-                                        methodReflections: MethodReflection[],
-                                        dependencyMatrix: number[],
-                                        name: any,
-                                        fulfillmentIndices: number[],
-                                        fulfillmentOperator: number,
-                                        ownerAddress: string): Promise<Receipt> {
+    public async setupTemplate(
+        templateId: string,
+        methodReflections: MethodReflection[],
+        dependencyMatrix: number[],
+        fulfillmentIndices: number[],
+        fulfillmentOperator: number,
+        ownerAddress: string,
+    ): Promise<Receipt> {
 
-        return this.send("setupAgreementTemplate", ownerAddress, [
+        return this.send("setupTemplate", ownerAddress, [
             templateId, methodReflections.map((r) => r.address),
-            methodReflections.map((r) => r.signature), dependencyMatrix, name, fulfillmentIndices,
+            methodReflections.map((r) => r.signature), dependencyMatrix, fulfillmentIndices,
             fulfillmentOperator,
         ])
     }

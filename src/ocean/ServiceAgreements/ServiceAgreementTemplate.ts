@@ -61,11 +61,10 @@ export default class ServiceAgreementTemplate extends OceanBase {
         let receipt
         try {
             receipt = await serviceAgreement
-                .setupAgreementTemplate(
+                .setupTemplate(
                     this.template.id,
                     await this.getMethodReflections(),
                     dependencyMatrix,
-                    Web3Provider.getWeb3().utils.fromAscii(this.template.templateName),
                     fulfillmentIndices,
                     this.template.fulfillmentOperator,
                     templateOwnerAddress)
