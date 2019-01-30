@@ -1,1 +1,1 @@
-this document has been moved to [here](https://github.com/oceanprotocol/dev-ocean/blob/master/doc/development/squid.md).
+this document has been moved to [here](https://github.com/oceanprotocol/dev-ocean/blob/master/doc/architecture/squid.md).
