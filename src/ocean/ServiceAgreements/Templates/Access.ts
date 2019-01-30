@@ -44,10 +44,6 @@ export default class Access extends TemplateBase {
             timeout: 0,
             parameters: [
                 {
-                    name: "assetId",
-                    type: "bytes32",
-                } as Parameter,
-                {
                     name: "documentKeyId",
                     type: "bytes32",
                 } as Parameter,

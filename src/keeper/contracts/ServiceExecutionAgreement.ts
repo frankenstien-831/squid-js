@@ -39,12 +39,7 @@ export default class ServiceExecutionAgreement extends ContractBase {
         return this.call("getTemplateOwner", [templateId])
     }
 
-    public async getAgreementStatus(serviceDefinitionId: string) {
-
-        return this.call("getAgreementStatus", [serviceDefinitionId])
-    }
-
-    public async executeAgreement(
+    public async initializeAgreement(
         serviceAgreementTemplateId: string,
         serviceAgreementSignatureHash: string,
         consumerAddress: string,
@@ -54,8 +49,8 @@ export default class ServiceExecutionAgreement extends ContractBase {
         did: DID,
         publisherAddress: string,
     ): Promise<Receipt> {
-console.log({serviceAgreementTemplateId, serviceAgreementSignatureHash, consumerAddress, valueHashes, timeoutValues, serviceAgreementId, did, publisherAddress})
-        return this.send("executeAgreement", publisherAddress, [
+
+        return this.send("initializeAgreement", publisherAddress, [
             serviceAgreementTemplateId, serviceAgreementSignatureHash, consumerAddress, valueHashes,
             timeoutValues, "0x" + serviceAgreementId, "0x" + did.getId(),
         ])

@@ -108,11 +108,11 @@ export default class OceanAssets {
                     // the id of the service agreement template
                     templateId: serviceAgreementTemplate.getId(),
                     serviceAgreementContract: {
-                        contractName: "ServiceAgreement",
+                        contractName: "ServiceExecutionAgreement",
                         fulfillmentOperator: template.fulfillmentOperator,
                         events: [
                             {
-                                name: "ExecuteAgreement",
+                                name: "AgreementInitialized",
                                 actorType: "consumer",
                                 handler: {
                                     moduleName: "payment",

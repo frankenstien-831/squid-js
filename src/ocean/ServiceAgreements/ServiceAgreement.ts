@@ -62,11 +62,13 @@ export default class ServiceAgreement extends OceanBase {
         return serviceAgreement
     }
 
-    private static async createSAHashSignature(service: Service,
-                                               serviceAgreementId: string,
-                                               valueHashes: string[],
-                                               timeoutValues: number[],
-                                               consumer: Account): Promise<string> {
+    private static async createSAHashSignature(
+        service: Service,
+       serviceAgreementId: string,
+       valueHashes: string[],
+       timeoutValues: number[],
+       consumer: Account,
+    ): Promise<string> {
 
         if (!service.templateId) {
             throw new Error("TemplateId not found in ddo.")
@@ -113,23 +115,20 @@ export default class ServiceAgreement extends OceanBase {
 
         const {serviceAgreement} = await Keeper.getInstance()
 
-        console.log(1)
         const service: Service = ddo.findServiceById(serviceDefinitionId)
 
         if (!service.templateId) {
             throw new Error(`TemplateId not found in service "${service.type}" ddo.`)
         }
 
-        console.log(2)
         const templateActive = await serviceAgreement.getTemplateStatus(service.templateId)
 
         if (!templateActive) {
             throw new Error(`Template with id ${service.templateId} is not active.`)
         }
 
-        console.log(3)
         const executeAgreementReceipt = await serviceAgreement
-            .executeAgreement(
+            .initializeAgreement(
                 service.templateId,
                 serviceAgreementHashSignature,
                 consumerAddress,
@@ -140,13 +139,11 @@ export default class ServiceAgreement extends OceanBase {
                 publisher.getId(),
             )
 
-        console.log(4)
-        if (executeAgreementReceipt.events.ExecuteAgreement.returnValues.state === false) {
+        if (!executeAgreementReceipt.status) {
             throw new Error("executing service agreement failed.")
         }
-
         return new ServiceAgreement(
-            executeAgreementReceipt.events.ExecuteAgreement.returnValues.serviceAgreementId,
+            executeAgreementReceipt.events.AgreementInitialized.returnValues.agreementId,
         )
     }
 
@@ -237,17 +234,12 @@ export default class ServiceAgreement extends OceanBase {
         return lockPaymentReceipt.status
     }
 
-    public async grantAccess(assetId: string, documentId: string, publisher: Account): Promise<boolean> {
+    public async grantAccess(documentId: string, publisher: Account): Promise<boolean> {
         const {accessConditions} = await Keeper.getInstance()
 
         const grantAccessReceipt =
-            await accessConditions.grantAccess(this.getId(), assetId, documentId, publisher.getId())
+            await accessConditions.grantAccess(this.getId(), documentId, publisher.getId())
 
         return !!grantAccessReceipt.events.AccessGranted
-    }
-
-    public async getStatus() {
-        const {serviceAgreement} = await Keeper.getInstance()
-        return serviceAgreement.getAgreementStatus(this.getId())
     }
 }

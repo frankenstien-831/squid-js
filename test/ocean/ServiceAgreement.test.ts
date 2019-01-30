@@ -76,7 +76,7 @@ describe("ServiceAgreement", () => {
     })
 
     describe("#executeServiceAgreement()", () => {
-        it("should execute an service agreement", async () => {
+        it("should execute a service agreement", async () => {
 
             const ddo = new DDO({id: did.getDid(), service: [accessService]})
             const serviceAgreementId: string = IdGenerator.generateId()
@@ -110,29 +110,6 @@ describe("ServiceAgreement", () => {
                 .catch((err) => {
                     done()
                 })
-        })
-    })
-
-    describe("#getStatus()", () => {
-        it("should get the status of a newly created service agreement", async () => {
-
-            const ddo = new DDO({id: did.getDid(), service: [accessService]})
-            const serviceAgreementId: string = IdGenerator.generateId()
-
-            // @ts-ignore
-            WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(ddo))
-            const serviceAgreementSignature: string =
-                await ServiceAgreement.signServiceAgreement(ddo, accessService.serviceDefinitionId,
-                    serviceAgreementId, consumerAccount)
-            assert(serviceAgreementSignature)
-
-            const serviceAgreement: ServiceAgreement =
-                await ServiceAgreement.executeServiceAgreement(did, ddo, accessService.serviceDefinitionId,
-                    serviceAgreementId, serviceAgreementSignature, consumerAccount, publisherAccount)
-            assert(serviceAgreement)
-
-            const status = await serviceAgreement.getStatus()
-            assert(status === false)
         })
     })
 
@@ -190,8 +167,7 @@ describe("ServiceAgreement", () => {
             assert(paid)
 
             // todo: use document id
-            const accessGranted: boolean = await serviceAgreement.grantAccess(did.getId(), did.getId(),
-                publisherAccount)
+            const accessGranted: boolean = await serviceAgreement.grantAccess(did.getId(), publisherAccount)
             assert(accessGranted)
         })
 
@@ -213,8 +189,7 @@ describe("ServiceAgreement", () => {
             assert(serviceAgreement)
 
             // todo: use document id
-            const accessGranted: boolean = await serviceAgreement.grantAccess(did.getId(), did.getId(),
-                publisherAccount)
+            const accessGranted: boolean = await serviceAgreement.grantAccess(did.getId(), publisherAccount)
             assert(!accessGranted)
         })
     })
