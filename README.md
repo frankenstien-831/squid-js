@@ -18,14 +18,14 @@
 
 ---
 
-## Table of Contents
-
-  - [Get started](#get-started)
-    - [Examples](#examples)
-  - [Development](#development)
-    - [Production build](#production-build)
-    - [npm releases](#npm-releases)
-  - [License](#license)
+- [Get started](#get-started)
+  - [Examples](#examples)
+- [Documentation](#documentation)
+- [Development](#development)
+  - [Testing](#testing)
+  - [Production build](#production-build)
+  - [npm releases](#npm-releases)
+- [License](#license)
 
 ---
 
@@ -75,6 +75,10 @@ const ocean: Ocean = await Ocean.getInstance({
 * [Examples](/src/examples/)
 * [Tuna](https://github.com/oceanprotocol/tuna/examples/squid)
 
+## Documentation
+
+* [Docs: squid-js API Reference](https://docs.oceanprotocol.com/references/squid-js/)
+
 ## Development
 
 To start development you need to:
@@ -84,7 +88,7 @@ npm i
 npm start
 ```
 
-### Test
+### Testing
 
 To start unit tests you need to:
 
