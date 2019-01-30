@@ -44,10 +44,10 @@ describe("EventListener", () => {
                 EventListener.unsubscribe(event)
             })
 
-            const {market} = keeper
+            const {dispenser} = keeper
 
-            market.requestTokens(400, acc.getId())
-            market.requestTokens(400, acc.getId())
+            dispenser.requestTokens(400, acc.getId())
+            dispenser.requestTokens(400, acc.getId())
         })
     })
 
@@ -73,9 +73,9 @@ describe("EventListener", () => {
                     done()
                 })
 
-            const {market} = keeper
+            const {dispenser} = keeper
 
-            market.requestTokens(400, acc.getId())
+            dispenser.requestTokens(400, acc.getId())
         })
     })
 

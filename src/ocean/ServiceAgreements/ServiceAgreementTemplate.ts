@@ -72,12 +72,11 @@ export default class ServiceAgreementTemplate extends OceanBase {
             Logger.error(e)
             throw new Error(`Is not possible to setup the agreement template`)
         }
+        const {templateId, provider} = receipt.events.TemplateSetup.returnValues
 
-        const {serviceTemplateId, provider} = receipt.events.SetupAgreementTemplate.returnValues
-
-        if (serviceTemplateId !== this.template.id) {
+        if (templateId !== this.template.id) {
             // tslint:disable-next-line
-            throw new Error(`TemplateId missmatch on ${this.template.templateName}! Should be "${this.template.id}" but is ${serviceTemplateId}`)
+            throw new Error(`TemplateId missmatch on ${this.template.templateName}! Should be "${this.template.id}" but is ${templateId}`)
         }
 
         if (provider !== templateOwnerAddress) {

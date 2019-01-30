@@ -49,11 +49,11 @@ export default class TestContractHandler extends ContractHandler {
             args: [token.options.address, plcrVoting.options.address],
         })
         */
-        const market = await TestContractHandler.deployContract("OceanMarket", deployerAddress, {
+        await TestContractHandler.deployContract("Dispenser", deployerAddress, {
             args: [token.options.address],
         })
 
-        const sa = await TestContractHandler.deployContract("ServiceAgreement", deployerAddress, {
+        const sa = await TestContractHandler.deployContract("ServiceExecutionAgreement", deployerAddress, {
             args: [],
         })
 
@@ -66,14 +66,6 @@ export default class TestContractHandler extends ContractHandler {
         })
 
         await TestContractHandler.deployContract("DIDRegistry", deployerAddress, {})
-        /* not part of trilobite
-        const dispute = await ContractHandler.deployContract("OceanDispute", deployerAddress, {
-            args: [market.options.address, registry.options.address, plcrVoting.options.address],
-        })
-        */
-        await TestContractHandler.deployContract("OceanAuth", deployerAddress, {
-            args: [market.options.address],
-        })
     }
 
     private static async deployContract(name: string, from: string, params?): Promise<Contract> {
