@@ -73,11 +73,11 @@ const ocean: Ocean = await Ocean.getInstance({
 ### Examples
 
 * [Examples](/src/examples/)
-* [Tuna](https://github.com/oceanprotocol/tuna/examples/squid)
+* [Tuna](https://github.com/oceanprotocol/tuna/tree/develop/node)
 
 ## Documentation
 
-* **[Docs: squid-js API Reference](https://docs.oceanprotocol.com/references/squid-js/)**
+**[Docs: squid-js API Reference →](https://docs.oceanprotocol.com/references/squid-js/)**
 
 Alternatively, you can generate the raw TypeDoc documentation locally by running:
 
