@@ -26,49 +26,24 @@ export default class TestContractHandler extends ContractHandler {
     private static async deployContracts(deployerAddress: string) {
         Logger.log("Trying to deploy contracts")
 
-        // deploy libs
-        /* not part of trilobite
-        const dll = await ContractHandler.deployContract("DLL", deployerAddress)
-        const attributeStore = await ContractHandler.deployContract("AttributeStore", deployerAddress)
-        */
-        // deploy contracts
-        const token = await TestContractHandler.deployContract("OceanToken", deployerAddress)
-        /* not part of trilobite
-        const plcrVoting = await ContractHandler.deployContract("PLCRVoting", deployerAddress, {
-            args: [token.options.address],
-            tokens: [
-                {
-                    name: "DLL", address: dll.options.address,
-                }, {
-                    name: "AttributeStore", address: attributeStore.options.address,
-                },
-            ],
-        })
-        /* not part of trilobite
-        const registry = await ContractHandler.deployContract("OceanRegistry", deployerAddress, {
-            args: [token.options.address, plcrVoting.options.address],
-        })
-        */
-        await TestContractHandler.deployContract("Dispenser", deployerAddress, {
-            args: [token.options.address],
-        })
+        const token = await TestContractHandler.deployContract("OceanToken", deployerAddress, [deployerAddress])
 
-        const sa = await TestContractHandler.deployContract("ServiceExecutionAgreement", deployerAddress, {
-            args: [],
-        })
+        const dispenser = await TestContractHandler.deployContract("Dispenser", deployerAddress, [token.options.address, deployerAddress])
 
-        await TestContractHandler.deployContract("AccessConditions", deployerAddress, {
-            args: [sa.options.address],
-        })
+        // Add dispenser as Token minter
+        await token.methods.addMinter(dispenser.options.address)
+            .send({from: deployerAddress})
 
-        await TestContractHandler.deployContract("PaymentConditions", deployerAddress, {
-            args: [sa.options.address, token.options.address],
-        })
+        const sa = await TestContractHandler.deployContract("ServiceExecutionAgreement", deployerAddress)
 
-        await TestContractHandler.deployContract("DIDRegistry", deployerAddress, {})
+        await TestContractHandler.deployContract("AccessConditions", deployerAddress, [sa.options.address])
+
+        await TestContractHandler.deployContract("PaymentConditions", deployerAddress, [sa.options.address, token.options.address])
+
+        await TestContractHandler.deployContract("DIDRegistry", deployerAddress, [deployerAddress])
     }
 
-    private static async deployContract(name: string, from: string, params?): Promise<Contract> {
+    private static async deployContract(name: string, from: string, args: any[] = []): Promise<Contract> {
 
         // dont redeploy if there is already something loaded
         if (ContractHandler.has(name)) {
@@ -80,39 +55,30 @@ export default class TestContractHandler extends ContractHandler {
         let contractInstance: Contract
         try {
             Logger.log("Deploying", name)
-
-            const artifact = require(`@oceanprotocol/keeper-contracts/artifacts/${name}.development.json`)
-            const tempContract = new web3.eth.Contract(artifact.abi, artifact.address)
-            contractInstance = await tempContract.deploy({
-                data: params && params.tokens ?
-                    TestContractHandler.replaceTokens(artifact.bytecode.toString(), params.tokens) :
-                    artifact.bytecode,
-                arguments: params && params.args ? params.args : null,
-            }).send({
+            const sendConfig = {
                 from,
                 gas: 3000000,
                 gasPrice: 10000000000,
-            })
+            }
+            const artifact = require(`@oceanprotocol/keeper-contracts/artifacts/${name}.development.json`)
+            const tempContract = new web3.eth.Contract(artifact.abi, artifact.address)
+            const isZos = !!tempContract.methods.initialize
+            contractInstance = await tempContract
+                .deploy({
+                    data: artifact.bytecode,
+                    arguments: isZos ? undefined : args,
+                })
+                .send(sendConfig)
+            if (isZos) {
+                await contractInstance.methods.initialize(...args).send(sendConfig)
+            }
             TestContractHandler.set(name, contractInstance)
             // Logger.log("Deployed", name, "at", contractInstance.options.address);
         } catch (err) {
-            Logger.error("Deployment failed for", name, "with params", JSON.stringify(params, null, 2), err.message)
+            Logger.error("Deployment failed for", name, "with args", JSON.stringify(args, null, 2), err.message)
             throw err
         }
 
         return contractInstance
-    }
-
-    private static replaceTokens(bytecode: string, tokens: any[]) {
-
-        for (const token of tokens) {
-
-            bytecode = bytecode.replace(
-                new RegExp(`_+${token.name}_+`, "g"),
-                token.address.replace("0x", ""))
-        }
-        // Logger.log(bytecode)
-
-        return bytecode.toString()
     }
 }
