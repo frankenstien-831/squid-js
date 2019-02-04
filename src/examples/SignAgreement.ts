@@ -1,9 +1,6 @@
-import AdditionalInformation from "../ddo/AdditionalInformation"
-import Curation from "../ddo/Curation"
-import DDO from "../ddo/DDO"
-import MetaData from "../ddo/MetaData"
-import MetaDataBase from "../ddo/MetaDataBase"
-import Service from "../ddo/Service"
+import { DDO } from "../ddo/DDO"
+import { MetaData } from "../ddo/MetaData"
+import { Service } from "../ddo/Service"
 import {Account, Logger, Ocean} from "../squid"
 import config from "./config"
 import {runner} from "./runner"
@@ -14,7 +11,7 @@ async function exec() {
     const publisher: Account = (await ocean.getAccounts())[0]
     const consumer: Account = (await ocean.getAccounts())[1]
 
-    const metaData = {
+    const metaData: MetaData = {
         additionalInformation: {
             structuredMarkup: [
                 {
@@ -28,8 +25,8 @@ async function exec() {
             ],
             updateFrecuency: "yearly",
             checksum: "efdd14d39feb726e321931f408b3454d26f1a4899bcc608a68b5397f23203174",
-        } as AdditionalInformation,
-        base: {
+        },
+        base: <any>{
             name: "Office Humidity",
             type: "dataset",
             description: "Weather information of UK including temperature and humidity",
@@ -55,15 +52,15 @@ async function exec() {
             inLanguage: "en",
             tags: "weather, uk, 2011, temperature, humidity",
             price: 10,
-        } as MetaDataBase,
+        },
         curation: {
             rating: 0.94,
             numVotes: 124,
             schema: "Binary Votting",
-        } as Curation,
+        },
     }
 
-    const ddo: DDO = await ocean.registerAsset(metaData as MetaData, publisher)
+    const ddo: DDO = await ocean.registerAsset(metaData, publisher)
     Logger.log("did", ddo.id)
 
     const accessService: Service = ddo.findServiceByType("Access")

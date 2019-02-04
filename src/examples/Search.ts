@@ -1,4 +1,4 @@
-import DDO from "../ddo/DDO"
+import { DDO } from "../ddo/DDO"
 import {Logger, Ocean} from "../squid"
 import config from "./config"
 import {runner} from "./runner"

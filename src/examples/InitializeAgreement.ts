@@ -1,7 +1,6 @@
-import DDO from "../ddo/DDO"
-import MetaData from "../ddo/MetaData"
-import MetaDataBase from "../ddo/MetaDataBase"
-import Service from "../ddo/Service"
+import { DDO } from "../ddo/DDO"
+import { MetaData } from "../ddo/MetaData"
+import { Service } from "../ddo/Service"
 import {Account, Logger, Ocean} from "../squid"
 import config from "./config"
 import {runner} from "./runner"
@@ -12,7 +11,7 @@ async function exec() {
     const publisher: Account = (await ocean.getAccounts())[1]
     const consumer: Account = (await ocean.getAccounts())[1]
 
-    const metaData = new MetaData({
+    const metaData: Partial<MetaData> = <any>{
         base: {
             name: "Office Humidity",
             type: "dataset",
@@ -38,10 +37,10 @@ async function exec() {
             inLanguage: "en",
             tags: "weather, uk, 2011, temperature, humidity",
             price: 10,
-        } as MetaDataBase,
-    } as MetaData)
+        },
+    }
 
-    const ddo: DDO = await ocean.registerAsset(metaData, publisher)
+    const ddo: DDO = await ocean.registerAsset(<any>metaData, publisher)
     Logger.log("Registered asset with did:", ddo.id)
 
     const accessService = ddo.findServiceByType("Access")
