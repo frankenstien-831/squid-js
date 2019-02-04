@@ -57,7 +57,7 @@ export default class OceanAssets {
      * @param  {Account} publisher Publicher account.
      * @return {Promise<DDO>}
      */
-    public async create(metadata: MetaData, publisher: Account): Promise<DDO> {
+    public async create(metadata: MetaData, publisher: Account, services?: Service[]): Promise<DDO> {
         const {didRegistry} = await Keeper.getInstance()
         const aquarius = AquariusProvider.getAquarius()
         const brizo = BrizoProvider.getBrizo()
@@ -67,9 +67,10 @@ export default class OceanAssets {
         const computeServiceDefintionId: string = "1"
         const metadataServiceDefinitionId: string = "2"
 
-        metadata.base.contentUrls =
-            [await SecretStoreProvider.getSecretStore()
-                .encryptDocument(did.getId(), metadata.base.contentUrls)]
+        metadata.base.encryptedFiles = [
+            await SecretStoreProvider.getSecretStore()
+                .encryptDocument(did.getId(), metadata.base.contentUrls)
+        ]
 
         const template = new Access()
         const serviceAgreementTemplate = new ServiceAgreementTemplate(template)
@@ -129,10 +130,25 @@ export default class OceanAssets {
                     type: "Metadata",
                     serviceEndpoint,
                     serviceDefinitionId: metadataServiceDefinitionId,
-                    metadata,
+                    metadata: {
+                        // Default values
+                        curation: {
+                            rating: 0,
+                            numVotes: 0,
+                        },
+                        additionalInformation: {
+                            updateFrecuency: "yearly",
+                            structuredMarkup: [],
+                        },
+                        // Overwrites defaults
+                        ...metadata,
+                    },
                 },
             ],
         })
+
+        ddo.addChecksum()
+        await ddo.addProof(publisher.getId(), publisher.getPassword())
 
         const storedDdo = await aquarius.storeDDO(ddo)
 

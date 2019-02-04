@@ -12,6 +12,24 @@ import OceanBase from "./OceanBase"
 export default class Account extends OceanBase {
     private balance: Balance
 
+    private password?: string
+
+    /**
+     * Set account password.
+     * @param {string} password Password for account.
+     */
+    setPassword(password: string): void {
+        this.password = password
+    }
+
+    /**
+     * Returns account password.
+     * @return {string} Account password.
+     */
+    getPassword(): string {
+        return this.password
+    }
+
     /**
      * Balance of Ocean Token.
      * @return {Promise<number>}

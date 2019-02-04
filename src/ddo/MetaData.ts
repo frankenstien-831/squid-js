@@ -160,6 +160,8 @@ export class MetaDataBase {
      * @type {string}
      */
     checksum: string
+
+    encryptedFiles?: any
 }
 
 /**
@@ -212,6 +214,13 @@ export interface AdditionalInformation {
         uri: string
         mediaType: string
     }[]
+
+    /**
+     * Checksum of attributes to be able to compare if there are changes in
+     * the asset that you are purchasing.
+     * @type {string}
+     */
+    checksum: string
 }
 
 export interface MetaData {

@@ -8,9 +8,9 @@ import AquariusProvider from "../aquarius/AquariusProvider"
 import SearchQuery from "../aquarius/query/SearchQuery"
 import BrizoProvider from "../brizo/BrizoProvider"
 import ConfigProvider from "../ConfigProvider"
-import DDO from "../ddo/DDO"
-import MetaData from "../ddo/MetaData"
-import Service from "../ddo/Service"
+import { DDO } from "../ddo/DDO"
+import { MetaData } from "../ddo/MetaData"
+import { Service } from "../ddo/Service"
 import ContractEvent from "../keeper/Event"
 import Config from "../models/Config"
 import SecretStoreProvider from "../secretstore/SecretStoreProvider"
@@ -110,8 +110,8 @@ export default class Ocean {
      * @return {Promise<DDO>}
      */
     @deprecated("OceanAssets.create")
-    public async registerAsset(metadata: MetaData, publisher: Account): Promise<DDO> {
-        return await this.assets.create(metadata, publisher)
+    public async registerAsset(metadata: MetaData, publisher: Account, services?: Service[]): Promise<DDO> {
+        return await this.assets.create(metadata, publisher, services)
     }
 
     /**

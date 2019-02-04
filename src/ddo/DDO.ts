@@ -90,7 +90,7 @@ export class DDO {
         const {files, name, author, license} = metadata.base
 
         const values = [
-            ...files
+            ...(files || [])
                 .map(({checksum}) => checksum)
                 .filter(_ => !!_),
             name,
@@ -109,7 +109,6 @@ export class DDO {
      * @return {Promise<Proof>}           Proof object.
      */
     public async generateProof(publicKey: string, password?: string): Promise<Proof> {
-
         const checksum = this.getChecksum();
 
         const signature = await signatureHelpers.signText(checksum, publicKey, password)
@@ -120,6 +119,17 @@ export class DDO {
             type: "DDOIntegritySignature",
             signatureValue: signature,
         }
+    }
+
+    /**
+     * Generated and adds the checksum.
+     */
+    public addChecksum(): void {
+        const metadataService = this.findServiceByType('Metadata')
+        if (metadataService.metadata.base.checksum) {
+            throw new Error('Checksum already exists')
+        }
+        metadataService.metadata.base.checksum = this.getChecksum()
     }
 
     /**
