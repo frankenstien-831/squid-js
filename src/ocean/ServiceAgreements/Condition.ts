@@ -1,4 +1,4 @@
-import Event from "../../ddo/Event"
+import { Event } from "../../ddo/Event"
 import MethodReflection from "../../models/MethodReflection"
 import Parameter from "./Parameter"
 
