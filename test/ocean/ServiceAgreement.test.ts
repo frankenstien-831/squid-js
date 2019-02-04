@@ -1,9 +1,8 @@
 import {assert} from "chai"
 import ConfigProvider from "../../src/ConfigProvider"
-import Condition from "../../src/ddo/Condition"
-import DDO from "../../src/ddo/DDO"
-import MetaData from "../../src/ddo/MetaData"
-import Service from "../../src/ddo/Service"
+import { Condition } from "../../src/ddo/Condition"
+import { DDO } from "../../src/ddo/DDO"
+import { Service } from "../../src/ddo/Service"
 import Account from "../../src/ocean/Account"
 import DID from "../../src/ocean/DID"
 import IdGenerator from "../../src/ocean/IdGenerator"
@@ -15,6 +14,8 @@ import WebServiceConnectorProvider from "../../src/utils/WebServiceConnectorProv
 import config from "../config"
 import TestContractHandler from "../keeper/TestContractHandler"
 import WebServiceConnectorMock from "../mocks/WebServiceConnector.mock"
+import { metadataMock } from "../testdata/MetaData"
+
 
 let ocean: Ocean
 let accounts: Account[]
@@ -28,6 +29,8 @@ const did: DID = DID.generate()
 
 describe("ServiceAgreement", () => {
 
+    const metadata = metadataMock
+
     before(async () => {
         ConfigProvider.setConfig(config)
         await TestContractHandler.prepareContracts()
@@ -37,7 +40,6 @@ describe("ServiceAgreement", () => {
         publisherAccount = accounts[1]
         consumerAccount = accounts[2]
 
-        const metadata = new MetaData()
         const serviceAgreementTemplate: ServiceAgreementTemplate =
             new ServiceAgreementTemplate(new Access())
 

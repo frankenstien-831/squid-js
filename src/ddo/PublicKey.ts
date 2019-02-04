@@ -1,7 +1,28 @@
-export default class PublicKey {
-    public id: string = "did:op:123456789abcdefghi#keys-1"
-    public type: string = "Ed25519VerificationKey2018"
-    public owner: string = "did:op:123456789abcdefghi"
-    public publicKeyPem?: string = "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n"
-    public publicKeyBase58?: string = "H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV"
+/**
+ * Public key data.
+ */
+export interface PublicKey {
+    /**
+     * ID of the key.
+     * @type {string}
+     * @example "did:op:123456789abcdefghi#keys-1"
+     */
+    id: string
+
+    /**
+     * Type of key.
+     * @type {string}
+     */
+    type: 'Ed25519VerificationKey2018' | 'RsaVerificationKey2018' | 'EdDsaSAPublicKeySecp256k1'
+
+    /**
+     * Key owner.
+     * @type {string}
+     * @example "did:op:123456789abcdefghi"
+     */
+    owner: string
+
+    publicKeyPem?: string
+    publicKeyBase58?: string
+    publicKeyHex?: string
 }

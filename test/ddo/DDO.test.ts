@@ -1,13 +1,9 @@
 import {assert} from "chai"
-import AdditionalInformation from "../../src/ddo/AdditionalInformation"
-import Authentication from "../../src/ddo/Authentication"
-import Curation from "../../src/ddo/Curation"
-import DDO from "../../src/ddo/DDO"
-import MetaData from "../../src/ddo/MetaData"
-import MetaDataBase from "../../src/ddo/MetaDataBase"
-import PublicKey from "../../src/ddo/PublicKey"
-import Service from "../../src/ddo/Service"
-import StructuredMarkup from "../../src/ddo/StructuredMarkup"
+import { Authentication} from "../../src/ddo/Authentication"
+import { DDO } from "../../src/ddo/DDO"
+import { MetaData, MetaDataBase, Curation, AdditionalInformation } from "../../src/ddo/MetaData"
+import { PublicKey } from "../../src/ddo/PublicKey"
+import { Service } from "../../src/ddo/Service"
 import * as jsonDDO from "../testdata/ddo.json"
 
 describe("DDO", () => {
@@ -25,12 +21,6 @@ describe("DDO", () => {
                 type: "Ed25519VerificationKey2018",
                 owner: "did:op:123456789abcdefghi",
                 publicKeyBase58: "H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV",
-            } as PublicKey,
-            {
-                id: "did:op:123456789abcdefghi#keys-3",
-                type: "RsaPublicKeyExchangeKey2018",
-                owner: "did:op:123456789abcdefghi",
-                publicKeyPem: "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n",
             } as PublicKey,
         ],
         authentication: [
@@ -137,11 +127,11 @@ describe("DDO", () => {
                             {
                                 uri: "http://skos.um.es/unescothes/C01194/jsonld",
                                 mediaType: "application/ld+json",
-                            } as StructuredMarkup,
+                            },
                             {
                                 uri: "http://skos.um.es/unescothes/C01194/turtle",
                                 mediaType: "text/turtle",
-                            } as StructuredMarkup,
+                            },
                         ],
                     } as AdditionalInformation,
                 } as MetaData,

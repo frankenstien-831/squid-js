@@ -1,7 +1,7 @@
 import * as assert from "assert"
 import Aquarius from "../../src/aquarius/Aquarius"
 import SearchQuery from "../../src/aquarius/query/SearchQuery"
-import DDO from "../../src/ddo/DDO"
+import { DDO } from "../../src/ddo/DDO"
 import DID from "../../src/ocean/DID"
 import WebServiceConnectorProvider from "../../src/utils/WebServiceConnectorProvider"
 import config from "../config"
@@ -10,6 +10,7 @@ import WebServiceConnectorMock from "../mocks/WebServiceConnector.mock"
 describe("Aquarius", () => {
 
     const aquarius: Aquarius = new Aquarius(config)
+
     describe("#queryMetadata()", () => {
 
         const query = {
@@ -40,6 +41,7 @@ describe("Aquarius", () => {
             WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock([new DDO()]))
 
             const result: DDO[] = await aquarius.queryMetadata(query)
+            console.log(result)
             assert(result)
             assert(result[0].findServiceById)
         })

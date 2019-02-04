@@ -1,34 +1,57 @@
-import MetaDataModel from "../../src/ddo/MetaData"
-import MetaDataBase from "../../src/ddo/MetaDataBase"
+import { MetaData } from "../../src/ddo/MetaData"
 
-const MetaData = new MetaDataModel({
+export const metadataMock: MetaData = {
     base: {
-        name: "Office Humidity",
+        name: "UK Weather information 2011",
         type: "dataset",
         description: "Weather information of UK including temperature and humidity",
         size: "3.1gb",
-        dateCreated: "2012-02-01T10:55:11+00:00",
+        dateCreated: "2012-10-10T17:00:000Z",
         author: "Met Office",
         license: "CC-BY",
         copyrightHolder: "Met Office",
         encoding: "UTF-8",
         compression: "zip",
         contentType: "text/csv",
-        // tslint:disable-next-line
-        workExample: "stationId,latitude,longitude,datetime,temperature,humidity423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68",
+        workExample: "423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68",
         contentUrls: [
             "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip",
             "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip",
         ],
         links: [
-            {sample1: "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-daily/"},
-            {sample2: "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-averages-25km/"},
-            {fieldsDescription: "http://data.ceda.ac.uk/badc/ukcp09/"},
+            {
+                // tslint:disable-next-line
+                sample1: "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-daily/"
+            },
+            {
+                // tslint:disable-next-line
+                sample2: "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-averages-25km/"
+            },
+            {
+                fieldsDescription: "http://data.ceda.ac.uk/badc/ukcp09/",
+            },
         ],
         inLanguage: "en",
         tags: "weather, uk, 2011, temperature, humidity",
         price: 10,
-    } as MetaDataBase,
-} as MetaDataModel)
-
-export default MetaData
+    },
+    curation: {
+        rating: 0.93,
+        numVotes: 123,
+        schema: "Binary Votting",
+    },
+    additionalInformation: {
+        updateFrecuency: "yearly",
+        checksum: "",
+        structuredMarkup: [
+            {
+                uri: "http://skos.um.es/unescothes/C01194/jsonld",
+                mediaType: "application/ld+json",
+            },
+            {
+                uri: "http://skos.um.es/unescothes/C01194/turtle",
+                mediaType: "text/turtle",
+            },
+        ],
+    },
+}

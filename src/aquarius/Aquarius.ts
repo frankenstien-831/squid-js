@@ -1,5 +1,5 @@
-import {URL} from "whatwg-url"
-import DDO from "../ddo/DDO"
+import { URL } from "whatwg-url"
+import { DDO } from "../ddo/DDO"
 import Config from "../models/Config"
 import DID from "../ocean/DID"
 import Logger from "../utils/Logger"

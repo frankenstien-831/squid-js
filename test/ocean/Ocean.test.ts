@@ -3,9 +3,8 @@ import AquariusProvider from "../../src/aquarius/AquariusProvider"
 import SearchQuery from "../../src/aquarius/query/SearchQuery"
 import BrizoProvider from "../../src/brizo/BrizoProvider"
 import ConfigProvider from "../../src/ConfigProvider"
-import DDO from "../../src/ddo/DDO"
-import MetaData from "../../src/ddo/MetaData"
-import Service from "../../src/ddo/Service"
+import { DDO } from "../../src/ddo/DDO"
+import { Service } from "../../src/ddo/Service"
 import Account from "../../src/ocean/Account"
 import Ocean from "../../src/ocean/Ocean"
 import ServiceAgreement from "../../src/ocean/ServiceAgreements/ServiceAgreement"
@@ -17,12 +16,15 @@ import AquariusMock from "../mocks/Aquarius.mock"
 import BrizoMock from "../mocks/Brizo.mock"
 import SecretStoreMock from "../mocks/SecretStore.mock"
 import WebServiceConnectorMock from "../mocks/WebServiceConnector.mock"
+import { metadataMock } from "../testdata/MetaData"
 
 let ocean: Ocean
 let accounts: Account[]
 let testPublisher: Account
 
 describe("Ocean", () => {
+
+    const metadata = metadataMock
 
     before(async () => {
         ConfigProvider.setConfig(config)
@@ -37,7 +39,6 @@ describe("Ocean", () => {
     })
 
     describe("#getInstance()", () => {
-
         it("should get an instance of cean", async () => {
 
             const oceanInstance: Ocean = await Ocean.getInstance(config)
@@ -47,7 +48,6 @@ describe("Ocean", () => {
     })
 
     describe("#getAccounts()", () => {
-
         it("should list accounts", async () => {
 
             const accs: Account[] = await ocean.getAccounts()
@@ -56,30 +56,22 @@ describe("Ocean", () => {
             assert(0 === (await accs[5].getBalance()).ocn)
             assert("string" === typeof accs[0].getId())
         })
-
     })
 
     describe("#resolveDID()", () => {
-
         it("should resolve a did to a ddo", async () => {
-
-            const metaData: MetaData = new MetaData()
-            const ddo: DDO = await ocean.registerAsset(metaData, testPublisher)
+            const ddo: DDO = await ocean.registerAsset(metadata, testPublisher)
 
             const resolvedDDO: DDO = await ocean.resolveDID(ddo.id)
 
             assert(resolvedDDO)
             assert(resolvedDDO.id === ddo.id)
         })
-
     })
 
     describe("#registerAsset()", () => {
-
         it("should register an asset", async () => {
-
-            const metaData: MetaData = new MetaData()
-            const ddo: DDO = await ocean.registerAsset(metaData, testPublisher)
+            const ddo: DDO = await ocean.registerAsset(metadata, testPublisher)
 
             assert(ddo)
             assert(ddo.id.startsWith("did:op:"))
@@ -87,9 +79,7 @@ describe("Ocean", () => {
     })
 
     describe("#searchAssets()", () => {
-
         it("should search for assets", async () => {
-
             const query = {
                 offset: 100,
                 page: 0,
@@ -106,36 +96,30 @@ describe("Ocean", () => {
 
             assert(assets)
         })
-
     })
 
     describe("#searchAssetsByText()", () => {
-
         it("should search for assets", async () => {
             const text = "office"
             const assets: any[] = await ocean.searchAssetsByText(text)
 
             assert(assets)
         })
-
     })
 
     describe("#signServiceAgreement()", () => {
-
         it("should sign an service agreement", async () => {
-
             const publisher = accounts[0]
             const consumer = accounts[1]
 
-            const metaData = new MetaData()
-            const ddo: DDO = await ocean.registerAsset(metaData, publisher)
+            const ddo: DDO = await ocean.registerAsset(metadata, publisher)
 
             const service: Service = ddo.findServiceByType("Access")
 
             // @ts-ignore
             WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(ddo))
 
-            await consumer.requestTokens(metaData.base.price)
+            await consumer.requestTokens(metadata.base.price)
 
             const signServiceAgreementResult: any = await ocean.signServiceAgreement(ddo.id,
                 service.serviceDefinitionId, consumer)
@@ -146,17 +130,14 @@ describe("Ocean", () => {
             assert(signServiceAgreementResult.serviceAgreementSignature.startsWith("0x"))
             assert(signServiceAgreementResult.serviceAgreementSignature.length === 132)
         })
-
     })
 
     describe("#executeServiceAgreement()", () => {
-
         it("should execute a service agreement", async () => {
-
             const publisher = accounts[0]
             const consumer = accounts[1]
 
-            const ddo: DDO = await ocean.registerAsset(new MetaData(), publisher)
+            const ddo: DDO = await ocean.registerAsset(metadata, publisher)
             const service: Service = ddo.findServiceByType("Access")
 
             // @ts-ignore
@@ -171,6 +152,5 @@ describe("Ocean", () => {
 
             assert(serviceAgreement)
         })
-
     })
 })

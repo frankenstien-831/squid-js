@@ -1,5 +1,5 @@
 import Aquarius from "../../src/aquarius/Aquarius"
-import DDO from "../../src/ddo/DDO"
+import { DDO } from "../../src/ddo/DDO"
 import DID from "../../src/ocean/DID"
 
 const ddoStore: Map<string, any> = new Map<string, any>()

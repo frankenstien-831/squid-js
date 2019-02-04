@@ -1,15 +1,10 @@
 import AquariusProvider from "../aquarius/AquariusProvider"
 import SearchQuery from "../aquarius/query/SearchQuery"
 import BrizoProvider from "../brizo/BrizoProvider"
-import Authentication from "../ddo/Authentication"
-import Condition from "../ddo/Condition"
-import Contract from "../ddo/Contract"
-import DDO from "../ddo/DDO"
-import Event from "../ddo/Event"
-import EventHandler from "../ddo/EventHandler"
-import MetaData from "../ddo/MetaData"
-import PublicKey from "../ddo/PublicKey"
-import Service from "../ddo/Service"
+import { Condition } from "../ddo/Condition"
+import { DDO } from "../ddo/DDO"
+import { MetaData } from "../ddo/MetaData"
+import { Service } from "../ddo/Service"
 import ContractEvent from "../keeper/Event"
 import EventListener from "../keeper/EventListener"
 import Keeper from "../keeper/Keeper"
@@ -88,7 +83,7 @@ export default class OceanAssets {
             authentication: [{
                 type: "RsaSignatureAuthentication2018",
                 publicKey: did.getDid() + "#keys-1",
-            } as Authentication],
+            }],
             id: did.getDid(),
             publicKey: [
                 {
@@ -96,7 +91,7 @@ export default class OceanAssets {
                     type: "Ed25519VerificationKey2018",
                     owner: did.getDid(),
                     publicKeyBase58: await publisher.getPublicKey(),
-                } as PublicKey,
+                },
             ],
             service: [
                 {
@@ -118,24 +113,24 @@ export default class OceanAssets {
                                     moduleName: "payment",
                                     functionName: "lockPayment",
                                     version: "0.1",
-                                } as EventHandler,
-                            } as Event,
+                                },
+                            },
                         ],
-                    } as Contract,
+                    },
                     conditions,
-                } as Service,
+                },
                 {
                     type: "Compute",
                     serviceEndpoint: brizo.getComputeEndpoint(publisher.getId(),
                         computeServiceDefintionId, "xxx", "xxx"),
                     serviceDefinitionId: computeServiceDefintionId,
-                } as Service,
+                },
                 {
                     type: "Metadata",
                     serviceEndpoint,
                     serviceDefinitionId: metadataServiceDefinitionId,
                     metadata,
-                } as Service,
+                },
             ],
         })
 

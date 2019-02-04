@@ -1,6 +1,5 @@
 import {assert} from "chai"
 import ConfigProvider from "../../src/ConfigProvider"
-import MetaData from "../../src/ddo/MetaData"
 import Account from "../../src/ocean/Account"
 import Ocean from "../../src/ocean/Ocean"
 import ServiceAgreementTemplate from "../../src/ocean/ServiceAgreements/ServiceAgreementTemplate"
@@ -9,11 +8,15 @@ import TemplateBase from "../../src/ocean/ServiceAgreements/Templates/TemplateBa
 import config from "../config"
 import TestContractHandler from "../keeper/TestContractHandler"
 import TestIdGenerator from "../TestIdGenerator"
+import { metadataMock } from "../testdata/MetaData"
+
 
 let ocean: Ocean
 let accounts: Account[]
 
 describe("ServiceAgreementTemplate", () => {
+
+    const metadata = metadataMock
 
     before(async () => {
         ConfigProvider.setConfig(config)
@@ -49,7 +52,7 @@ describe("ServiceAgreementTemplate", () => {
                 new ServiceAgreementTemplate(access)
             assert(serviceAgreementTemplate)
 
-            const conds = await serviceAgreementTemplate.getConditions(new MetaData(),
+            const conds = await serviceAgreementTemplate.getConditions(metadata,
                 TestIdGenerator.generatePrefixedId())
             assert(conds)
         })

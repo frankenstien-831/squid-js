@@ -1,12 +1,13 @@
-import Authentication from "./Authentication"
-import PublicKey from "./PublicKey"
-import Service from "./Service"
+import { Authentication } from "./Authentication"
+import { PublicKey } from "./PublicKey"
+import { Service } from "./Service"
+import { Proof } from "./Proof"
 
 /**
  * DID Descriptor Object.
  * Contains all the data related to an asset.
  */
-export default class DDO {
+export class DDO {
 
     /**
      * Serializes the DDO object.
@@ -29,6 +30,7 @@ export default class DDO {
     }
 
     public "@context": string = "https://w3id.org/future-method/v1"
+
     /**
      * DID, descentralized ID.
      * @type {string}
@@ -37,13 +39,9 @@ export default class DDO {
     public publicKey: PublicKey[]
     public authentication: Authentication[]
     public service: Service[]
+    public proof: Proof
 
-    public constructor(ddo?: {
-        id?: string,
-        publicKey?: PublicKey[],
-        authentication?: Authentication[],
-        service?: Service[],
-    }) {
+    public constructor(ddo?: Partial<DDO>) {
         this.authentication = (ddo && ddo.authentication) || []
         this.id = (ddo && ddo.id) || null
         this.publicKey = (ddo && ddo.publicKey) || []
