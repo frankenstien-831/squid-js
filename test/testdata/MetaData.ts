@@ -35,7 +35,7 @@ export const metadataMock: MetaData = {
         tags: "weather, uk, 2011, temperature, humidity",
         price: 10,
         files: [],
-        checksum: ""
+        checksum: "",
     },
     curation: {
         rating: 0.93,
@@ -54,5 +54,6 @@ export const metadataMock: MetaData = {
                 mediaType: "text/turtle",
             },
         ],
+        checksum: "",
     },
 }

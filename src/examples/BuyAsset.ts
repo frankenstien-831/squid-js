@@ -10,10 +10,10 @@ async function exec() {
     const ocean: Ocean = await Ocean.getInstance(config)
 
     const publisher: Account = (await ocean.getAccounts())[0]
-    publisher.setPassword('node0')
+    publisher.setPassword("node0")
     const consumer: Account = (await ocean.getAccounts())[1]
 
-    const metaData: Partial<MetaData> = <any>{
+    const metaData: Partial<MetaData> = <any> {
         base: {
             name: "Office Humidity",
             type: "dataset",
@@ -43,7 +43,7 @@ async function exec() {
         },
     }
 
-    const ddo: DDO = await ocean.registerAsset(<any>metaData, publisher)
+    const ddo: DDO = await ocean.registerAsset(metaData as any, publisher)
     Logger.log("did", ddo.id)
     const did: DID = DID.parse(ddo.id)
 

@@ -18,7 +18,7 @@ export default class Account extends OceanBase {
      * Set account password.
      * @param {string} password Password for account.
      */
-    setPassword(password: string): void {
+    public setPassword(password: string): void {
         this.password = password
     }
 
@@ -26,7 +26,7 @@ export default class Account extends OceanBase {
      * Returns account password.
      * @return {string} Account password.
      */
-    getPassword(): string {
+    public getPassword(): string {
         return this.password
     }
 

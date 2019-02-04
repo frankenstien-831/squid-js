@@ -41,7 +41,7 @@ describe("Aquarius", () => {
             WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock([new DDO()]))
 
             const result: DDO[] = await aquarius.queryMetadata(query)
-            console.log(result)
+
             assert(result)
             assert(result[0].findServiceById)
         })

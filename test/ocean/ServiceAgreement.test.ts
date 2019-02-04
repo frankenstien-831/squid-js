@@ -16,7 +16,6 @@ import TestContractHandler from "../keeper/TestContractHandler"
 import WebServiceConnectorMock from "../mocks/WebServiceConnector.mock"
 import { metadataMock } from "../testdata/MetaData"
 
-
 let ocean: Ocean
 let accounts: Account[]
 let publisherAccount: Account

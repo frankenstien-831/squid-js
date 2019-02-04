@@ -48,7 +48,6 @@ export default class ServiceAgreement extends OceanBase {
             Logger.log("Executing SA with serviceAgreementId", serviceAgreementId)
         }
 
-
         const service: Service = ddo.findServiceById(serviceDefinitionId)
         const values: ValuePair[][] = ServiceAgreement.getValuesFromService(service, serviceAgreementId)
         const valueHashes: string[] = ServiceAgreement.createValueHashes(values)
@@ -64,10 +63,10 @@ export default class ServiceAgreement extends OceanBase {
 
     private static async createSAHashSignature(
         service: Service,
-       serviceAgreementId: string,
-       valueHashes: string[],
-       timeoutValues: number[],
-       consumer: Account,
+        serviceAgreementId: string,
+        valueHashes: string[],
+        timeoutValues: number[],
+        consumer: Account,
     ): Promise<string> {
 
         if (!service.templateId) {

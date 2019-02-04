@@ -1,4 +1,4 @@
-import Event from "./Event"
+import { Event } from "./Event"
 
 export interface Contract {
     contractName: string

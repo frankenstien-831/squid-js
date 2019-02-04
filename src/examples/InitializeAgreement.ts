@@ -11,7 +11,7 @@ async function exec() {
     const publisher: Account = (await ocean.getAccounts())[1]
     const consumer: Account = (await ocean.getAccounts())[1]
 
-    const metaData: Partial<MetaData> = <any>{
+    const metaData: Partial<MetaData> = <any> {
         base: {
             name: "Office Humidity",
             type: "dataset",
@@ -40,7 +40,7 @@ async function exec() {
         },
     }
 
-    const ddo: DDO = await ocean.registerAsset(<any>metaData, publisher)
+    const ddo: DDO = await ocean.registerAsset(metaData as any, publisher)
     Logger.log("Registered asset with did:", ddo.id)
 
     const accessService = ddo.findServiceByType("Access")

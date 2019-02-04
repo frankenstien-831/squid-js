@@ -1,9 +1,9 @@
+import Web3Provider from "../keeper/Web3Provider"
+import * as signatureHelpers from "../utils/SignatureHelpers"
 import { Authentication } from "./Authentication"
+import { Proof } from "./Proof"
 import { PublicKey } from "./PublicKey"
 import { Service } from "./Service"
-import { Proof } from "./Proof"
-import Web3Provider from '../keeper/Web3Provider'
-import * as signatureHelpers from "../utils/SignatureHelpers"
 
 /**
  * DID Descriptor Object.
@@ -86,20 +86,20 @@ export class DDO {
      */
     public getChecksum(): string {
         const web3 = Web3Provider.getWeb3()
-        const {metadata} = this.findServiceByType('Metadata')
+        const {metadata} = this.findServiceByType("Metadata")
         const {files, name, author, license} = metadata.base
 
         const values = [
             ...(files || [])
                 .map(({checksum}) => checksum)
-                .filter(_ => !!_),
+                .filter((_) => !!_),
             name,
             author,
             license,
             this.id,
         ]
 
-        return web3.utils.sha3(values.join(''))
+        return web3.utils.sha3(values.join(""))
     }
 
     /**
@@ -109,7 +109,7 @@ export class DDO {
      * @return {Promise<Proof>}           Proof object.
      */
     public async generateProof(publicKey: string, password?: string): Promise<Proof> {
-        const checksum = this.getChecksum();
+        const checksum = this.getChecksum()
 
         const signature = await signatureHelpers.signText(checksum, publicKey, password)
 
@@ -125,9 +125,9 @@ export class DDO {
      * Generated and adds the checksum.
      */
     public addChecksum(): void {
-        const metadataService = this.findServiceByType('Metadata')
+        const metadataService = this.findServiceByType("Metadata")
         if (metadataService.metadata.base.checksum) {
-            throw new Error('Checksum already exists')
+            throw new Error("Checksum already exists")
         }
         metadataService.metadata.base.checksum = this.getChecksum()
     }
@@ -140,7 +140,7 @@ export class DDO {
      */
     public async addProof(publicKey: string, password?: string): Promise<void> {
         if (this.proof) {
-            throw new Error('Proof already exists')
+            throw new Error("Proof already exists")
         }
         this.proof = await this.generateProof(publicKey, password)
     }

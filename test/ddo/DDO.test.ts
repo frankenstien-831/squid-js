@@ -1,15 +1,15 @@
-import { assert, expect, use, spy } from "chai"
+import { assert, expect, spy, use } from "chai"
 import * as spies from "chai-spies"
 
+import ConfigProvider from "../../src/ConfigProvider"
 import { DDO } from "../../src/ddo/DDO"
 import { Service } from "../../src/ddo/Service"
-import ConfigProvider from "../../src/ConfigProvider"
-import config from "../config"
 import * as signatureHelpers from "../../src/utils/SignatureHelpers"
+import config from "../config"
 
 import * as jsonDDO from "../testdata/ddo.json"
 
-use(spies);
+use(spies)
 
 describe("DDO", () => {
 
@@ -60,7 +60,7 @@ describe("DDO", () => {
                 type: "MessagingService",
                 serviceEndpoint: "https://example.com/messages/8377464",
             },
-            <any>{
+            {
                 type: "SocialWebInboxService",
                 serviceEndpoint: "https://social.example.com/83hfh37dj",
                 description: "My public social inbox",
@@ -68,7 +68,7 @@ describe("DDO", () => {
                     amount: "0.50",
                     currency: "USD",
                 },
-            },
+            } as any,
             {
                 id: "did:op:123456789abcdefghi;bops",
                 type: "BopsService",
@@ -126,18 +126,18 @@ describe("DDO", () => {
                                 url: "234ab87234acbd09543085340abffh21983ddhiiee982143827423421",
                                 checksum: "efb2c764274b745f5fc37f97c6b0e761",
                                 contentLength: "4535431",
-                                resourceId: "access-log2018-02-13-15-17-29-18386C502CAEA932"
+                                resourceId: "access-log2018-02-13-15-17-29-18386C502CAEA932",
                             },
                             {
                                 url: "234ab87234acbd6894237582309543085340abffh21983ddhiiee982143827423421",
                                 checksum: "085340abffh21495345af97c6b0e761",
-                                contentLength: "12324"
+                                contentLength: "12324",
                             },
                             {
-                                url: "80684089027358963495379879a543085340abffh21983ddhiiee982143827abcc2"
-                            }
+                                url: "80684089027358963495379879a543085340abffh21983ddhiiee982143827abcc2",
+                            },
                         ],
-                        checksum: ""
+                        checksum: "",
                     },
                     curation: {
                         rating: 0.93,
@@ -200,7 +200,7 @@ describe("DDO", () => {
             }
 
             const ddo = new DDO({
-                service: [<any>service],
+                service: [service as any],
             })
             assert(ddo)
 
@@ -217,7 +217,7 @@ describe("DDO", () => {
         it("should properly deserialize from serialized object", async () => {
 
             const ddoString = DDO.serialize(testDDO)
-            assert.typeOf(ddoString, 'string')
+            assert.typeOf(ddoString, "string")
 
             const ddo: DDO = DDO.deserialize(ddoString)
             assert.instanceOf(ddo, DDO)
@@ -247,18 +247,18 @@ describe("DDO", () => {
 
     describe("#generateProof()", () => {
 
-        const publicKey = `0x${'a'.repeat(40)}`
-        const signature = `0x${'a'.repeat(130)}`
+        const publicKey = `0x${"a".repeat(40)}`
+        const signature = `0x${"a".repeat(130)}`
 
         it("should properly generate the proof", async () => {
-            const signTextSpy = spy.on(signatureHelpers, 'signText', () => signature)
+            const signTextSpy = spy.on(signatureHelpers, "signText", () => signature)
             const ddo = new DDO(testDDO)
             const checksum = ddo.getChecksum()
             const proof = await ddo.generateProof(publicKey)
 
-            assert.include(<any>proof, {
+            assert.include(proof as any, {
                 creator: publicKey,
-                type: 'DDOIntegritySignature',
+                type: "DDOIntegritySignature",
                 signatureValue: signature,
             })
             expect(signTextSpy).to.have.been.called.with(checksum, publicKey)
@@ -267,17 +267,17 @@ describe("DDO", () => {
 
     describe("#addProof()", () => {
 
-        const publicKey = `0x${'a'.repeat(40)}`
+        const publicKey = `0x${"a".repeat(40)}`
 
         it("should properly add the proof on the DDO", async () => {
-            const fakeProof = <any>{
+            const fakeProof = {
                 creation: Date.now(),
-                creator: 'test',
-                type: 'test',
-                signaturValue: 'test'
-            }
+                creator: "test",
+                type: "test",
+                signaturValue: "test",
+            } as any
             const ddo = new DDO(testDDO)
-            const generateProofSpy = spy.on(ddo, 'generateProof', () => fakeProof)
+            const generateProofSpy = spy.on(ddo, "generateProof", () => fakeProof)
             await ddo.addProof(publicKey)
 
             assert.equal(ddo.proof, fakeProof)

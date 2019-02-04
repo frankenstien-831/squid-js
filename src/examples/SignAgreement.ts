@@ -26,7 +26,7 @@ async function exec() {
             updateFrecuency: "yearly",
             checksum: "efdd14d39feb726e321931f408b3454d26f1a4899bcc608a68b5397f23203174",
         },
-        base: <any>{
+        base: <any> {
             name: "Office Humidity",
             type: "dataset",
             description: "Weather information of UK including temperature and humidity",

@@ -7,9 +7,8 @@ import Access from "../../src/ocean/ServiceAgreements/Templates/Access"
 import TemplateBase from "../../src/ocean/ServiceAgreements/Templates/TemplateBase"
 import config from "../config"
 import TestContractHandler from "../keeper/TestContractHandler"
-import TestIdGenerator from "../TestIdGenerator"
 import { metadataMock } from "../testdata/MetaData"
-
+import TestIdGenerator from "../TestIdGenerator"
 
 let ocean: Ocean
 let accounts: Account[]

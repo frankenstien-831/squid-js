@@ -69,7 +69,7 @@ export default class OceanAssets {
 
         metadata.base.encryptedFiles = [
             await SecretStoreProvider.getSecretStore()
-                .encryptDocument(did.getId(), metadata.base.contentUrls)
+                .encryptDocument(did.getId(), metadata.base.contentUrls),
         ]
 
         const template = new Access()
