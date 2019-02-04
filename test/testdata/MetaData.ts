@@ -34,6 +34,8 @@ export const metadataMock: MetaData = {
         inLanguage: "en",
         tags: "weather, uk, 2011, temperature, humidity",
         price: 10,
+        files: [],
+        checksum: ""
     },
     curation: {
         rating: 0.93,
@@ -42,7 +44,6 @@ export const metadataMock: MetaData = {
     },
     additionalInformation: {
         updateFrecuency: "yearly",
-        checksum: "",
         structuredMarkup: [
             {
                 uri: "http://skos.um.es/unescothes/C01194/jsonld",

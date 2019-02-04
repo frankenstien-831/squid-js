@@ -1,3 +1,11 @@
+export interface File {
+    url: string
+    checksum?: string
+    checksumType?: string
+    contentLength?: string
+    resourceId?: string
+}
+
 /**
  * Base attributes of Assets Metadata.
  * @see https://github.com/oceanprotocol/OEPs/tree/master/8#base-attributes
@@ -140,6 +148,18 @@ export class MetaDataBase {
      * @example 10
      */
     price: number
+
+    /**
+     * Array of File objects including the encrypted file urls and some additional information.
+     * @type {File[]}
+     */
+    files: File[]
+
+    /**
+     * SHA3 hash of concatenated values: [list of all file checksums] + name + author + license + did
+     * @type {string}
+     */
+    checksum: string
 }
 
 /**
@@ -192,14 +212,6 @@ export interface AdditionalInformation {
         uri: string
         mediaType: string
     }[]
-
-
-    /**
-     * Checksum of attributes to be able to compare if there are changes in
-     * the asset that you are purchasing.
-     * @type {string}
-     */
-    checksum: string
 }
 
 export interface MetaData {

@@ -1,60 +1,66 @@
-import {assert} from "chai"
-import { Authentication} from "../../src/ddo/Authentication"
+import { assert, expect, use, spy } from "chai"
+import * as spies from "chai-spies"
+
 import { DDO } from "../../src/ddo/DDO"
-import { MetaData, MetaDataBase, Curation, AdditionalInformation } from "../../src/ddo/MetaData"
-import { PublicKey } from "../../src/ddo/PublicKey"
 import { Service } from "../../src/ddo/Service"
+import ConfigProvider from "../../src/ConfigProvider"
+import config from "../config"
+import * as signatureHelpers from "../../src/utils/SignatureHelpers"
+
 import * as jsonDDO from "../testdata/ddo.json"
+
+use(spies);
 
 describe("DDO", () => {
 
     const testDDO: DDO = new DDO({
+        id: `did:op:${"a".repeat(64)}`,
         publicKey: [
             {
                 id: "did:op:123456789abcdefghi#keys-1",
                 type: "RsaVerificationKey2018",
                 owner: "did:op:123456789abcdefghi",
                 publicKeyPem: "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n",
-            } as PublicKey,
+            },
             {
                 id: "did:op:123456789abcdefghi#keys-2",
                 type: "Ed25519VerificationKey2018",
                 owner: "did:op:123456789abcdefghi",
                 publicKeyBase58: "H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV",
-            } as PublicKey,
+            },
         ],
         authentication: [
             {
                 type: "RsaSignatureAuthentication2018",
                 publicKey: "did:op:123456789abcdefghi#keys-1",
-            } as Authentication,
+            },
             {
                 type: "ieee2410Authentication2018",
                 publicKey: "did:op:123456789abcdefghi#keys-2",
-            } as Authentication,
+            },
         ],
         service: [
             {
                 type: "OpenIdConnectVersion1.0Service",
                 serviceEndpoint: "https://openid.example.com/",
-            } as Service,
+            },
             {
                 type: "CredentialRepositoryService",
                 serviceEndpoint: "https://repository.example.com/service/8377464",
-            } as Service,
+            },
             {
                 type: "XdiService",
                 serviceEndpoint: "https://xdi.example.com/8377464",
-            } as Service,
+            },
             {
                 type: "HubService",
                 serviceEndpoint: "https://hub.example.com/.identity/did:op:0123456789abcdef/",
-            } as Service,
+            },
             {
                 type: "MessagingService",
                 serviceEndpoint: "https://example.com/messages/8377464",
-            } as Service,
-            {
+            },
+            <any>{
                 type: "SocialWebInboxService",
                 serviceEndpoint: "https://social.example.com/83hfh37dj",
                 description: "My public social inbox",
@@ -62,22 +68,22 @@ describe("DDO", () => {
                     amount: "0.50",
                     currency: "USD",
                 },
-            } as Service,
+            },
             {
                 id: "did:op:123456789abcdefghi;bops",
                 type: "BopsService",
                 serviceEndpoint: "https://bops.example.com/enterprise/",
-            } as Service,
+            },
             {
                 type: "Consume",
                 // tslint:disable-next-line
                 serviceEndpoint: "http://mybrizo.org/api/v1/brizo/services/consume?pubKey=${pubKey}&serviceId={serviceId}&url={url}",
-            } as Service,
+            },
             {
                 type: "Compute",
                 // tslint:disable-next-line
                 serviceEndpoint: "http://mybrizo.org/api/v1/brizo/services/compute?pubKey=${pubKey}&serviceId={serviceId}&algo={algo}&container={container}",
-            } as Service,
+            },
             {
                 type: "Metadata",
                 serviceEndpoint: "http://myaquarius.org/api/v1/provider/assets/metadata/{did}",
@@ -115,12 +121,29 @@ describe("DDO", () => {
                         inLanguage: "en",
                         tags: "weather, uk, 2011, temperature, humidity",
                         price: 10,
-                    } as MetaDataBase,
+                        files: [
+                            {
+                                url: "234ab87234acbd09543085340abffh21983ddhiiee982143827423421",
+                                checksum: "efb2c764274b745f5fc37f97c6b0e761",
+                                contentLength: "4535431",
+                                resourceId: "access-log2018-02-13-15-17-29-18386C502CAEA932"
+                            },
+                            {
+                                url: "234ab87234acbd6894237582309543085340abffh21983ddhiiee982143827423421",
+                                checksum: "085340abffh21495345af97c6b0e761",
+                                contentLength: "12324"
+                            },
+                            {
+                                url: "80684089027358963495379879a543085340abffh21983ddhiiee982143827abcc2"
+                            }
+                        ],
+                        checksum: ""
+                    },
                     curation: {
                         rating: 0.93,
                         numVotes: 123,
                         schema: "Binary Votting",
-                    } as Curation,
+                    },
                     additionalInformation: {
                         updateFrecuency: "yearly",
                         structuredMarkup: [
@@ -133,10 +156,18 @@ describe("DDO", () => {
                                 mediaType: "text/turtle",
                             },
                         ],
-                    } as AdditionalInformation,
-                } as MetaData,
+                    },
+                },
             },
         ],
+    })
+
+    before(async () => {
+        ConfigProvider.setConfig(config)
+    })
+
+    afterEach(() => {
+        spy.restore()
     })
 
     describe("#serialize()", () => {
@@ -163,13 +194,13 @@ describe("DDO", () => {
 
         it("should create an predefined ddo", async () => {
 
-            const service: Service = {
+            const service: Partial<Service> = {
                 serviceEndpoint: "http://",
                 description: "nice service",
-            } as Service
+            }
 
             const ddo = new DDO({
-                service: [service],
+                service: [<any>service],
             })
             assert(ddo)
 
@@ -186,13 +217,13 @@ describe("DDO", () => {
         it("should properly deserialize from serialized object", async () => {
 
             const ddoString = DDO.serialize(testDDO)
-            assert(ddoString)
+            assert.typeOf(ddoString, 'string')
 
             const ddo: DDO = DDO.deserialize(ddoString)
-            assert(ddo)
+            assert.instanceOf(ddo, DDO)
 
-            assert(ddo.id === testDDO.id)
-            assert(ddo.publicKey[0].publicKeyPem === testDDO.publicKey[0].publicKeyPem)
+            assert.equal(ddo.id, testDDO.id)
+            assert.equal(ddo.publicKey[0].publicKeyPem, testDDO.publicKey[0].publicKeyPem)
         })
 
         it("should properly deserialize from json file", async () => {
@@ -200,8 +231,57 @@ describe("DDO", () => {
             const ddo: DDO = DDO.deserialize(JSON.stringify(jsonDDO))
             assert(ddo)
 
-            assert(ddo.id === jsonDDO.id)
-            assert(ddo.publicKey[0].publicKeyPem === jsonDDO.publicKey[0].publicKeyPem)
+            assert.equal(ddo.id, jsonDDO.id)
+            assert.equal(ddo.publicKey[0].publicKeyPem, jsonDDO.publicKey[0].publicKeyPem)
+        })
+    })
+
+    describe("#getChecksum()", () => {
+        it("should properly generate a the checksum DDO", async () => {
+            const ddo = new DDO(testDDO)
+            const checksum = ddo.getChecksum()
+
+            assert.equal(checksum, "0x15f27a7a3c7b15d2b06dec7347c6b8da168adddd7df51a8ebbbe87b59b80049b")
+        })
+    })
+
+    describe("#generateProof()", () => {
+
+        const publicKey = `0x${'a'.repeat(40)}`
+        const signature = `0x${'a'.repeat(130)}`
+
+        it("should properly generate the proof", async () => {
+            const signTextSpy = spy.on(signatureHelpers, 'signText', () => signature)
+            const ddo = new DDO(testDDO)
+            const checksum = ddo.getChecksum()
+            const proof = await ddo.generateProof(publicKey)
+
+            assert.include(<any>proof, {
+                creator: publicKey,
+                type: 'DDOIntegritySignature',
+                signatureValue: signature,
+            })
+            expect(signTextSpy).to.have.been.called.with(checksum, publicKey)
+        })
+    })
+
+    describe("#addProof()", () => {
+
+        const publicKey = `0x${'a'.repeat(40)}`
+
+        it("should properly add the proof on the DDO", async () => {
+            const fakeProof = <any>{
+                creation: Date.now(),
+                creator: 'test',
+                type: 'test',
+                signaturValue: 'test'
+            }
+            const ddo = new DDO(testDDO)
+            const generateProofSpy = spy.on(ddo, 'generateProof', () => fakeProof)
+            await ddo.addProof(publicKey)
+
+            assert.equal(ddo.proof, fakeProof)
+            expect(generateProofSpy).to.have.been.called.with(publicKey)
         })
     })
 })

@@ -2,6 +2,8 @@ import { Authentication } from "./Authentication"
 import { PublicKey } from "./PublicKey"
 import { Service } from "./Service"
 import { Proof } from "./Proof"
+import Web3Provider from '../keeper/Web3Provider'
+import * as signatureHelpers from "../utils/SignatureHelpers"
 
 /**
  * DID Descriptor Object.
@@ -26,7 +28,7 @@ export class DDO {
     public static deserialize(ddoString: string): DDO {
         const ddo = JSON.parse(ddoString)
 
-        return ddo as DDO
+        return new DDO(ddo)
     }
 
     public "@context": string = "https://w3id.org/future-method/v1"
@@ -76,5 +78,60 @@ export class DDO {
         const service: Service = this.service.find((s) => s.type === serviceType)
 
         return service
+    }
+
+    /**
+     * Generate the checksum using the current content.
+     * @return {string[]} DDO checksum.
+     */
+    public getChecksum(): string {
+        const web3 = Web3Provider.getWeb3()
+        const {metadata} = this.findServiceByType('Metadata')
+        const {files, name, author, license} = metadata.base
+
+        const values = [
+            ...files
+                .map(({checksum}) => checksum)
+                .filter(_ => !!_),
+            name,
+            author,
+            license,
+            this.id,
+        ]
+
+        return web3.utils.sha3(values.join(''))
+    }
+
+    /**
+     * Generates proof using personal sing.
+     * @param  {string}         publicKey Public key to be used on personal sign.
+     * @param  {string}         password  Password if it's requirted.
+     * @return {Promise<Proof>}           Proof object.
+     */
+    public async generateProof(publicKey: string, password?: string): Promise<Proof> {
+
+        const checksum = this.getChecksum();
+
+        const signature = await signatureHelpers.signText(checksum, publicKey, password)
+
+        return {
+            created: (new Date()).toISOString(),
+            creator: publicKey,
+            type: "DDOIntegritySignature",
+            signatureValue: signature,
+        }
+    }
+
+    /**
+     * Generates and adds a proof using personal sing on the DDO.
+     * @param  {string}         publicKey Public key to be used on personal sign.
+     * @param  {string}         password  Password if it's requirted.
+     * @return {Promise<Proof>}           Proof object.
+     */
+    public async addProof(publicKey: string, password?: string): Promise<void> {
+        if (this.proof) {
+            throw new Error('Proof already exists')
+        }
+        this.proof = await this.generateProof(publicKey, password)
     }
 }

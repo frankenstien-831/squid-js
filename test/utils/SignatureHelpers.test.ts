@@ -10,12 +10,15 @@ use(spies);
 
 describe("SignatureHelpers", () => {
 
-    const publicKey = "0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e"
+    const publicKey = `0x${'a'.repeat(40)}`
     const text = "0123456789abcde"
     const signature = `0x${'a'.repeat(130)}`
 
     before(async () => {
         ConfigProvider.setConfig(config)
+    })
+    afterEach(() => {
+        spy.restore()
     })
 
     describe("#signText", () => {
@@ -24,9 +27,6 @@ describe("SignatureHelpers", () => {
         beforeEach(() => {
             const web3 = Web3Provider.getWeb3()
             personalSignSpy = spy.on(web3.eth.personal, 'sign', () => signature)
-        })
-        afterEach(() => {
-            spy.restore()
         })
 
         it("should sign a text as expected", async () => {
