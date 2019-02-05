@@ -22,7 +22,8 @@
     "release": "./node_modules/release-it/bin/release-it.js --src.tagName='v%s' --github.release --npm.publish --non-interactive",
     "release-minor": "./node_modules/release-it/bin/release-it.js minor --src.tagName='v%s' --github.release --npm.publish --non-interactive",
     "release-major": "./node_modules/release-it/bin/release-it.js major --src.tagName='v%s' --github.release --npm.publish --non-interactive",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "preinstall": "rm -rf node_modules/truffle-hdwallet-provider && mkdir -p .tmp && cd .tmp && (git clone https://github.com/Pedro-vk/truffle.git || true) && cd truffle/packages/truffle-hdwallet-provider && npm install && cd ../../../../ && npm install --save-dev .tmp/truffle/packages/truffle-hdwallet-provider"
   },
   "nyc": {
     "include": [
@@ -79,7 +80,6 @@
     "nyc": "^13.1.0",
     "rollup": "^1.1.0",
     "source-map-support": "^0.5.9",
-    "truffle-hdwallet-provider": "^1.0.2",
     "ts-node": "^7.0.1",
     "tslint": "^5.12.0",
     "typedoc": "^0.14.0",
