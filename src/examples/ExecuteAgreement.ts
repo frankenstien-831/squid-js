@@ -9,7 +9,7 @@ async function exec() {
     const ocean: Ocean = await Ocean.getInstance(config)
 
     const publisher: Account = (await ocean.getAccounts())[0]
-    publisher.setPassword("node0")
+    publisher.setPassword(process.env.ACCOUNT_PASSWORD)
     const consumer: Account = (await ocean.getAccounts())[1]
 
     const metaData: Partial<MetaData> = <any> {
