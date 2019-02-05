@@ -1,8 +1,6 @@
 import {assert} from "chai"
 import ConfigProvider from "../../src/ConfigProvider"
 import DIDRegistry from "../../src/keeper/contracts/DIDRegistry"
-import Web3Provider from "../../src/keeper/Web3Provider"
-import ValueType from "../../src/models/ValueType"
 import Account from "../../src/ocean/Account"
 import IdGenerator from "../../src/ocean/IdGenerator"
 import Ocean from "../../src/ocean/Ocean"
@@ -27,10 +25,8 @@ describe("DIDRegistry", () => {
         it("should register an attribute in a new did", async () => {
             const ownerAccount: Account = (await ocean.getAccounts())[0]
             const did = IdGenerator.generateId()
-            const providerKey = Web3Provider.getWeb3().utils.fromAscii("provider")
             const data = "my nice provider, is nice"
-            const receipt = await didRegistry.registerAttribute(did, ValueType.DID, providerKey,
-                data, ownerAccount.getId())
+            const receipt = await didRegistry.registerAttribute(did, `0123456789abcdef`, data, ownerAccount.getId())
             assert(receipt.status)
             assert(receipt.events.DIDAttributeRegistered)
         })
@@ -40,17 +36,13 @@ describe("DIDRegistry", () => {
             const did = IdGenerator.generateId()
             {
                 // register the first attribute
-                const providerKey = Web3Provider.getWeb3().utils.fromAscii("provider")
                 const data = "my nice provider, is nice"
-                await didRegistry.registerAttribute(did, ValueType.DID, providerKey,
-                    data, ownerAccount.getId())
+                await didRegistry.registerAttribute(did, "0123456789abcdef", data, ownerAccount.getId())
             }
             {
                 // register the second attribute with the same did
-                const providerKey = Web3Provider.getWeb3().utils.fromAscii("provider2")
                 const data = "asdsad"
-                const receipt = await didRegistry.registerAttribute(did, ValueType.DID, providerKey,
-                    data, ownerAccount.getId())
+                const receipt = await didRegistry.registerAttribute(did, "0123456789abcdef", data, ownerAccount.getId())
                 assert(receipt.status)
                 assert(receipt.events.DIDAttributeRegistered)
             }
@@ -63,10 +55,8 @@ describe("DIDRegistry", () => {
         it("should get the owner of a did properly", async () => {
             const ownerAccount: Account = (await ocean.getAccounts())[0]
             const did = IdGenerator.generateId()
-            const providerKey = Web3Provider.getWeb3().utils.fromAscii("provider")
             const data = "my nice provider, is nice"
-            await didRegistry.registerAttribute(did, ValueType.DID, providerKey,
-                data, ownerAccount.getId())
+            await didRegistry.registerAttribute(did, "0123456789abcdef", data, ownerAccount.getId())
 
             const owner = await didRegistry.getOwner(did)
 
@@ -85,10 +75,8 @@ describe("DIDRegistry", () => {
         it("should the block number of the last update of the did attribute", async () => {
             const ownerAccount: Account = (await ocean.getAccounts())[0]
             const did = IdGenerator.generateId()
-            const providerKey = Web3Provider.getWeb3().utils.fromAscii("provider")
             const data = "my nice provider, is nice"
-            await didRegistry.registerAttribute(did, ValueType.DID, providerKey,
-                data, ownerAccount.getId())
+            await didRegistry.registerAttribute(did, "0123456789abcdef", data, ownerAccount.getId())
 
             const updatedAt: number = await didRegistry.getUpdateAt(did)
 

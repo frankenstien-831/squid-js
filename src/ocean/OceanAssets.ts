@@ -8,7 +8,6 @@ import { Service } from "../ddo/Service"
 import ContractEvent from "../keeper/Event"
 import EventListener from "../keeper/EventListener"
 import Keeper from "../keeper/Keeper"
-import ValueType from "../models/ValueType"
 import SecretStoreProvider from "../secretstore/SecretStoreProvider"
 import Logger from "../utils/Logger"
 import Account from "./Account"
@@ -156,8 +155,7 @@ export default class OceanAssets {
 
         await didRegistry.registerAttribute(
             did.getId(),
-            ValueType.URL,
-            "Metadata",
+            ddo.getChecksum().substr(0, 32), // TODO: checksum
             serviceEndpoint,
             publisher.getId())
 

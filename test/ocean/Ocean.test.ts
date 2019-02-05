@@ -1,4 +1,6 @@
-import {assert} from "chai"
+import { assert, spy, use } from "chai"
+import * as spies from "chai-spies"
+
 import AquariusProvider from "../../src/aquarius/AquariusProvider"
 import SearchQuery from "../../src/aquarius/query/SearchQuery"
 import BrizoProvider from "../../src/brizo/BrizoProvider"
@@ -9,6 +11,7 @@ import Account from "../../src/ocean/Account"
 import Ocean from "../../src/ocean/Ocean"
 import ServiceAgreement from "../../src/ocean/ServiceAgreements/ServiceAgreement"
 import SecretStoreProvider from "../../src/secretstore/SecretStoreProvider"
+import * as signatureHelpers from "../../src/utils/SignatureHelpers"
 import WebServiceConnectorProvider from "../../src/utils/WebServiceConnectorProvider"
 import config from "../config"
 import TestContractHandler from "../keeper/TestContractHandler"
@@ -18,6 +21,8 @@ import SecretStoreMock from "../mocks/SecretStore.mock"
 import WebServiceConnectorMock from "../mocks/WebServiceConnector.mock"
 import { metadataMock } from "../testdata/MetaData"
 
+use(spies)
+
 let ocean: Ocean
 let accounts: Account[]
 let testPublisher: Account
@@ -25,6 +30,17 @@ let testPublisher: Account
 describe("Ocean", () => {
 
     const metadata = metadataMock
+
+    before(async () => {
+        ConfigProvider.setConfig(config)
+    })
+
+    beforeEach(async () => {
+        spy.on(signatureHelpers, "signText", () => `0x${"a".repeat(130)}`)
+    })
+    afterEach(() => {
+        spy.restore()
+    })
 
     before(async () => {
         ConfigProvider.setConfig(config)
@@ -58,6 +74,7 @@ describe("Ocean", () => {
         })
     })
 
+    // TODO: ensure if it should fail or not
     describe("#resolveDID()", () => {
         it("should resolve a did to a ddo", async () => {
             const ddo: DDO = await ocean.registerAsset(metadata, testPublisher)
@@ -69,6 +86,7 @@ describe("Ocean", () => {
         })
     })
 
+    // TODO: ensure if it should fail or not
     describe("#registerAsset()", () => {
         it("should register an asset", async () => {
             const ddo: DDO = await ocean.registerAsset(metadata, testPublisher)
