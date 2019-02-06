@@ -11,7 +11,7 @@ async function exec() {
     const publisher: Account = (await ocean.getAccounts())[1]
     const consumer: Account = (await ocean.getAccounts())[1]
 
-    const metaData: Partial<MetaData> = <any> {
+    const metaData: Partial<MetaData> = {
         base: {
             name: "Office Humidity",
             type: "dataset",
@@ -26,8 +26,15 @@ async function exec() {
             contentType: "Application/pdf",
             // tslint:disable-next-line
             workExample: "stationId,latitude,longitude,datetime,temperature,humidity423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68",
-            contentUrls: [
-                "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.pdf",
+            files: [
+                {
+                    url: "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip",
+                    checksum: "085340abffh21495345af97c6b0e761",
+                    contentLength: "12324",
+                },
+                {
+                    url: "https://testocnfiles.blob.core.windows.net/testfiles/testzkp2.zip",
+                },
             ],
             links: [
                 {sample1: "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-daily/"},

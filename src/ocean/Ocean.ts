@@ -181,7 +181,7 @@ export default class Ocean {
                 Logger.log("Awesome; got a AccessGranted Event. Let's download the asset files.")
                 const contentUrls = await SecretStoreProvider
                     .getSecretStore()
-                    .decryptDocument(d.getId(), metadataService.metadata.base.contentUrls[0])
+                    .decryptDocument(d.getId(), (metadataService as any).metadata.base.contentUrls[0])
                 const serviceUrl: string = accessService.serviceEndpoint
                 Logger.log("Consuming asset files using service url: ", serviceUrl)
                 const files = []

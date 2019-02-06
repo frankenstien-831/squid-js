@@ -14,9 +14,15 @@ export const metadataMock: MetaData = {
         compression: "zip",
         contentType: "text/csv",
         workExample: "423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68",
-        contentUrls: [
-            "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip",
-            "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip",
+        files: [
+            {
+                url: "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip",
+                checksum: "085340abffh21495345af97c6b0e761",
+                contentLength: "12324",
+            },
+            {
+                url: "https://testocnfiles.blob.core.windows.net/testfiles/testzkp2.zip",
+            },
         ],
         links: [
             {
@@ -34,7 +40,6 @@ export const metadataMock: MetaData = {
         inLanguage: "en",
         tags: "weather, uk, 2011, temperature, humidity",
         price: 10,
-        files: [],
         checksum: "",
     },
     curation: {

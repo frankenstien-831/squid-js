@@ -226,9 +226,7 @@ export default class ServiceAgreement extends OceanBase {
 
         await token.approve(paymentConditions.getAddress(), price, consumer.getId())
 
-        const lockPaymentReceipt =
-            await paymentConditions.lockPayment(this.getId(), assetId, price,
-                consumer.getId())
+        const lockPaymentReceipt = await paymentConditions.lockPayment(this.getId(), assetId, price, consumer.getId())
 
         return lockPaymentReceipt.status
     }

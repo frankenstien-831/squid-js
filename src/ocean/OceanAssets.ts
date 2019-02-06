@@ -144,8 +144,9 @@ export default class OceanAssets {
                         // Cleaning not needed information
                         base: {
                             ...metadata.base,
+                            contentUrls: [],
                             files: undefined,
-                        },
+                        } as any,
                     },
                 },
             ],
