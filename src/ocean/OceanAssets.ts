@@ -155,7 +155,7 @@ export default class OceanAssets {
 
         await didRegistry.registerAttribute(
             did.getId(),
-            ddo.getChecksum().substr(0, 32), // TODO: checksum
+            ddo.getChecksum(),
             serviceEndpoint,
             publisher.getId())
 

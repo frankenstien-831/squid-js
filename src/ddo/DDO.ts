@@ -100,7 +100,7 @@ export class DDO {
             this.id,
         ]
 
-        return web3.utils.sha3(values.join(""))
+        return web3.utils.sha3(values.join("")).substr(0, 32)
     }
 
     /**
