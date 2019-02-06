@@ -101,13 +101,6 @@ export class MetaDataBase {
     public workExample?: string
 
     /**
-     * List of content URLs resolving the Asset files.
-     * @type {string | string[]}
-     * @example "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip"
-     */
-    public contentUrls: string | string[]
-
-    /**
      * Mapping of links for data samples, or links to find out more information.
      * Links may be to either a URL or another Asset. We expect marketplaces to
      * converge on agreements of typical formats for linked data: The Ocean Protocol
@@ -159,7 +152,7 @@ export class MetaDataBase {
      * SHA3 hash of concatenated values: [list of all file checksums] + name + author + license + did
      * @type {string}
      */
-    public checksum: string
+    public checksum?: string
 
     public encryptedFiles?: any
 }

@@ -68,7 +68,7 @@ export default class OceanAssets {
 
         metadata.base.encryptedFiles = [
             await SecretStoreProvider.getSecretStore()
-                .encryptDocument(did.getId(), metadata.base.contentUrls),
+                .encryptDocument(did.getId(), metadata.base.files),
         ]
 
         const template = new Access()
@@ -141,6 +141,11 @@ export default class OceanAssets {
                         },
                         // Overwrites defaults
                         ...metadata,
+                        // Cleaning not needed information
+                        base: {
+                            ...metadata.base,
+                            files: undefined,
+                        },
                     },
                 },
             ],
@@ -157,7 +162,8 @@ export default class OceanAssets {
             did.getId(),
             ddo.getChecksum(),
             serviceEndpoint,
-            publisher.getId())
+            publisher.getId(),
+        )
 
         return storedDdo
     }
