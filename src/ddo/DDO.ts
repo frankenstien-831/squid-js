@@ -4,7 +4,7 @@ import * as signatureHelpers from "../utils/SignatureHelpers"
 import { Authentication } from "./Authentication"
 import { Proof } from "./Proof"
 import { PublicKey } from "./PublicKey"
-import { Service } from "./Service"
+import { Service, ServiceMetadata } from "./Service"
 
 /**
  * DID Descriptor Object.
@@ -89,7 +89,7 @@ export class DDO {
      */
     public getChecksum(): string {
         const web3 = Web3Provider.getWeb3()
-        const {metadata} = this.findServiceByType("Metadata")
+        const {metadata} = <ServiceMetadata>this.findServiceByType("Metadata")
         const {files, name, author, license} = metadata.base
 
         const values = [
@@ -128,7 +128,7 @@ export class DDO {
      * Generated and adds the checksum.
      */
     public addChecksum(): void {
-        const metadataService = this.findServiceByType("Metadata")
+        const metadataService = <ServiceMetadata>this.findServiceByType("Metadata")
         if (metadataService.metadata.base.checksum) {
             Logger.log("Checksum already exists")
             return

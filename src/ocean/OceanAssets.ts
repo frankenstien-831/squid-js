@@ -61,9 +61,6 @@ export default class OceanAssets {
         const brizo = BrizoProvider.getBrizo()
 
         const did: DID = DID.generate()
-        const accessServiceDefinitionId: string = "0"
-        const computeServiceDefintionId: string = "1"
-        const metadataServiceDefinitionId: string = "2"
 
         metadata.base.encryptedFiles = await SecretStoreProvider.getSecretStore()
             .encryptDocument(did.getId(), metadata.base.files)
@@ -75,6 +72,7 @@ export default class OceanAssets {
 
         const serviceEndpoint = aquarius.getServiceEndpoint(did)
 
+        let serviceDefinitionIdCount = 0
         // create ddo itself
         const ddo: DDO = new DDO({
             authentication: [{
@@ -96,7 +94,7 @@ export default class OceanAssets {
                     purchaseEndpoint: brizo.getPurchaseEndpoint(),
                     serviceEndpoint: brizo.getConsumeEndpoint(),
                     // the id of the service agreement?
-                    serviceDefinitionId: accessServiceDefinitionId,
+                    serviceDefinitionId: String(serviceDefinitionIdCount++),
                     // the id of the service agreement template
                     templateId: serviceAgreementTemplate.getId(),
                     serviceAgreementContract: {
@@ -118,14 +116,13 @@ export default class OceanAssets {
                 },
                 {
                     type: "Compute",
-                    serviceEndpoint: brizo.getComputeEndpoint(publisher.getId(),
-                        computeServiceDefintionId, "xxx", "xxx"),
-                    serviceDefinitionId: computeServiceDefintionId,
+                    serviceEndpoint: brizo.getComputeEndpoint(publisher.getId(), String(serviceDefinitionIdCount), "xxx", "xxx"),
+                    serviceDefinitionId: String(serviceDefinitionIdCount++),
                 },
                 {
                     type: "Metadata",
                     serviceEndpoint,
-                    serviceDefinitionId: metadataServiceDefinitionId,
+                    serviceDefinitionId: String(serviceDefinitionIdCount++),
                     metadata: {
                         // Default values
                         curation: {
