@@ -8,14 +8,27 @@ export default class SecretStoreProvider {
         SecretStoreProvider.secretStore = secretStore
     }
 
-    public static getSecretStore(): SecretStore {
+    public static getSecretStore(url?: string): SecretStore {
+        if (!url) {
+            if (!SecretStoreProvider.secretStore) {
+                SecretStoreProvider.secretStore = new SecretStore(ConfigProvider.getConfig())
+            }
 
-        if (!SecretStoreProvider.secretStore) {
-            SecretStoreProvider.secretStore = new SecretStore(ConfigProvider.getConfig())
+            return SecretStoreProvider.secretStore
+        } else {
+            if (!SecretStoreProvider.secretStoreByUrl.get(url)) {
+                SecretStoreProvider.secretStoreByUrl.set(url,
+                    new SecretStore({
+                        ...ConfigProvider.getConfig(),
+                        secretStoreUri: url,
+                    }),
+                )
+            }
+
+            return SecretStoreProvider.secretStoreByUrl.get(url)
         }
-
-        return SecretStoreProvider.secretStore
     }
 
     private static secretStore: SecretStore
+    private static secretStoreByUrl = new Map<string, SecretStore>()
 }

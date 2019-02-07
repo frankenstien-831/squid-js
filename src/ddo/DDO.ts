@@ -78,7 +78,7 @@ export class DDO {
             throw new Error("serviceType not set")
         }
 
-        return <Service<T>>this.service.find((s) => s.type === serviceType)
+        return this.service.find((s) => s.type === serviceType) as Service<T>
     }
 
     /**

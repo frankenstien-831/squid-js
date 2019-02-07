@@ -4,7 +4,7 @@ import BrizoProvider from "../brizo/BrizoProvider"
 import { Condition } from "../ddo/Condition"
 import { DDO } from "../ddo/DDO"
 import { MetaData } from "../ddo/MetaData"
-import { Service } from "../ddo/Service"
+import { Service, ServiceAuthorization } from "../ddo/Service"
 import ContractEvent from "../keeper/Event"
 import EventListener from "../keeper/EventListener"
 import Keeper from "../keeper/Keeper"
@@ -62,8 +62,10 @@ export default class OceanAssets {
 
         const did: DID = DID.generate()
 
-        metadata.base.encryptedFiles = await SecretStoreProvider.getSecretStore()
-            .encryptDocument(did.getId(), metadata.base.files)
+        const authorizationService = (services.find(({type}) => type === "Authorization") || {}) as ServiceAuthorization
+        const secretStoreUrl = authorizationService.service === "SecretStore" && authorizationService.serviceEndpoint
+
+        const encryptedFiles = await SecretStoreProvider.getSecretStore(secretStoreUrl).encryptDocument(did.getId(), metadata.base.files)
 
         const template = new Access()
         const serviceAgreementTemplate = new ServiceAgreementTemplate(template)
@@ -88,7 +90,7 @@ export default class OceanAssets {
                     publicKeyBase58: await publisher.getPublicKey(),
                 },
             ],
-            service: <Service[]>[
+            service: [
                 {
                     type: template.templateName,
                     purchaseEndpoint: brizo.getPurchaseEndpoint(),
@@ -138,12 +140,15 @@ export default class OceanAssets {
                         // Cleaning not needed information
                         base: {
                             ...metadata.base,
+                            contentUrls: [],
+                            encryptedFiles,
                             files: undefined,
                         } as any,
                     },
                 },
-                ...services,
-            ],
+                ...services
+                    .map((_) => ({..._, serviceDefinitionId: String(serviceDefinitionIdCount++)})),
+            ] as Service[],
         })
 
         ddo.addChecksum()
