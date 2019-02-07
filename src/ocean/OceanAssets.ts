@@ -55,7 +55,7 @@ export default class OceanAssets {
      * @param  {Account} publisher Publicher account.
      * @return {Promise<DDO>}
      */
-    public async create(metadata: MetaData, publisher: Account, services?: Service[]): Promise<DDO> {
+    public async create(metadata: MetaData, publisher: Account, services: Service[] = []): Promise<DDO> {
         const {didRegistry} = await Keeper.getInstance()
         const aquarius = AquariusProvider.getAquarius()
         const brizo = BrizoProvider.getBrizo()
@@ -143,6 +143,7 @@ export default class OceanAssets {
                         } as any,
                     },
                 },
+                ...services,
             ],
         })
 
