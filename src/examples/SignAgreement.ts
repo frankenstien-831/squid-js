@@ -1,6 +1,5 @@
 import { DDO } from "../ddo/DDO"
 import { MetaData } from "../ddo/MetaData"
-import { Service } from "../ddo/Service"
 import {Account, Logger, Ocean} from "../squid"
 import config from "./config"
 import {runner} from "./runner"
@@ -69,7 +68,7 @@ async function exec() {
     const ddo: DDO = await ocean.registerAsset(metaData, publisher)
     Logger.log("did", ddo.id)
 
-    const accessService: Service = ddo.findServiceByType("Access")
+    const accessService = ddo.findServiceByType("Access")
 
     await consumer.requestTokens(metaData.base.price)
 

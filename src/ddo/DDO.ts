@@ -4,7 +4,7 @@ import * as signatureHelpers from "../utils/SignatureHelpers"
 import { Authentication } from "./Authentication"
 import { Proof } from "./Proof"
 import { PublicKey } from "./PublicKey"
-import { Service, ServiceMetadata } from "./Service"
+import { Service } from "./Service"
 
 /**
  * DID Descriptor Object.
@@ -73,14 +73,12 @@ export class DDO {
      * @param  {string} serviceType Service type.
      * @return {Service} Service.
      */
-    public findServiceByType(serviceType: string): Service {
+    public findServiceByType<T extends string>(serviceType: T): Service<T> {
         if (!serviceType) {
             throw new Error("serviceType not set")
         }
 
-        const service: Service = this.service.find((s) => s.type === serviceType)
-
-        return service
+        return <Service<T>>this.service.find((s) => s.type === serviceType)
     }
 
     /**
@@ -89,7 +87,7 @@ export class DDO {
      */
     public getChecksum(): string {
         const web3 = Web3Provider.getWeb3()
-        const {metadata} = <ServiceMetadata>this.findServiceByType("Metadata")
+        const {metadata} = this.findServiceByType("Metadata")
         const {files, name, author, license} = metadata.base
 
         const values = [
@@ -128,7 +126,7 @@ export class DDO {
      * Generated and adds the checksum.
      */
     public addChecksum(): void {
-        const metadataService = <ServiceMetadata>this.findServiceByType("Metadata")
+        const metadataService = this.findServiceByType("Metadata")
         if (metadataService.metadata.base.checksum) {
             Logger.log("Checksum already exists")
             return

@@ -88,7 +88,7 @@ export default class OceanAssets {
                     publicKeyBase58: await publisher.getPublicKey(),
                 },
             ],
-            service: [
+            service: <Service[]>[
                 {
                     type: template.templateName,
                     purchaseEndpoint: brizo.getPurchaseEndpoint(),
@@ -138,7 +138,6 @@ export default class OceanAssets {
                         // Cleaning not needed information
                         base: {
                             ...metadata.base,
-                            contentUrls: [],
                             files: undefined,
                         } as any,
                     },
@@ -185,8 +184,8 @@ export default class OceanAssets {
             await ServiceAgreement.signServiceAgreement(
                 ddo, serviceDefinitionId, serviceAgreementId, consumer)
 
-            const accessService: Service = ddo.findServiceByType("Access")
-            const metadataService: Service = ddo.findServiceByType("Metadata")
+            const accessService =  ddo.findServiceByType("Access")
+            const metadataService =  ddo.findServiceByType("Metadata")
 
             const price = metadataService.metadata.base.price
             const balance = await consumer.getOceanBalance()

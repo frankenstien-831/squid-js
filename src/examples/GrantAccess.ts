@@ -1,6 +1,5 @@
 import { DDO } from "../ddo/DDO"
 import { MetaData } from "../ddo/MetaData"
-import { Service } from "../ddo/Service"
 import DID from "../ocean/DID"
 import {Account, Logger, Ocean, ServiceAgreement} from "../squid"
 import config from "./config"
@@ -60,7 +59,7 @@ async function exec() {
     Logger.log("ServiceAgreement Id:", serviceAgreementSignatureResult.serviceAgreementId)
     Logger.log("ServiceAgreement Signature:", serviceAgreementSignatureResult.serviceAgreementSignature)
 
-    const service: Service = ddo.findServiceByType("Access")
+    const service = ddo.findServiceByType("Access")
 
     const serviceAgreement: ServiceAgreement = await ocean.executeServiceAgreement(
         ddo.id,

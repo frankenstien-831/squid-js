@@ -20,11 +20,14 @@ export interface ServiceMetadata extends ServiceCommon {
 
 export interface ServiceBase extends ServiceCommon {
     templateId?: string
-    serviceEndpoint: string
     purchaseEndpoint?: string
     description?: string
     serviceAgreementContract?: Contract
     conditions?: Condition[]
 }
 
-export type Service = ServiceBase | ServiceAuthorization | ServiceMetadata
+export type Service<T extends string = "default"> =
+    T extends "Authorization" ? ServiceAuthorization :
+    T extends "Metadata" ? ServiceMetadata :
+    T extends "default" ? ServiceBase :
+    ServiceBase

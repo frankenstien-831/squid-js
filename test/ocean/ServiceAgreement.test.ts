@@ -22,7 +22,7 @@ let publisherAccount: Account
 let consumerAccount: Account
 
 let accessService: Service
-let metaDataService: Service
+let metaDataService: Service<"Metadata">
 
 const did: DID = DID.generate()
 
@@ -49,12 +49,12 @@ describe("ServiceAgreement", () => {
             serviceDefinitionId: "0",
             templateId: serviceAgreementTemplate.getId(),
             conditions,
-        } as Service
+        }
 
         metaDataService = {
-            type: "MetaData",
+            type: "Metadata",
             metadata,
-        } as Service
+        }
     })
 
     describe("#signServiceAgreement()", () => {
