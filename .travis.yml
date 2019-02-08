@@ -21,7 +21,7 @@ before_script:
   - ganache-cli --port 18545 > ganache-cli.log &
   - git clone https://github.com/oceanprotocol/barge
   - cd barge
-  - bash -x start_ocean.sh --latest --no-brizo --no-pleuston --local-nile-node 2>&1 > start_ocean.log &
+  - bash -x start_ocean.sh --latest --no-brizo --no-pleuston --local-spree-node 2>&1 > start_ocean.log &
   - cd ..
 
 script:
@@ -29,6 +29,7 @@ script:
   - npm run report-coverage
   - npm run build
   - npm run doc
+  - ./scripts/wait_for_migration_and_extract_keeper_artifacts.sh
   - npm run integration
 
 after_script:
