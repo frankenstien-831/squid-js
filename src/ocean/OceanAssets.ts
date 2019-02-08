@@ -66,10 +66,8 @@ export default class OceanAssets {
         const computeServiceDefintionId: string = "1"
         const metadataServiceDefinitionId: string = "2"
 
-        metadata.base.encryptedFiles = [
-            await SecretStoreProvider.getSecretStore()
-                .encryptDocument(did.getId(), metadata.base.files),
-        ]
+        metadata.base.encryptedFiles = await SecretStoreProvider.getSecretStore()
+            .encryptDocument(did.getId(), metadata.base.files)
 
         const template = new Access()
         const serviceAgreementTemplate = new ServiceAgreementTemplate(template)
