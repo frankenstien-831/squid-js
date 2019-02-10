@@ -128,7 +128,7 @@ export default class Ocean {
         did: string,
         serviceDefinitionId: string,
         consumer: Account,
-    ): Promise<any> {
+    ) {
         return await this.assets.order(did, serviceDefinitionId, consumer)
     }
 
