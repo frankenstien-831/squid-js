@@ -21,9 +21,9 @@ describe("Buy Asset", () => {
         ocean = await Ocean.getInstance(config)
 
         // Accounts
-        publisher = (await ocean.getAccounts())[0]
+        publisher = (await ocean.accounts.list())[0]
         publisher.setPassword(process.env.ACCOUNT_PASSWORD)
-        consumer = (await ocean.getAccounts())[1]
+        consumer = (await ocean.accounts.list())[1]
 
         // Data
         metadata = {
@@ -64,7 +64,7 @@ describe("Buy Asset", () => {
     })
 
     it("should regiester a asset", async () => {
-        ddo = await ocean.registerAsset(metadata as any, publisher)
+        ddo = await ocean.assets.create(metadata as any, publisher)
         did = DID.parse(ddo.id)
 
         assert.isDefined(ddo, "Register has not returned a DDO")
@@ -83,7 +83,7 @@ describe("Buy Asset", () => {
     it("should sign the service agreement", async () => {
         const accessService = ddo.findServiceByType("Access")
 
-        serviceAgreementSignatureResult = await ocean.signServiceAgreement(ddo.id, accessService.serviceDefinitionId, consumer)
+        serviceAgreementSignatureResult = await ocean.assets.order(ddo.id, accessService.serviceDefinitionId, consumer)
 
         const {serviceAgreementId, serviceAgreementSignature} = serviceAgreementSignatureResult
         assert.match(serviceAgreementId, /^[a-f0-9]{64}$/, "Service agreement ID seems not valid")
@@ -93,7 +93,7 @@ describe("Buy Asset", () => {
     it("should execute the service agreement", async () => {
         const accessService = ddo.findServiceByType("Access")
 
-        serviceAgreement = await ocean.executeServiceAgreement(
+        serviceAgreement = await ocean.agreements.create(
             ddo.id,
             accessService.serviceDefinitionId,
             serviceAgreementSignatureResult.serviceAgreementId,
