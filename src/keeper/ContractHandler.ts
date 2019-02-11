@@ -41,8 +41,6 @@ export default class ContractHandler {
         const contract = new web3.eth.Contract(artifact.abi, artifact.address)
         if (ConfigProvider.getConfig().verbose) {
             Logger.log("Getting instance of", what, "from", where, "at address", artifact.address)
-        } else {
-            Logger.log("Loaded", what, "from", where)
         }
         ContractHandler.contracts.set(what, contract)
         return ContractHandler.contracts.get(what)

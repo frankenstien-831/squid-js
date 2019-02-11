@@ -205,7 +205,7 @@ export default class OceanAssets {
 
             event.listenOnce(async (data) => {
 
-                const sa: ServiceAgreement = new ServiceAgreement(data.returnValues.serviceAgreementId)
+                const sa: ServiceAgreement = new ServiceAgreement(data.returnValues.agreementId)
                 await sa.payAsset(
                     d.getId(),
                     metadataService.metadata.base.price,

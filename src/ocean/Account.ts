@@ -10,8 +10,6 @@ import OceanBase from "./OceanBase"
  * Account information.
  */
 export default class Account extends OceanBase {
-    private balance: Balance
-
     private password?: string
 
     /**
@@ -59,15 +57,10 @@ export default class Account extends OceanBase {
      * @return {Promise<Balance>}
      */
     public async getBalance(): Promise<Balance> {
-
-        if (!this.balance) {
-            this.balance = {
-                eth: await this.getEtherBalance(),
-                ocn: await this.getOceanBalance(),
-            } as Balance
+        return {
+            eth: await this.getEtherBalance(),
+            ocn: await this.getOceanBalance(),
         }
-
-        return this.balance
     }
 
     /**
