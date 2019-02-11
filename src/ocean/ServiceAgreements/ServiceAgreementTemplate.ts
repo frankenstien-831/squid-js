@@ -51,7 +51,7 @@ export default class ServiceAgreementTemplate extends OceanBase {
             return false
         }
 
-        if (!owner.getId().startsWith("0x0")) {
+        if (!owner.getId().startsWith("0x00000")) {
             Logger.error(`Template with id "${this.template.id}" already registered by someone else.`)
             return false
         }

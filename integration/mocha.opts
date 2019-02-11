@@ -3,4 +3,4 @@
 --full-trace
 --exit
 --timeout 300000
-integration/**/*.test.ts
+integration/ocean/RegisterServiceAgreementTemplates.test.ts integration/**/*.test.ts
