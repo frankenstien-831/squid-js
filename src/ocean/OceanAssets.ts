@@ -1,5 +1,5 @@
 import AquariusProvider from "../aquarius/AquariusProvider"
-import SearchQuery from "../aquarius/query/SearchQuery"
+import { SearchQuery } from "../aquarius/query/SearchQuery"
 import BrizoProvider from "../brizo/BrizoProvider"
 import { Condition } from "../ddo/Condition"
 import { DDO } from "../ddo/DDO"
@@ -230,7 +230,7 @@ export default class OceanAssets {
      * @return {Promise<DDO[]>}
      */
     public async query(query: SearchQuery): Promise<DDO[]> {
-        return AquariusProvider.getAquarius().queryMetadata(query)
+        return AquariusProvider.getAquarius().queryMetadataByText(query)
     }
 
     /**

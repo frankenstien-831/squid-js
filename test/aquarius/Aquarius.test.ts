@@ -1,6 +1,6 @@
 import * as assert from "assert"
 import Aquarius from "../../src/aquarius/Aquarius"
-import SearchQuery from "../../src/aquarius/query/SearchQuery"
+import { SearchQuery } from "../../src/aquarius/query/SearchQuery"
 import { DDO } from "../../src/ddo/DDO"
 import DID from "../../src/ocean/DID"
 import WebServiceConnectorProvider from "../../src/utils/WebServiceConnectorProvider"

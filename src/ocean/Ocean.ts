@@ -5,7 +5,7 @@ import OceanAgreements from "./OceanAgreements"
 import OceanAssets from "./OceanAssets"
 
 import AquariusProvider from "../aquarius/AquariusProvider"
-import SearchQuery from "../aquarius/query/SearchQuery"
+import { SearchQuery } from "../aquarius/query/SearchQuery"
 import BrizoProvider from "../brizo/BrizoProvider"
 import ConfigProvider from "../ConfigProvider"
 import { DDO } from "../ddo/DDO"
@@ -175,7 +175,9 @@ export default class Ocean {
 
         const accessEvent: ContractEvent = EventListener.subscribe(
             accessService.conditions[1].contractName,
-            accessService.conditions[1].events[1].name, {})
+            accessService.conditions[1].events[1].name,
+            {},
+        )
         const filesPromise = new Promise((resolve) => {
             accessEvent.listenOnce(async () => {
                 Logger.log("Awesome; got a AccessGranted Event. Let's download the asset files.")

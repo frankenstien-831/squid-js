@@ -2,7 +2,7 @@ import { assert, spy, use } from "chai"
 import * as spies from "chai-spies"
 
 import AquariusProvider from "../../src/aquarius/AquariusProvider"
-import SearchQuery from "../../src/aquarius/query/SearchQuery"
+import { SearchQuery } from "../../src/aquarius/query/SearchQuery"
 import BrizoProvider from "../../src/brizo/BrizoProvider"
 import ConfigProvider from "../../src/ConfigProvider"
 import { DDO } from "../../src/ddo/DDO"

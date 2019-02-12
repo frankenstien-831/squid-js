@@ -4,7 +4,7 @@ import Config from "../models/Config"
 import DID from "../ocean/DID"
 import Logger from "../utils/Logger"
 import WebServiceConnectorProvider from "../utils/WebServiceConnectorProvider"
-import SearchQuery from "./query/SearchQuery"
+import { SearchQuery } from "./query/SearchQuery"
 
 const apiPath = "/api/v1/aquarius/assets/ddo"
 
