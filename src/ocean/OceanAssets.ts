@@ -4,18 +4,14 @@ import BrizoProvider from "../brizo/BrizoProvider"
 import { Condition } from "../ddo/Condition"
 import { DDO } from "../ddo/DDO"
 import { MetaData } from "../ddo/MetaData"
-import { Service, ServiceAuthorization } from "../ddo/Service"
-import ContractEvent from "../keeper/Event"
-import EventListener from "../keeper/EventListener"
+import { Service } from "../ddo/Service"
 import Keeper from "../keeper/Keeper"
 import SecretStoreProvider from "../secretstore/SecretStoreProvider"
 import Account from "./Account"
 import DID from "./DID"
-import IdGenerator from "./IdGenerator"
-import ServiceAgreement from "./ServiceAgreements/ServiceAgreement"
 import ServiceAgreementTemplate from "./ServiceAgreements/ServiceAgreementTemplate"
 import Access from "./ServiceAgreements/Templates/Access"
-import ConfigProvider from "../ConfigProvider"
+import OceanAgreements from "./OceanAgreements"
 
 /**
  * Assets submodule of Ocean Protocol.
@@ -182,7 +178,8 @@ export default class OceanAssets {
     }
 
     /**
-     * Purchases a service agreement by DID.
+     * Start the purchase/order of an asset's service. Starts by signing the service agreement
+     * then sends the request to the publisher via the service endpoint (Brizo http service).
      * @param  {string} did Decentralized ID.
      * @param  {string} serviceDefinitionId Service definition ID.
      * @param  {Account} consumer Consumer account.
@@ -194,43 +191,12 @@ export default class OceanAssets {
         consumer: Account,
     ): Promise<string> {
 
-        const d: DID = DID.parse(did as string)
-        const ddo = await AquariusProvider.getAquarius().retrieveDDO(d)
-        const serviceAgreementId: string = IdGenerator.generateId()
+        const oceanAreements = await OceanAgreements.getInstance()
 
-        try {
-            await ServiceAgreement.signServiceAgreement(
-                ddo, serviceDefinitionId, serviceAgreementId, consumer)
+        const {agreementId, signature} = await oceanAreements.prepare(did, serviceDefinitionId, consumer)
+        await oceanAreements.send(did, agreementId, serviceDefinitionId, signature, consumer)
 
-            const accessService =  ddo.findServiceByType("Access")
-            const metadataService =  ddo.findServiceByType("Metadata")
-
-            const price = metadataService.metadata.base.price
-            const balance = await consumer.getOceanBalance()
-            if (balance < price) {
-                throw new Error(`Not enough ocean tokens! Should have ${price} but has ${balance}`)
-            }
-
-            const event: ContractEvent = EventListener.subscribe(
-                accessService.serviceAgreementContract.contractName,
-                accessService.serviceAgreementContract.events[0].name, {
-                    serviceAgreementId,
-                })
-
-            event.listenOnce(async (data) => {
-                const sa: ServiceAgreement = new ServiceAgreement(data.returnValues.agreementId)
-                await sa.payAsset(
-                    d.getId(),
-                    metadataService.metadata.base.price,
-                    consumer,
-                )
-            })
-
-            return serviceAgreementId
-
-        } catch (err) {
-            throw new Error("Signing ServiceAgreement failed: " + err)
-        }
+        return agreementId
     }
 
     /**
