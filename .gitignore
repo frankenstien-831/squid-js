@@ -5,5 +5,3 @@ coverage/
 doc/
 test/**/*.js
 src/**/*.js
-
-\.tmp/
