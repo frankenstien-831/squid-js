@@ -172,20 +172,20 @@ export default class OceanAssets {
      * @param  {string} did Decentralized ID.
      * @param  {string} serviceDefinitionId Service definition ID.
      * @param  {Account} consumer Consumer account.
-     * @return {Promise<{serviceAgreementId: string, serviceAgreementSignature: string}>}
+     * @return {Promise<string>} Returns Agreement ID
      */
     public async order(
         did: string,
         serviceDefinitionId: string,
         consumer: Account,
-    ): Promise<{serviceAgreementId: string, serviceAgreementSignature: string}> {
+    ): Promise<string> {
 
         const d: DID = DID.parse(did as string)
         const ddo = await AquariusProvider.getAquarius().retrieveDDO(d)
         const serviceAgreementId: string = IdGenerator.generateId()
 
         try {
-            const serviceAgreementSignature: string = await ServiceAgreement.signServiceAgreement(
+            await ServiceAgreement.signServiceAgreement(
                 ddo, serviceDefinitionId, serviceAgreementId, consumer)
 
             const accessService: Service = ddo.findServiceByType("Access")
@@ -204,23 +204,18 @@ export default class OceanAssets {
                 })
 
             event.listenOnce(async (data) => {
-
                 const sa: ServiceAgreement = new ServiceAgreement(data.returnValues.agreementId)
                 await sa.payAsset(
                     d.getId(),
                     metadataService.metadata.base.price,
                     consumer,
                 )
-                Logger.log("Completed asset payment, now access should be granted.")
             })
 
-            return {
-                serviceAgreementId,
-                serviceAgreementSignature,
-            }
+            return serviceAgreementId
 
         } catch (err) {
-            Logger.error("Signing ServiceAgreement failed!", err)
+            throw new Error("Signing ServiceAgreement failed: " + err)
         }
     }
 

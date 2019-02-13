@@ -14,7 +14,7 @@ describe("Buy Asset", () => {
 
     let ddo: DDO
     let did: DID
-    let serviceAgreementSignatureResult: {serviceAgreementId: string, serviceAgreementSignature: string}
+    let agreementId: string
     let serviceAgreement: ServiceAgreement
 
     before(async () => {
@@ -83,11 +83,9 @@ describe("Buy Asset", () => {
     it("should sign the service agreement", async () => {
         const accessService = ddo.findServiceByType("Access")
 
-        serviceAgreementSignatureResult = await ocean.assets.order(ddo.id, accessService.serviceDefinitionId, consumer)
+        agreementId = await ocean.assets.order(ddo.id, accessService.serviceDefinitionId, consumer)
 
-        const {serviceAgreementId, serviceAgreementSignature} = serviceAgreementSignatureResult
-        assert.match(serviceAgreementId, /^[a-f0-9]{64}$/, "Service agreement ID seems not valid")
-        assert.match(serviceAgreementSignature, /^0x[a-f0-9]{130}$/, "Service agreement signature seems not valid")
+        assert.match(agreementId, /^[a-f0-9]{64}$/, "Service agreement ID seems not valid")
     })
 
     it("should execute the service agreement", async () => {
