@@ -116,20 +116,20 @@ export default class Ocean {
 
     /**
      * Signs a service agreement by DID.
-     * @deprecated Replace by [Ocean.assets.order]{@link #OceanAssets.order}
+     * @deprecated Replace by [Ocean.agreement.prepare]{@link #OceanAgreement.prepare}
      * @param  {string} did Decentralized ID.
      * @param  {string} serviceDefinitionId Service definition ID.
      * @param  {Account} consumer Consumer account.
      * @return {Promise<any>}
      *
      */
-    @deprecated("OceanAssets.order")
+    @deprecated("OceanAgreement.prepare")
     public async signServiceAgreement(
         did: string,
         serviceDefinitionId: string,
         consumer: Account,
     ) {
-        return await this.assets.order(did, serviceDefinitionId, consumer)
+        return await this.agreements.prepare(did, serviceDefinitionId, consumer)
     }
 
     /**

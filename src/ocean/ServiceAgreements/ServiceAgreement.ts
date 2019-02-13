@@ -12,10 +12,12 @@ import OceanBase from "../OceanBase"
 
 export default class ServiceAgreement extends OceanBase {
 
-    public static async signServiceAgreement(ddo: DDO,
-                                             serviceDefinitionId: string,
-                                             serviceAgreementId: string,
-                                             consumer: Account): Promise<string> {
+    public static async signServiceAgreement(
+        ddo: DDO,
+        serviceDefinitionId: string,
+        serviceAgreementId: string,
+        consumer: Account,
+    ): Promise<string> {
 
         if (ConfigProvider.getConfig().verbose) {
             Logger.log("Signing SA with serviceAgreementId", serviceAgreementId)
@@ -36,13 +38,15 @@ export default class ServiceAgreement extends OceanBase {
         return serviceAgreementHashSignature
     }
 
-    public static async executeServiceAgreement(did: DID,
-                                                ddo: DDO,
-                                                serviceDefinitionId: string,
-                                                serviceAgreementId: string,
-                                                serviceAgreementHashSignature: string,
-                                                consumer: Account,
-                                                publisher: Account): Promise<ServiceAgreement> {
+    public static async executeServiceAgreement(
+        did: DID,
+        ddo: DDO,
+        serviceDefinitionId: string,
+        serviceAgreementId: string,
+        serviceAgreementHashSignature: string,
+        consumer: Account,
+        publisher: Account,
+    ): Promise<ServiceAgreement> {
 
         if (ConfigProvider.getConfig().verbose) {
             Logger.log("Executing SA with serviceAgreementId", serviceAgreementId)

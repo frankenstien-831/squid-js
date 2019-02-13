@@ -2,6 +2,10 @@ import AquariusProvider from "../aquarius/AquariusProvider"
 import Account from "./Account"
 import DID from "./DID"
 import ServiceAgreement from "./ServiceAgreements/ServiceAgreement"
+import IdGenerator from "./IdGenerator"
+import BrizoProvider from "../brizo/BrizoProvider"
+
+export type agreementPreparionResult = {agreementId: string, signature: string}
 
 /**
  * Agreements submodule of Ocean Protocol.
@@ -27,20 +31,71 @@ export default class OceanAgreements {
     private static instance: OceanAgreements = null
 
     /**
-     * Executes a service agreement.
+     * Creates a consumer signature for the specified asset service.
      * @param  {string} did Decentralized ID.
      * @param  {string} serviceDefinitionId Service definition ID.
-     * @param  {string} serviceAgreementId Service agreement ID.
-     * @param  {string} serviceAgreementSignature Service agreement signature.
+     * @param  {Account} consumer Consumer account.
+     * @return {Promise<agreementPreparionResult>} Agreement ID and signaturee.
+     */
+    public async prepare(
+        did: string,
+        serviceDefinitionId: string,
+        consumer: Account,
+    ): Promise<agreementPreparionResult> {
+
+        const d: DID = DID.parse(did as string)
+        const ddo = await AquariusProvider.getAquarius().retrieveDDO(d)
+        const agreementId: string = IdGenerator.generateId()
+
+        const signature = await ServiceAgreement.signServiceAgreement(ddo, serviceDefinitionId, agreementId, consumer)
+
+        return {agreementId, signature}
+    }
+
+
+    /**
+     * Submit a service agreement to the publisher to create the agreement on-chain.
+     * @param  {string} did Decentralized ID.
+     * @param  {string} serviceDefinitionId Service definition ID.
+     * @param  {Account} consumer Consumer account.
+     * @return {Promise<void>}
+     */
+    public async send(
+        did: string,
+        agreementId: string,
+        serviceDefinitionId: string,
+        signature: string,
+        consumer: Account,
+    ): Promise<void> {
+
+        await BrizoProvider
+            .getBrizo()
+            .initializeServiceAgreement(
+                did,
+                agreementId,
+                serviceDefinitionId,
+                signature,
+                consumer.getId(),
+            )
+    }
+
+    /**
+     * Create a service agreement on-chain. This should be called by the publisher of the asset.
+     * Consumer signature will be verified on-chain, but it is recommended to verify the signature
+     * in this method before submitting on-chain.
+     * @param  {string} did Decentralized ID.
+     * @param  {string} agreementId Service agreement ID.
+     * @param  {string} serviceDefinitionId Service definition ID.
+     * @param  {string} signature Service agreement signature.
      * @param  {Account} consumer Consumer account.
      * @param  {Account} publisher Publisher account.
      * @return {Promise<ServiceAgreement>}
      */
     public async create(
         did: string,
+        agreementId: string,
         serviceDefinitionId: string,
-        serviceAgreementId: string,
-        serviceAgreementSignature: string,
+        signature: string,
         consumer: Account,
         publisher: Account,
     ): Promise<ServiceAgreement> {
@@ -51,9 +106,9 @@ export default class OceanAgreements {
             .executeServiceAgreement(
                 d,
                 ddo,
+                agreementId,
                 serviceDefinitionId,
-                serviceAgreementId,
-                serviceAgreementSignature,
+                signature,
                 consumer,
                 publisher)
 

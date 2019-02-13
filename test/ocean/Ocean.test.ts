@@ -9,7 +9,6 @@ import { DDO } from "../../src/ddo/DDO"
 import { Service } from "../../src/ddo/Service"
 import Account from "../../src/ocean/Account"
 import Ocean from "../../src/ocean/Ocean"
-import ServiceAgreement from "../../src/ocean/ServiceAgreements/ServiceAgreement"
 import SecretStoreProvider from "../../src/secretstore/SecretStoreProvider"
 import * as signatureHelpers from "../../src/utils/SignatureHelpers"
 import WebServiceConnectorProvider from "../../src/utils/WebServiceConnectorProvider"
@@ -139,36 +138,13 @@ describe("Ocean", () => {
 
             await consumer.requestTokens(metadata.base.price)
 
-            const signServiceAgreementResult: any = await ocean.signServiceAgreement(ddo.id,
-                service.serviceDefinitionId, consumer)
+            const signServiceAgreementResult: any = await ocean.signServiceAgreement(ddo.id, service.serviceDefinitionId, consumer)
 
             assert(signServiceAgreementResult)
-            assert(signServiceAgreementResult.serviceAgreementId, "no serviceAgreementId")
-            assert(signServiceAgreementResult.serviceAgreementSignature, "no serviceAgreementSignature")
-            assert(signServiceAgreementResult.serviceAgreementSignature.startsWith("0x"))
-            assert(signServiceAgreementResult.serviceAgreementSignature.length === 132)
-        })
-    })
-
-    describe("#executeServiceAgreement()", () => {
-        it("should execute a service agreement", async () => {
-            const publisher = accounts[0]
-            const consumer = accounts[1]
-
-            const ddo: DDO = await ocean.registerAsset(metadata, publisher)
-            const service: Service = ddo.findServiceByType("Access")
-
-            // @ts-ignore
-            WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(ddo))
-
-            const signServiceAgreementResult: any = await ocean.signServiceAgreement(ddo.id,
-                service.serviceDefinitionId, consumer)
-
-            const serviceAgreement: ServiceAgreement = await ocean.executeServiceAgreement(ddo.id,
-                service.serviceDefinitionId, signServiceAgreementResult.serviceAgreementId,
-                signServiceAgreementResult.serviceAgreementSignature, consumer, publisher)
-
-            assert(serviceAgreement)
+            assert(signServiceAgreementResult.agreementId, "no agreementId")
+            assert(signServiceAgreementResult.signature, "no signature")
+            assert(signServiceAgreementResult.signature.startsWith("0x"))
+            assert(signServiceAgreementResult.signature.length === 132)
         })
     })
 })
