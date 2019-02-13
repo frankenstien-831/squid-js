@@ -38,13 +38,15 @@ export class DDO {
      * DID, descentralized ID.
      * @type {string}
      */
-    public id: string
-    public publicKey: PublicKey[]
-    public authentication: Authentication[]
-    public service: Service[]
-    public proof: Proof
+    id: string
+    created: string
+    publicKey: PublicKey[]
+    authentication: Authentication[]
+    service: Service[]
+    proof: Proof
 
     public constructor(ddo?: Partial<DDO>) {
+        this.created = (ddo && ddo.created) || new Date(Date.now()).toISOString().replace(/\.[0-9]{3}/, "")
         this.authentication = (ddo && ddo.authentication) || []
         this.id = (ddo && ddo.id) || null
         this.publicKey = (ddo && ddo.publicKey) || []
