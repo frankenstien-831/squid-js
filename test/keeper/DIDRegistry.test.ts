@@ -2,7 +2,7 @@ import {assert} from "chai"
 import ConfigProvider from "../../src/ConfigProvider"
 import DIDRegistry from "../../src/keeper/contracts/DIDRegistry"
 import Account from "../../src/ocean/Account"
-import IdGenerator from "../../src/ocean/IdGenerator"
+import { generateId } from "../../src/utils/GeneratorHelpers"
 import Ocean from "../../src/ocean/Ocean"
 import Logger from "../../src/utils/Logger"
 import config from "../config"
@@ -24,7 +24,7 @@ describe("DIDRegistry", () => {
 
         it("should register an attribute in a new did", async () => {
             const ownerAccount: Account = (await ocean.getAccounts())[0]
-            const did = IdGenerator.generateId()
+            const did = generateId()
             const data = "my nice provider, is nice"
             const receipt = await didRegistry.registerAttribute(did, `0123456789abcdef`, data, ownerAccount.getId())
             assert(receipt.status)
@@ -33,7 +33,7 @@ describe("DIDRegistry", () => {
 
         it("should register another attribute in the same did", async () => {
             const ownerAccount: Account = (await ocean.getAccounts())[0]
-            const did = IdGenerator.generateId()
+            const did = generateId()
             {
                 // register the first attribute
                 const data = "my nice provider, is nice"
@@ -54,7 +54,7 @@ describe("DIDRegistry", () => {
 
         it("should get the owner of a did properly", async () => {
             const ownerAccount: Account = (await ocean.getAccounts())[0]
-            const did = IdGenerator.generateId()
+            const did = generateId()
             const data = "my nice provider, is nice"
             await didRegistry.registerAttribute(did, "0123456789abcdef", data, ownerAccount.getId())
 
@@ -74,7 +74,7 @@ describe("DIDRegistry", () => {
 
         it("should the block number of the last update of the did attribute", async () => {
             const ownerAccount: Account = (await ocean.getAccounts())[0]
-            const did = IdGenerator.generateId()
+            const did = generateId()
             const data = "my nice provider, is nice"
             await didRegistry.registerAttribute(did, "0123456789abcdef", data, ownerAccount.getId())
 

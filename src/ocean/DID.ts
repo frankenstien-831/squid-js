@@ -1,4 +1,4 @@
-import IdGenerator from "./IdGenerator"
+import { generateId } from "../utils/GeneratorHelpers"
 
 const prefix = "did:op:"
 
@@ -32,7 +32,7 @@ export default class DID {
      * @return {DID}
      */
     public static generate(): DID {
-        return new DID(IdGenerator.generateId())
+        return new DID(generateId())
     }
 
     /**

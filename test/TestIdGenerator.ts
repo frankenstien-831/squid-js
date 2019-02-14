@@ -1,7 +1,7 @@
-import IdGenerator from "../src/ocean/IdGenerator"
+import { generateId } from "../src/utils/GeneratorHelpers"
 
-export default class TestIdGenerator extends IdGenerator {
+export default class TestIdGenerator {
     public static generatePrefixedId() {
-        return "0x" + this.generateId()
+        return "0x" + generateId()
     }
 }

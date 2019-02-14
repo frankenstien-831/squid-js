@@ -1,8 +1,8 @@
 import AquariusProvider from "../aquarius/AquariusProvider"
 import BrizoProvider from "../brizo/BrizoProvider"
 import Account from "./Account"
+import { generateId } from "../utils/GeneratorHelpers"
 import DID from "./DID"
-import IdGenerator from "./IdGenerator"
 import ServiceAgreement from "./ServiceAgreements/ServiceAgreement"
 
 export interface AgreementPreparionResult {
@@ -48,7 +48,7 @@ export default class OceanAgreements {
 
         const d: DID = DID.parse(did as string)
         const ddo = await AquariusProvider.getAquarius().retrieveDDO(d)
-        const agreementId: string = IdGenerator.generateId()
+        const agreementId: string = generateId()
 
         const signature = await ServiceAgreement.signServiceAgreement(ddo, serviceDefinitionId, agreementId, consumer)
 

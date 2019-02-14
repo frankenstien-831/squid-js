@@ -1,7 +1,6 @@
 import Config from "./models/Config"
 import Account from "./ocean/Account"
 import DID from "./ocean/DID"
-import IdGenerator from "./ocean/IdGenerator"
 import Ocean from "./ocean/Ocean"
 import ServiceAgreement from "./ocean/ServiceAgreements/ServiceAgreement"
 import ServiceAgreementTemplate from "./ocean/ServiceAgreements/ServiceAgreementTemplate"
@@ -26,7 +25,6 @@ export {
     Config,
     DID,
     EventListener,
-    IdGenerator,
     Logger,
     SecretStoreProvider,
     ServiceAgreement,

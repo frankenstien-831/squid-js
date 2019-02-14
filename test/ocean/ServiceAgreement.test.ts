@@ -5,7 +5,7 @@ import { DDO } from "../../src/ddo/DDO"
 import { Service } from "../../src/ddo/Service"
 import Account from "../../src/ocean/Account"
 import DID from "../../src/ocean/DID"
-import IdGenerator from "../../src/ocean/IdGenerator"
+import { generateId } from "../../src/utils/GeneratorHelpers"
 import Ocean from "../../src/ocean/Ocean"
 import ServiceAgreement from "../../src/ocean/ServiceAgreements/ServiceAgreement"
 import ServiceAgreementTemplate from "../../src/ocean/ServiceAgreements/ServiceAgreementTemplate"
@@ -61,7 +61,7 @@ describe("ServiceAgreement", () => {
         it("should sign an service agreement", async () => {
 
             const ddo = new DDO({id: did.getDid(), service: [accessService]})
-            const serviceAgreementId: string = IdGenerator.generateId()
+            const serviceAgreementId: string = generateId()
 
             // @ts-ignore
             WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(ddo))
@@ -80,7 +80,7 @@ describe("ServiceAgreement", () => {
         it("should execute a service agreement", async () => {
 
             const ddo = new DDO({id: did.getDid(), service: [accessService]})
-            const serviceAgreementId: string = IdGenerator.generateId()
+            const serviceAgreementId: string = generateId()
 
             // @ts-ignore
             WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(ddo))
@@ -101,7 +101,7 @@ describe("ServiceAgreement", () => {
         it("should throw on invalid sig", (done) => {
 
             const ddo = new DDO({id: did.getDid(), service: [accessService]})
-            const serviceAgreementId: string = IdGenerator.generateId()
+            const serviceAgreementId: string = generateId()
 
             // @ts-ignore
             WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(ddo))
@@ -118,7 +118,7 @@ describe("ServiceAgreement", () => {
         it("should lock the payment in that service agreement", async () => {
 
             const ddo = new DDO({id: did.getDid(), service: [accessService, metaDataService]})
-            const serviceAgreementId: string = IdGenerator.generateId()
+            const serviceAgreementId: string = generateId()
 
             // @ts-ignore
             WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(ddo))
@@ -146,7 +146,7 @@ describe("ServiceAgreement", () => {
         it("should grant access in that service agreement", async () => {
 
             const ddo = new DDO({id: did.getDid(), service: [accessService]})
-            const serviceAgreementId: string = IdGenerator.generateId()
+            const serviceAgreementId: string = generateId()
 
             // @ts-ignore
             WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(ddo))
@@ -161,9 +161,12 @@ describe("ServiceAgreement", () => {
             assert(serviceAgreement)
 
             // get funds
-            // TODO: remove small delay to prevent failtures
-            await new Promise((resolve) => setTimeout(resolve, 100))
-            await consumerAccount.requestTokens(metaDataService.metadata.base.price)
+            try {
+                // Allowing 1 more retry
+                await consumerAccount.requestTokens(metaDataService.metadata.base.price)
+            } catch(e) {
+                await consumerAccount.requestTokens(metaDataService.metadata.base.price)
+            }
 
             const paid: boolean = await serviceAgreement.payAsset(did.getId(), metaDataService.metadata.base.price,
                 consumerAccount)
@@ -177,7 +180,7 @@ describe("ServiceAgreement", () => {
         it("should fail to grant grant access if there is no payment", async () => {
 
             const ddo = new DDO({id: did.getDid(), service: [accessService]})
-            const serviceAgreementId: string = IdGenerator.generateId()
+            const serviceAgreementId: string = generateId()
 
             // @ts-ignore
             WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(ddo))
