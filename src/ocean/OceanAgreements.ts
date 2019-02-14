@@ -1,11 +1,14 @@
 import AquariusProvider from "../aquarius/AquariusProvider"
+import BrizoProvider from "../brizo/BrizoProvider"
 import Account from "./Account"
 import DID from "./DID"
-import ServiceAgreement from "./ServiceAgreements/ServiceAgreement"
 import IdGenerator from "./IdGenerator"
-import BrizoProvider from "../brizo/BrizoProvider"
+import ServiceAgreement from "./ServiceAgreements/ServiceAgreement"
 
-export type agreementPreparionResult = {agreementId: string, signature: string}
+export interface AgreementPreparionResult {
+    agreementId: string
+    signature: string
+}
 
 /**
  * Agreements submodule of Ocean Protocol.
@@ -35,13 +38,13 @@ export default class OceanAgreements {
      * @param  {string} did Decentralized ID.
      * @param  {string} serviceDefinitionId Service definition ID.
      * @param  {Account} consumer Consumer account.
-     * @return {Promise<agreementPreparionResult>} Agreement ID and signaturee.
+     * @return {Promise<AgreementPreparionResult>} Agreement ID and signaturee.
      */
     public async prepare(
         did: string,
         serviceDefinitionId: string,
         consumer: Account,
-    ): Promise<agreementPreparionResult> {
+    ): Promise<AgreementPreparionResult> {
 
         const d: DID = DID.parse(did as string)
         const ddo = await AquariusProvider.getAquarius().retrieveDDO(d)
@@ -51,7 +54,6 @@ export default class OceanAgreements {
 
         return {agreementId, signature}
     }
-
 
     /**
      * Submit a service agreement to the publisher to create the agreement on-chain.
