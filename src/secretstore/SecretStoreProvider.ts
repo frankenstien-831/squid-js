@@ -1,6 +1,7 @@
 import SecretStore from "@oceanprotocol/secret-store-client"
 import SecretStoreConfig from "@oceanprotocol/secret-store-client/dist/models/SecretStoreConfig"
 import ConfigProvider from "../ConfigProvider"
+import Config from "../models/Config"
 
 export default class SecretStoreProvider {
 

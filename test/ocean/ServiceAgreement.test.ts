@@ -161,6 +161,8 @@ describe("ServiceAgreement", () => {
             assert(serviceAgreement)
 
             // get funds
+            // TODO: remove small delay to prevent failtures
+            await new Promise((resolve) => setTimeout(resolve, 100))
             await consumerAccount.requestTokens(metaDataService.metadata.base.price)
 
             const paid: boolean = await serviceAgreement.payAsset(did.getId(), metaDataService.metadata.base.price,

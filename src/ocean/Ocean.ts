@@ -3,6 +3,7 @@ import deprecated from "deprecated-decorator"
 import OceanAccounts from "./OceanAccounts"
 import OceanAgreements from "./OceanAgreements"
 import OceanAssets from "./OceanAssets"
+import OceanSecretStore from "./OceanSecretStore"
 
 import AquariusProvider from "../aquarius/AquariusProvider"
 import { SearchQuery } from "../aquarius/query/SearchQuery"
@@ -38,6 +39,7 @@ export default class Ocean {
             Ocean.instance.accounts = await OceanAccounts.getInstance()
             Ocean.instance.assets = await OceanAssets.getInstance()
             Ocean.instance.agreements = await OceanAgreements.getInstance()
+            Ocean.instance.secretStore = await OceanSecretStore.getInstance()
         }
 
         return Ocean.instance
@@ -66,6 +68,12 @@ export default class Ocean {
      * @type {OceanAgreements}
      */
     public agreements: OceanAgreements
+
+    /**
+     * Ocean secretStore submodule
+     * @type {OceanSecretStore}
+     */
+    public secretStore: OceanSecretStore
 
     private constructor() {
     }
@@ -106,7 +114,7 @@ export default class Ocean {
      * Registers a new DDO.
      * @deprecated Replace by [Ocean.assets.create]{@link #OceanAssets.create}
      * @param  {MetaData} metadata DDO metadata.
-     * @param  {Account} publisher Publicher account.
+     * @param  {Account} publisher Publisher account.
      * @return {Promise<DDO>}
      */
     @deprecated("OceanAssets.create")

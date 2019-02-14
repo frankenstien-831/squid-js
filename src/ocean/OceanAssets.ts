@@ -9,9 +9,9 @@ import Keeper from "../keeper/Keeper"
 import SecretStoreProvider from "../secretstore/SecretStoreProvider"
 import Account from "./Account"
 import DID from "./DID"
+import OceanAgreements from "./OceanAgreements"
 import ServiceAgreementTemplate from "./ServiceAgreements/ServiceAgreementTemplate"
 import Access from "./ServiceAgreements/Templates/Access"
-import OceanAgreements from "./OceanAgreements"
 
 /**
  * Assets submodule of Ocean Protocol.
@@ -49,7 +49,7 @@ export default class OceanAssets {
     /**
      * Creates a new DDO.
      * @param  {MetaData} metadata DDO metadata.
-     * @param  {Account} publisher Publicher account.
+     * @param  {Account} publisher Publisher account.
      * @return {Promise<DDO>}
      */
     public async create(metadata: MetaData, publisher: Account, services: Service[] = []): Promise<DDO> {
