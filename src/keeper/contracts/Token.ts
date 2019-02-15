@@ -18,4 +18,8 @@ export default class OceanToken extends ContractBase {
         return this.call("balanceOf", [address])
             .then((balance: string) => new BigNumber(balance).toNumber())
     }
+
+    public async transfer(to: string, amount: number, from: string): Promise<boolean> {
+        return this.send("transfer", from, [to, amount])
+    }
 }

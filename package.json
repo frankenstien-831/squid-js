@@ -3,6 +3,7 @@
   "version": "0.3.0",
   "description": "JavaScript client library for Ocean Protocol",
   "main": "./dist/node/squid.js",
+  "typings": "./dist/node/squid.d.ts",
   "browser": "./dist/browser/squid.cjs2.min.js",
   "scripts": {
     "test": "mocha",
