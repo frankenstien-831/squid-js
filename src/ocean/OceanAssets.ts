@@ -15,6 +15,7 @@ import IdGenerator from "./IdGenerator"
 import ServiceAgreement from "./ServiceAgreements/ServiceAgreement"
 import ServiceAgreementTemplate from "./ServiceAgreements/ServiceAgreementTemplate"
 import Access from "./ServiceAgreements/Templates/Access"
+import ConfigProvider from "../ConfigProvider"
 
 /**
  * Assets submodule of Ocean Protocol.
@@ -56,6 +57,7 @@ export default class OceanAssets {
      * @return {Promise<DDO>}
      */
     public async create(metadata: MetaData, publisher: Account, services: Service[] = []): Promise<DDO> {
+        const {secretStoreUri} = ConfigProvider.getConfig()
         const {didRegistry} = await Keeper.getInstance()
         const aquarius = AquariusProvider.getAquarius()
         const brizo = BrizoProvider.getBrizo()
@@ -64,8 +66,11 @@ export default class OceanAssets {
 
         const authorizationService = (services.find(({type}) => type === "Authorization") || {}) as ServiceAuthorization
         const secretStoreUrl = authorizationService.service === "SecretStore" && authorizationService.serviceEndpoint
+        const secretStoreConfig = {
+            secretStoreUri: secretStoreUrl,
+        }
 
-        const encryptedFiles = await SecretStoreProvider.getSecretStore(secretStoreUrl).encryptDocument(did.getId(), metadata.base.files)
+        const encryptedFiles = await SecretStoreProvider.getSecretStore(secretStoreConfig).encryptDocument(did.getId(), metadata.base.files)
 
         const template = new Access()
         const serviceAgreementTemplate = new ServiceAgreementTemplate(template)
@@ -122,6 +127,12 @@ export default class OceanAssets {
                     serviceDefinitionId: String(serviceDefinitionIdCount++),
                 },
                 {
+                    type: "Authorization",
+                    services: 'SecretStore',
+                    serviceEndpoint: secretStoreUri,
+                    serviceDefinitionId: String(serviceDefinitionIdCount++),
+                },
+                {
                     type: "Metadata",
                     serviceEndpoint,
                     serviceDefinitionId: String(serviceDefinitionIdCount++),
@@ -148,15 +159,17 @@ export default class OceanAssets {
                 },
                 ...services
                     .map((_) => ({..._, serviceDefinitionId: String(serviceDefinitionIdCount++)})),
-            ] as Service[],
+            ]
+                // Remove duplications
+                .reverse()
+                .filter(({type}, i, list) => list.findIndex(({type: t}) => t === type) === i)
+                .reverse() as Service[],
         })
 
         ddo.addChecksum()
         await ddo.addProof(publisher.getId(), publisher.getPassword())
 
         const storedDdo = await aquarius.storeDDO(ddo)
-
-        // Logger.log(JSON.stringify(storedDdo, null, 2))
 
         await didRegistry.registerAttribute(
             did.getId(),

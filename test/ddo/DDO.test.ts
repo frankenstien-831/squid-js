@@ -194,7 +194,7 @@ describe("DDO", () => {
 
         it("should create an predefined ddo", async () => {
 
-            const service: Partial<Service> = {
+            const service: Partial<Service> & any = {
                 serviceEndpoint: "http://",
                 description: "nice service",
             }
@@ -205,7 +205,7 @@ describe("DDO", () => {
             assert(ddo)
 
             assert(ddo.service.length === 1)
-            assert(ddo.service[0].description === service.description)
+            assert((ddo.service[0] as any).description === service.description)
 
             assert(ddo.authentication.length === 0)
             assert(ddo.publicKey.length === 0)

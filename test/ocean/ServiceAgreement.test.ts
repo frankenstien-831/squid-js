@@ -21,7 +21,7 @@ let accounts: Account[]
 let publisherAccount: Account
 let consumerAccount: Account
 
-let accessService: Service
+let accessService: Service<"Access">
 let metaDataService: Service<"Metadata">
 
 const did: DID = DID.generate()
