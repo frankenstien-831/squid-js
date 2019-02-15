@@ -7,7 +7,6 @@
       "es7"
     ],
     "declaration": true,
-    "noUnusedLocals": true,
     "module": "commonjs",
     "noImplicitAny": false,
     "removeComments": true,

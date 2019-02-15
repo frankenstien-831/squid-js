@@ -1,7 +1,7 @@
 import ConfigProvider from "../../ConfigProvider"
 import { Condition } from "../../ddo/Condition"
 import { DDO } from "../../ddo/DDO"
-import { Service } from "../../ddo/Service"
+import { ServiceAccess } from "../../ddo/Service"
 import Keeper from "../../keeper/Keeper"
 import Web3Provider from "../../keeper/Web3Provider"
 import ValuePair from "../../models/ValuePair"
@@ -23,7 +23,7 @@ export default class ServiceAgreement extends OceanBase {
             Logger.log("Signing SA with serviceAgreementId", serviceAgreementId)
         }
 
-        const service: Service = ddo.findServiceById(serviceDefinitionId)
+        const service = ddo.findServiceById<"Access">(serviceDefinitionId)
         const values: ValuePair[][] = ServiceAgreement.getValuesFromService(service, serviceAgreementId)
         const valueHashes: string[] = ServiceAgreement.createValueHashes(values)
         const timeoutValues: number[] = ServiceAgreement.getTimeoutValuesFromService(service)
@@ -52,7 +52,7 @@ export default class ServiceAgreement extends OceanBase {
             Logger.log("Executing SA with serviceAgreementId", serviceAgreementId)
         }
 
-        const service: Service = ddo.findServiceById(serviceDefinitionId)
+        const service = ddo.findServiceById<"Access">(serviceDefinitionId)
         const values: ValuePair[][] = ServiceAgreement.getValuesFromService(service, serviceAgreementId)
         const valueHashes: string[] = ServiceAgreement.createValueHashes(values)
         const timeoutValues: number[] = ServiceAgreement.getTimeoutValuesFromService(service)
@@ -66,7 +66,7 @@ export default class ServiceAgreement extends OceanBase {
     }
 
     private static async createSAHashSignature(
-        service: Service,
+        service: ServiceAccess,
         serviceAgreementId: string,
         valueHashes: string[],
         timeoutValues: number[],
@@ -118,7 +118,7 @@ export default class ServiceAgreement extends OceanBase {
 
         const {serviceAgreement} = await Keeper.getInstance()
 
-        const service: Service = ddo.findServiceById(serviceDefinitionId)
+        const service = ddo.findServiceById<"Access">(serviceDefinitionId)
 
         if (!service.templateId) {
             throw new Error(`TemplateId not found in service "${service.type}" ddo.`)
@@ -177,11 +177,14 @@ export default class ServiceAgreement extends OceanBase {
         return hash
     }
 
-    private static hashServiceAgreement(serviceAgreementTemplateId: string,
-                                        serviceAgreementId: string,
-                                        conditionKeys: string[],
-                                        valueHashes: string[],
-                                        timeouts: number[]): string {
+    private static hashServiceAgreement(
+        serviceAgreementTemplateId: string,
+        serviceAgreementId: string,
+        conditionKeys: string[],
+        valueHashes: string[],
+        timeouts: number[],
+    ): string {
+
         const args = [
             {type: "bytes32", value: serviceAgreementTemplateId} as ValuePair,
             {type: "bytes32[]", value: conditionKeys} as ValuePair,
@@ -193,7 +196,7 @@ export default class ServiceAgreement extends OceanBase {
         return Web3Provider.getWeb3().utils.soliditySha3(...args).toString("hex")
     }
 
-    private static getTimeoutValuesFromService(service: Service): number[] {
+    private static getTimeoutValuesFromService(service: ServiceAccess): number[] {
         const timeoutValues: number[] = service.conditions.map((condition: Condition) => {
             return condition.timeout
         })
@@ -201,7 +204,7 @@ export default class ServiceAgreement extends OceanBase {
         return timeoutValues
     }
 
-    private static getValuesFromService(service: Service, serviceAgreementId: string): ValuePair[][] {
+    private static getValuesFromService(service: ServiceAccess, serviceAgreementId: string): ValuePair[][] {
 
         const values: ValuePair[][] = []
 

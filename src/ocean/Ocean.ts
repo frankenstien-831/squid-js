@@ -170,8 +170,8 @@ export default class Ocean {
         const d: DID = DID.parse(did)
         const ddo = await AquariusProvider.getAquarius().retrieveDDO(d)
 
-        const accessService: Service = ddo.findServiceByType("Access")
-        const metadataService: Service = ddo.findServiceByType("Metadata")
+        const accessService = ddo.findServiceByType("Access")
+        const metadataService = ddo.findServiceByType("Metadata")
 
         const accessEvent: ContractEvent = EventListener.subscribe(
             accessService.conditions[1].contractName,

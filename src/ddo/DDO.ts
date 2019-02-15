@@ -4,7 +4,7 @@ import * as signatureHelpers from "../utils/SignatureHelpers"
 import { Authentication } from "./Authentication"
 import { Proof } from "./Proof"
 import { PublicKey } from "./PublicKey"
-import { Service } from "./Service"
+import { Service, ServiceType } from "./Service"
 
 /**
  * DID Descriptor Object.
@@ -46,7 +46,7 @@ export class DDO {
     public proof: Proof
 
     public constructor(ddo?: Partial<DDO>) {
-        this.created = (ddo && ddo.created) || new Date(Date.now()).toISOString().replace(/\.[0-9]{3}/, "")
+        this.created = (ddo && ddo.created) || new Date().toISOString().replace(/\.[0-9]{3}/, "")
         this.authentication = (ddo && ddo.authentication) || []
         this.id = (ddo && ddo.id) || null
         this.publicKey = (ddo && ddo.publicKey) || []
@@ -58,14 +58,14 @@ export class DDO {
      * @param  {string} serviceDefinitionId Service ID.
      * @return {Service} Service.
      */
-    public findServiceById(serviceDefinitionId: string): Service {
+    public findServiceById<T extends ServiceType>(serviceDefinitionId: string): Service<T> {
         if (!serviceDefinitionId) {
             throw new Error("serviceDefinitionId not set")
         }
 
-        const service: Service = this.service.find((s) => s.serviceDefinitionId === serviceDefinitionId)
+        const service = this.service.find((s) => s.serviceDefinitionId === serviceDefinitionId)
 
-        return service
+        return service as Service<T>
     }
 
     /**
@@ -73,7 +73,7 @@ export class DDO {
      * @param  {string} serviceType Service type.
      * @return {Service} Service.
      */
-    public findServiceByType<T extends string>(serviceType: T): Service<T> {
+    public findServiceByType<T extends ServiceType>(serviceType: T): Service<T> {
         if (!serviceType) {
             throw new Error("serviceType not set")
         }
