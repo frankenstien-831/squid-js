@@ -4,6 +4,7 @@ import OceanAccounts from "./OceanAccounts"
 import OceanAgreements from "./OceanAgreements"
 import OceanAssets from "./OceanAssets"
 import OceanSecretStore from "./OceanSecretStore"
+import OceanTokens from "./OceanTokens"
 
 import AquariusProvider from "../aquarius/AquariusProvider"
 import { SearchQuery } from "../aquarius/query/SearchQuery"
@@ -40,6 +41,7 @@ export default class Ocean {
             Ocean.instance.assets = await OceanAssets.getInstance()
             Ocean.instance.agreements = await OceanAgreements.getInstance()
             Ocean.instance.secretStore = await OceanSecretStore.getInstance()
+            Ocean.instance.tokens = await OceanTokens.getInstance()
         }
 
         return Ocean.instance
@@ -75,8 +77,13 @@ export default class Ocean {
      */
     public secretStore: OceanSecretStore
 
-    private constructor() {
-    }
+    /**
+     * Ocean tokens submodule
+     * @type {OceanTokens}
+     */
+    public tokens: OceanTokens
+
+    private constructor() { }
 
     /**
      * Returns the list of accounts.
