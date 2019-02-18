@@ -32,8 +32,7 @@ export default class OceanSecretStore {
      * @param  {string}          publisher Publisher account.
      * @return {Promise<string>}           Encrypted text.
      */
-    public async encrypt(did: string, content: string, publisher: Account): Promise<string> {
-        console.warn("TODO")
+    public async encrypt(did: string, content: any, publisher: Account): Promise<string> {
         return await this.getSecretStoreByAccount(publisher)
             // TODO did to id
             .encryptDocument(did, content)
@@ -47,8 +46,7 @@ export default class OceanSecretStore {
      * @param  {string}          consumer cONSUMER account.
      * @return {Promise<string>}          Encrypted text.
      */
-    public async decrypt(did: string, content: string, consumer: Account): Promise<string> {
-        console.warn("TODO")
+    public async decrypt(did: string, content: string, consumer: Account): Promise<any> {
         return await this.getSecretStoreByAccount(consumer)
             // TODO did to id
             .decryptDocument(did, content)

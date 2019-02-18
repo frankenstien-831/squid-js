@@ -24,8 +24,8 @@ export default class SecretStoreProvider {
             return SecretStoreProvider.secretStore
         } else {
             const configRef = JSON.stringify(config)
-            if (!SecretStoreProvider.secretStoreByUrl.get(configRef)) {
-                SecretStoreProvider.secretStoreByUrl.set(configRef,
+            if (!SecretStoreProvider.secretStoreWithConfig.get(configRef)) {
+                SecretStoreProvider.secretStoreWithConfig.set(configRef,
                     new SecretStore({
                         ...ConfigProvider.getConfig(),
                         ...config,
@@ -33,10 +33,10 @@ export default class SecretStoreProvider {
                 )
             }
 
-            return SecretStoreProvider.secretStoreByUrl.get(configRef)
+            return SecretStoreProvider.secretStoreWithConfig.get(configRef)
         }
     }
 
     private static secretStore: SecretStore
-    private static secretStoreByUrl = new Map<string, SecretStore>()
+    private static secretStoreWithConfig = new Map<string, SecretStore>()
 }
