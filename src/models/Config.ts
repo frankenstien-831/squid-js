@@ -1,3 +1,5 @@
+import { LogLevel } from "../utils/Logger"
+
 export default class Config {
     /* Aquarius Config */
     // the url to the aquarius
@@ -26,5 +28,5 @@ export default class Config {
     public threshold: number
 
     /* Squid config */
-    public verbose: boolean = false
+    public verbose: boolean | LogLevel
 }

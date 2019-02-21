@@ -53,13 +53,13 @@ async function exec() {
 
     await consumer.requestTokens(100)
 
-    const serviceAgreementSignatureResult: any = await ocean
+    const serviceAgreementSignatureResult = await ocean
         .signServiceAgreement(
             ddo.id,
             accessService.serviceDefinitionId,
             consumer)
-    Logger.log("ServiceAgreement Id:", serviceAgreementSignatureResult.serviceAgreementId)
-    Logger.log("ServiceAgreement Signature:", serviceAgreementSignatureResult.serviceAgreementSignature)
+    Logger.log("ServiceAgreement Id:", serviceAgreementSignatureResult.agreementId)
+    Logger.log("ServiceAgreement Signature:", serviceAgreementSignatureResult.signature)
 
     const service = ddo.findServiceByType("Access")
 
@@ -68,8 +68,8 @@ async function exec() {
             .initializeServiceAgreement(
                 ddo.id,
                 service.serviceDefinitionId,
-                serviceAgreementSignatureResult.serviceAgreementId,
-                serviceAgreementSignatureResult.serviceAgreementSignature,
+                serviceAgreementSignatureResult.agreementId,
+                serviceAgreementSignatureResult.signature,
                 (files) => Logger.log(`Got files, first files length in bytes: ${files[0].length}`),
                 consumer,
             )

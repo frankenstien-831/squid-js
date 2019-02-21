@@ -16,7 +16,7 @@ import { Service } from "../ddo/Service"
 import ContractEvent from "../keeper/Event"
 import Config from "../models/Config"
 import SecretStoreProvider from "../secretstore/SecretStoreProvider"
-import Logger from "../utils/Logger"
+import Logger, { LogLevel } from "../utils/Logger"
 import Account from "./Account"
 import DID from "./DID"
 import ServiceAgreement from "./ServiceAgreements/ServiceAgreement"
@@ -34,6 +34,12 @@ export default class Ocean {
      * @return {Promise<Ocean>}
      */
     public static async getInstance(config: Config): Promise<Ocean> {
+        Logger.setLevel(
+            typeof config.verbose !== "number"
+                ? (config.verbose ? LogLevel.Log : LogLevel.None)
+                : <LogLevel>config.verbose
+        )
+
         if (!Ocean.instance) {
             ConfigProvider.setConfig(config)
             Ocean.instance = new Ocean()

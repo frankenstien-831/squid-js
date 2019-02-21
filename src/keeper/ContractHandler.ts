@@ -1,5 +1,4 @@
 import Contract from "web3-eth-contract"
-import ConfigProvider from "../ConfigProvider"
 import Logger from "../utils/Logger"
 import Keeper from "./Keeper"
 import Web3Provider from "./Web3Provider"
@@ -28,9 +27,7 @@ export default class ContractHandler {
 
     private static async load(what: string, where: string): Promise<Contract> {
         const web3 = Web3Provider.getWeb3()
-        if (ConfigProvider.getConfig().verbose) {
-            Logger.log("Loading", what, "from", where)
-        }
+        Logger.debug("Loading", what, "from", where)
         const artifact = require(`@oceanprotocol/keeper-contracts/artifacts/${what}.${where}.json`)
         // Logger.log('Loaded artifact', artifact)
         const code = await web3.eth.getCode(artifact.address)
@@ -39,9 +36,8 @@ export default class ContractHandler {
             throw new Error(`No code deployed at address ${artifact.address}, sorry.`)
         }
         const contract = new web3.eth.Contract(artifact.abi, artifact.address)
-        if (ConfigProvider.getConfig().verbose) {
-            Logger.log("Getting instance of", what, "from", where, "at address", artifact.address)
-        }
+
+        Logger.debug("Getting instance of", what, "from", where, "at address", artifact.address)
         ContractHandler.contracts.set(what, contract)
         return ContractHandler.contracts.get(what)
     }

@@ -19,21 +19,16 @@ export default class ServiceAgreement extends OceanBase {
         consumer: Account,
     ): Promise<string> {
 
-        if (ConfigProvider.getConfig().verbose) {
-            Logger.log("Signing SA with serviceAgreementId", serviceAgreementId)
-        }
+        Logger.log("Signing SA with serviceAgreementId", serviceAgreementId)
 
         const service = ddo.findServiceById<"Access">(serviceDefinitionId)
         const values: ValuePair[][] = ServiceAgreement.getValuesFromService(service, serviceAgreementId)
         const valueHashes: string[] = ServiceAgreement.createValueHashes(values)
         const timeoutValues: number[] = ServiceAgreement.getTimeoutValuesFromService(service)
 
-        const serviceAgreementHashSignature = await ServiceAgreement.createSAHashSignature(service, serviceAgreementId,
-            valueHashes, timeoutValues, consumer)
+        const serviceAgreementHashSignature = await ServiceAgreement.createSAHashSignature(service, serviceAgreementId, valueHashes, timeoutValues, consumer)
 
-        if (ConfigProvider.getConfig().verbose) {
-            Logger.log("SA hash signature:", serviceAgreementHashSignature)
-        }
+        Logger.log("SA hash signature:", serviceAgreementHashSignature)
 
         return serviceAgreementHashSignature
     }
@@ -48,9 +43,7 @@ export default class ServiceAgreement extends OceanBase {
         publisher: Account,
     ): Promise<ServiceAgreement> {
 
-        if (ConfigProvider.getConfig().verbose) {
-            Logger.log("Executing SA with serviceAgreementId", serviceAgreementId)
-        }
+        Logger.log("Executing SA with serviceAgreementId", serviceAgreementId)
 
         const service = ddo.findServiceById<"Access">(serviceDefinitionId)
         const values: ValuePair[][] = ServiceAgreement.getValuesFromService(service, serviceAgreementId)

@@ -172,9 +172,7 @@ export default class ServiceAgreementTemplate extends OceanBase {
             } as Condition
         })
 
-        if (ConfigProvider.getConfig().verbose) {
-            Logger.log("Conditions", JSON.stringify(conditions, null, 2))
-        }
+        Logger.debug("Conditions", JSON.stringify(conditions, null, 2))
 
         return conditions
     }
