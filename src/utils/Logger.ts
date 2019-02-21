@@ -7,7 +7,6 @@ export enum LogLevel {
 }
 
 export default class Logger {
-    private static logLevel: LogLevel = LogLevel.Verbose
 
     public static setLevel(level: LogLevel) {
         this.logLevel = level
@@ -28,6 +27,7 @@ export default class Logger {
     public static error(...args: any[]) {
         Logger.dispatch("error", LogLevel.Error, ...args)
     }
+    private static logLevel: LogLevel = LogLevel.Verbose
 
     private static dispatch(verb: string, level: LogLevel, ...args: any[]) {
         if (this.logLevel >= level) {

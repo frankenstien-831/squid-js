@@ -1,7 +1,7 @@
 import AquariusProvider from "../aquarius/AquariusProvider"
 import BrizoProvider from "../brizo/BrizoProvider"
-import Account from "./Account"
 import { generateId } from "../utils/GeneratorHelpers"
+import Account from "./Account"
 import DID from "./DID"
 import ServiceAgreement from "./ServiceAgreements/ServiceAgreement"
 

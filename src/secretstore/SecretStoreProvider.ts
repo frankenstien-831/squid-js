@@ -14,7 +14,7 @@ export default class SecretStoreProvider {
         config = {...config}
         // Cleaning undefined parameters
         Object.keys(config)
-            .forEach(key => config[key] || delete config[key])
+            .forEach((key) => config[key] || delete config[key])
 
         if (!Object.keys(config).length) {
             if (!SecretStoreProvider.secretStore) {

@@ -5,11 +5,11 @@ import { DDO } from "../../src/ddo/DDO"
 import { Service } from "../../src/ddo/Service"
 import Account from "../../src/ocean/Account"
 import DID from "../../src/ocean/DID"
-import { generateId } from "../../src/utils/GeneratorHelpers"
 import Ocean from "../../src/ocean/Ocean"
 import ServiceAgreement from "../../src/ocean/ServiceAgreements/ServiceAgreement"
 import ServiceAgreementTemplate from "../../src/ocean/ServiceAgreements/ServiceAgreementTemplate"
 import Access from "../../src/ocean/ServiceAgreements/Templates/Access"
+import { generateId } from "../../src/utils/GeneratorHelpers"
 import WebServiceConnectorProvider from "../../src/utils/WebServiceConnectorProvider"
 import config from "../config"
 import TestContractHandler from "../keeper/TestContractHandler"
@@ -164,7 +164,7 @@ describe("ServiceAgreement", () => {
             try {
                 // Allowing 1 more retry
                 await consumerAccount.requestTokens(metaDataService.metadata.base.price)
-            } catch(e) {
+            } catch (e) {
                 await consumerAccount.requestTokens(metaDataService.metadata.base.price)
             }
 

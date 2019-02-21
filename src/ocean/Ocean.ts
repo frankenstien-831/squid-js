@@ -38,7 +38,7 @@ export default class Ocean {
         Logger.setLevel(
             typeof config.verbose !== "number"
                 ? (config.verbose ? LogLevel.Log : LogLevel.None)
-                : <LogLevel>config.verbose
+                : config.verbose as LogLevel,
         )
         ConfigProvider.setConfig(config)
 

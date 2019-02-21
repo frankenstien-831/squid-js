@@ -31,9 +31,9 @@ describe("OceanSecretStore", () => {
 
     describe("#getInstance()", () => {
         it("should get an instance of OceanSecretStore", async () => {
-            const oceanSecretStore: OceanSecretStore = await OceanSecretStore.getInstance()
+            const oceanSecretStoreInstance: OceanSecretStore = await OceanSecretStore.getInstance()
 
-            assert.instanceOf(oceanSecretStore, OceanSecretStore, "No returned OceanSecretStore instance")
+            assert.instanceOf(oceanSecretStoreInstance, OceanSecretStore, "No returned OceanSecretStore instance")
         })
     })
 

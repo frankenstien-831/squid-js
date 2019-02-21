@@ -1,9 +1,9 @@
-import Config from "../models/Config"
+import save = require("save-file")
 import { File } from "../ddo/MetaData"
+import Config from "../models/Config"
 import Account from "../ocean/Account"
+import Logger from "../utils/Logger"
 import WebServiceConnectorProvider from "../utils/WebServiceConnectorProvider"
-import Logger from '../utils/Logger'
-const { save } = require('save-file')
 
 const apiPath = "/api/v1/brizo/services"
 
@@ -76,7 +76,7 @@ export default class Brizo {
                 try {
                     await this.downloadFile(
                         consumeUrl,
-                        url.split('/').pop() || `file-${i}`,
+                        url.split("/").pop() || `file-${i}`,
                         destination,
                     )
                 } catch (e) {

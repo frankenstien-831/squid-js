@@ -6,16 +6,16 @@ import { Condition } from "../ddo/Condition"
 import { DDO } from "../ddo/DDO"
 import { MetaData } from "../ddo/MetaData"
 import { Service, ServiceAuthorization } from "../ddo/Service"
+import EventListener from "../keeper/EventListener"
 import Keeper from "../keeper/Keeper"
 import SecretStoreProvider from "../secretstore/SecretStoreProvider"
+import Logger from "../utils/Logger"
 import Account from "./Account"
 import DID from "./DID"
 import OceanAgreements from "./OceanAgreements"
+import ServiceAgreement from "./ServiceAgreements/ServiceAgreement"
 import ServiceAgreementTemplate from "./ServiceAgreements/ServiceAgreementTemplate"
 import Access from "./ServiceAgreements/Templates/Access"
-import EventListener from "../keeper/EventListener"
-import ServiceAgreement from "./ServiceAgreements/ServiceAgreement"
-import Logger from '../utils/Logger'
 
 /**
  * Assets submodule of Ocean Protocol.
@@ -128,7 +128,7 @@ export default class OceanAssets {
                 },
                 {
                     type: "Authorization",
-                    services: 'SecretStore',
+                    services: "SecretStore",
                     serviceEndpoint: secretStoreUri,
                     serviceDefinitionId: String(serviceDefinitionIdCount++),
                 },
@@ -181,9 +181,10 @@ export default class OceanAssets {
         return storedDdo
     }
 
-    public async consume (agreementId: string, did: string, serviceDefinitionId: string, consumerAccount: Account, resultPath: string): Promise<string>
-    public async consume (agreementId: string, did: string, serviceDefinitionId: string, consumerAccount: Account): Promise<true>
-    public async consume (
+    // tslint:disable-next-line
+    public async consume(agreementId: string, did: string, serviceDefinitionId: string, consumerAccount: Account, resultPath: string): Promise<string>
+    public async consume(agreementId: string, did: string, serviceDefinitionId: string, consumerAccount: Account): Promise<true>
+    public async consume(
         agreementId: string,
         did: string,
         serviceDefinitionId: string,
@@ -193,9 +194,9 @@ export default class OceanAssets {
 
         const brizo = BrizoProvider.getBrizo()
         const ddo = await this.resolve(did)
-        const {metadata} = ddo.findServiceByType('Metadata')
+        const {metadata} = ddo.findServiceByType("Metadata")
 
-        const authorizationService = ddo.findServiceByType('Authorization')
+        const authorizationService = ddo.findServiceByType("Authorization")
         const accessService = ddo.findServiceById(serviceDefinitionId)
 
         const files = metadata.base.encryptedFiles
@@ -203,7 +204,7 @@ export default class OceanAssets {
         const {serviceEndpoint} =  accessService
 
         if (!serviceEndpoint) {
-            throw new Error('Consume asset failed, service definition is missing the `serviceEndpoint`.')
+            throw new Error("Consume asset failed, service definition is missing the `serviceEndpoint`.")
         }
 
         const secretStoreUrl = authorizationService.service === "SecretStore" && authorizationService.serviceEndpoint

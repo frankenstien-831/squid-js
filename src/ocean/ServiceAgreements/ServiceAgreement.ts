@@ -26,7 +26,13 @@ export default class ServiceAgreement extends OceanBase {
         const valueHashes: string[] = ServiceAgreement.createValueHashes(values)
         const timeoutValues: number[] = ServiceAgreement.getTimeoutValuesFromService(service)
 
-        const serviceAgreementHashSignature = await ServiceAgreement.createSAHashSignature(service, serviceAgreementId, valueHashes, timeoutValues, consumer)
+        const serviceAgreementHashSignature = await ServiceAgreement.createSAHashSignature(
+            service,
+            serviceAgreementId,
+            valueHashes,
+            timeoutValues,
+            consumer,
+        )
 
         Logger.log("SA hash signature:", serviceAgreementHashSignature)
 

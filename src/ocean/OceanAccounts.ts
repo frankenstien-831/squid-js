@@ -56,7 +56,7 @@ export default class OceanAccounts {
         try {
             await account.requestTokens(amount)
             return true
-        } catch(e) {
+        } catch (e) {
             return false
         }
     }
