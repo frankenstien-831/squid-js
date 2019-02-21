@@ -34,14 +34,15 @@ export default class Ocean {
      * @return {Promise<Ocean>}
      */
     public static async getInstance(config: Config): Promise<Ocean> {
+        // Must be defined on instance level, right now, calling getInstance twice is going to rewrite that
         Logger.setLevel(
             typeof config.verbose !== "number"
                 ? (config.verbose ? LogLevel.Log : LogLevel.None)
                 : <LogLevel>config.verbose
         )
+        ConfigProvider.setConfig(config)
 
         if (!Ocean.instance) {
-            ConfigProvider.setConfig(config)
             Ocean.instance = new Ocean()
             Ocean.instance.accounts = await OceanAccounts.getInstance()
             Ocean.instance.assets = await OceanAssets.getInstance()
