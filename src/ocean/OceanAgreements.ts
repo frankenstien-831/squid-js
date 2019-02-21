@@ -70,7 +70,7 @@ export default class OceanAgreements {
         consumer: Account,
     ): Promise<void> {
 
-        await BrizoProvider
+        const result = await BrizoProvider
             .getBrizo()
             .initializeServiceAgreement(
                 did,
@@ -79,6 +79,10 @@ export default class OceanAgreements {
                 signature,
                 consumer.getId(),
             )
+
+        if (!result.ok) {
+            throw new Error("Error on initialize agreement: " + await result.text())
+        }
     }
 
     /**

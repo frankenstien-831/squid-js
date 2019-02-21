@@ -1,10 +1,11 @@
 import AquariusProvider from "../aquarius/AquariusProvider"
 import { SearchQuery } from "../aquarius/query/SearchQuery"
 import BrizoProvider from "../brizo/BrizoProvider"
+import ConfigProvider from "../ConfigProvider"
 import { Condition } from "../ddo/Condition"
 import { DDO } from "../ddo/DDO"
 import { MetaData } from "../ddo/MetaData"
-import { Service } from "../ddo/Service"
+import { Service, ServiceAuthorization } from "../ddo/Service"
 import Keeper from "../keeper/Keeper"
 import SecretStoreProvider from "../secretstore/SecretStoreProvider"
 import Account from "./Account"
@@ -12,6 +13,9 @@ import DID from "./DID"
 import OceanAgreements from "./OceanAgreements"
 import ServiceAgreementTemplate from "./ServiceAgreements/ServiceAgreementTemplate"
 import Access from "./ServiceAgreements/Templates/Access"
+import EventListener from "../keeper/EventListener"
+import ServiceAgreement from "./ServiceAgreements/ServiceAgreement"
+import Logger from '../utils/Logger'
 
 /**
  * Assets submodule of Ocean Protocol.
@@ -177,6 +181,58 @@ export default class OceanAssets {
         return storedDdo
     }
 
+    public async consume (agreementId: string, did: string, serviceDefinitionId: string, consumerAccount: Account, resultPath: string): Promise<string>
+    public async consume (agreementId: string, did: string, serviceDefinitionId: string, consumerAccount: Account): Promise<true>
+    public async consume (
+        agreementId: string,
+        did: string,
+        serviceDefinitionId: string,
+        consumerAccount: Account,
+        resultPath?: string,
+    ): Promise<string | true> {
+
+        const brizo = BrizoProvider.getBrizo()
+        const ddo = await this.resolve(did)
+        const {metadata} = ddo.findServiceByType('Metadata')
+
+        const authorizationService = ddo.findServiceByType('Authorization')
+        const accessService = ddo.findServiceById(serviceDefinitionId)
+
+        const files = metadata.base.encryptedFiles
+
+        const {serviceEndpoint} =  accessService
+
+        if (!serviceEndpoint) {
+            throw new Error('Consume asset failed, service definition is missing the `serviceEndpoint`.')
+        }
+
+        const secretStoreUrl = authorizationService.service === "SecretStore" && authorizationService.serviceEndpoint
+        const secretStoreConfig = {
+            secretStoreUri: secretStoreUrl,
+        }
+
+        Logger.log("Decrypting files")
+        const decryptedFiles = await SecretStoreProvider.getSecretStore(secretStoreConfig).decryptDocument(DID.parse(did).getId(), files)
+        Logger.log("Files decrypted")
+
+        Logger.log("Consuming files")
+
+        resultPath = resultPath ? `${resultPath}/datafile.${ddo.shortId()}.${agreementId}/` : undefined
+        await brizo.consumeService(
+            agreementId,
+            serviceEndpoint,
+            consumerAccount,
+            decryptedFiles,
+            resultPath,
+        )
+        Logger.log("Files consumed")
+
+        if (resultPath) {
+            return resultPath
+        }
+        return true
+    }
+
     /**
      * Start the purchase/order of an asset's service. Starts by signing the service agreement
      * then sends the request to the publisher via the service endpoint (Brizo http service).
@@ -193,8 +249,53 @@ export default class OceanAssets {
 
         const oceanAreements = await OceanAgreements.getInstance()
 
+        Logger.log("Asking for agreement signature")
         const {agreementId, signature} = await oceanAreements.prepare(did, serviceDefinitionId, consumer)
+        Logger.log(`Agreement ${agreementId} signed`)
+
+        const ddo = await this.resolve(did)
+
+        const paymentFlow = new Promise((resolve, reject) => {
+            EventListener
+                .subscribe(
+                    "ServiceExecutionAgreement",
+                    "AgreementInitialized",
+                    {agreementId: "0x" + agreementId},
+                )
+                .listenOnce(async (...args) => {
+                    Logger.log("Agreement initialized")
+                    const serviceAgreement = new ServiceAgreement("0x" + agreementId)
+                    const {metadata} = ddo.findServiceByType("Metadata")
+
+                    Logger.log("Locking payment")
+                    const paid = await serviceAgreement.payAsset(ddo.shortId(), metadata.base.price, consumer)
+
+                    if (paid) {
+                        Logger.log("Payment was OK")
+                    } else {
+                        Logger.error("Payment was KO")
+                        Logger.error("Agreement ID: ", agreementId)
+                        Logger.error("DID: ", ddo.id)
+                        reject("Error on payment")
+                    }
+                })
+
+            EventListener
+                .subscribe(
+                    "AccessConditions",
+                    "AccessGranted",
+                    {agreementId: "0x" + agreementId},
+                )
+                .listenOnce(async (...args) => {
+                    Logger.log("Access granted")
+                    resolve()
+                })
+        })
+
+        Logger.log("Sending agreement request")
         await oceanAreements.send(did, agreementId, serviceDefinitionId, signature, consumer)
+
+        await paymentFlow
 
         return agreementId
     }

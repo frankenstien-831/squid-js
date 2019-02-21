@@ -15,8 +15,7 @@ import TemplateBase from "./Templates/TemplateBase"
 
 export default class ServiceAgreementTemplate extends OceanBase {
 
-    private static generateConditionsKey(serviceAgreementTemplateId: string,
-                                         methodReflection: MethodReflection): string {
+    private static generateConditionsKey(serviceAgreementTemplateId: string, methodReflection: MethodReflection): string {
         const values = [
             {type: "bytes32", value: serviceAgreementTemplateId} as ValuePair,
             {type: "address", value: methodReflection.address} as ValuePair,
@@ -29,8 +28,7 @@ export default class ServiceAgreementTemplate extends OceanBase {
         super(template.id)
     }
 
-    public async register(templateOwnerAddress: string)
-        : Promise<boolean> {
+    public async register(templateOwnerAddress: string): Promise<boolean> {
 
         const dependencyMatrix: number[] =
             await Promise.all(this.template.Methods.map(async (method: Method) => {

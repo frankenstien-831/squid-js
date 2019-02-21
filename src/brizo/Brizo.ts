@@ -1,5 +1,9 @@
 import Config from "../models/Config"
+import { File } from "../ddo/MetaData"
+import Account from "../ocean/Account"
 import WebServiceConnectorProvider from "../utils/WebServiceConnectorProvider"
+import Logger from '../utils/Logger'
+const { save } = require('save-file')
 
 const apiPath = "/api/v1/brizo/services"
 
@@ -32,7 +36,8 @@ export default class Brizo {
         serviceAgreementId: string,
         serviceDefinitionId: string,
         signature: string,
-        consumerAddress: string): Promise<any> {
+        consumerAddress: string,
+    ): Promise<any> {
 
         const args = {
             did,
@@ -52,5 +57,45 @@ export default class Brizo {
         } catch (e) {
             throw new Error("HTTP request failed")
         }
+    }
+
+    public async consumeService(
+        agreementId: string,
+        serviceEndpoint: string,
+        account: Account,
+        files: File[],
+        destination: string,
+    ): Promise<string> {
+        const filesPromises = files
+            .map(async ({url}, i) => {
+                let consumeUrl = serviceEndpoint
+                consumeUrl += `?url=${url}`
+                consumeUrl += `&serviceAgreementId=${agreementId}`
+                consumeUrl += `&consumerAddress=${account.getId()}`
+
+                try {
+                    await this.downloadFile(
+                        consumeUrl,
+                        url.split('/').pop() || `file-${i}`,
+                        destination,
+                    )
+                } catch (e) {
+                    Logger.error("Error consuming assets")
+                    Logger.error(e)
+                    throw new Error("Error consuming assets")
+                }
+            })
+        await Promise.all(filesPromises)
+        return destination
+    }
+
+    private async downloadFile(url: string, filename: string, destination?: string): Promise<string> {
+        const path = `${destination}${filename}`
+        const response = await WebServiceConnectorProvider
+            .getConnector()
+            .get(url)
+
+        await save(await response.buffer(), path)
+        return path
     }
 }

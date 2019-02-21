@@ -53,6 +53,11 @@ export class DDO {
         this.service = (ddo && ddo.service) || []
     }
 
+
+    public shortId(): string {
+        return this.id.replace("did:op:", "")
+    }
+
     /**
      * Finds a service of a DDO by ID.
      * @param  {string} serviceDefinitionId Service ID.

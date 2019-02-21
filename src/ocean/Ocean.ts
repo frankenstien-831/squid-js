@@ -173,7 +173,7 @@ export default class Ocean {
 
     /**
      * Creates a new service agreement.
-     * @private
+     * @deprecated Replace by [Ocean.assets.consume]{@link #OceanAssets.consume}
      * @param {string} did Decentralized ID.
      * @param {string} serviceDefinitionId Service definition ID.
      * @param {string} serviceAgreementId Service agreement ID.
@@ -181,6 +181,7 @@ export default class Ocean {
      * @param {Function} cb Callback executen when the access is granted.
      * @param {Account} consumer Consumer account.
      */
+    @deprecated("OceanAssets.consume")
     public async initializeServiceAgreement(
         did: string,
         serviceDefinitionId: string,
@@ -189,49 +190,7 @@ export default class Ocean {
         cb: (files: string[]) => void,
         consumer: Account,
     ) {
-        const d: DID = DID.parse(did)
-        const ddo = await AquariusProvider.getAquarius().retrieveDDO(d)
-
-        const accessService = ddo.findServiceByType("Access")
-        const metadataService = ddo.findServiceByType("Metadata")
-
-        const accessEvent: ContractEvent = EventListener.subscribe(
-            accessService.conditions[1].contractName,
-            accessService.conditions[1].events[1].name,
-            {},
-        )
-        const filesPromise = new Promise((resolve) => {
-            accessEvent.listenOnce(async () => {
-                Logger.log("Awesome; got a AccessGranted Event. Let's download the asset files.")
-                const contentUrls = await SecretStoreProvider
-                    .getSecretStore()
-                    .decryptDocument(d.getId(), (metadataService as any).metadata.base.contentUrls[0])
-                const serviceUrl: string = accessService.serviceEndpoint
-                Logger.log("Consuming asset files using service url: ", serviceUrl)
-                const files = []
-
-                for (const cUrl of contentUrls) {
-                    let url: string = serviceUrl + `?url=${cUrl}`
-                    url = url + `&serviceAgreementId=${serviceAgreementId}`
-                    url = url + `&consumerAddress=${consumer.getId()}`
-                    files.push(url)
-                }
-
-                cb(files)
-                resolve(files)
-            })
-        })
-
-        await BrizoProvider
-            .getBrizo()
-            .initializeServiceAgreement(
-                did,
-                serviceAgreementId,
-                serviceDefinitionId,
-                serviceAgreementSignature,
-                consumer.getId())
-
-        await filesPromise
+        return await this.assets.consume(serviceDefinitionId, did, serviceDefinitionId, consumer)
     }
 
     /**
