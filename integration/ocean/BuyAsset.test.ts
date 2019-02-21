@@ -109,4 +109,10 @@ describe("Buy Asset", () => {
         const paid = await serviceAgreement.payAsset(did.getId(), metadata.base.price, consumer)
         assert.isTrue(paid, "The asset has not been paid correctly")
     })
+
+    xit("should consume the assets", async () => {
+        const accessService = ddo.findServiceByType("Access")
+
+        await ocean.assets.consume(serviceAgreementSignatureResult.agreementId, ddo.id, accessService.serviceDefinitionId, consumer)
+    })
 })
