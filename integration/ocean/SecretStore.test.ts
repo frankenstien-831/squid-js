@@ -17,7 +17,7 @@ describe("Secret Store", () => {
         ocean = await Ocean.getInstance(config)
 
         // Accounts
-        account = new Account("0xa99d43d86a0758d5632313b8fa3972b6088a21bb")
+        account = new Account("0x068Ed00cF0441e4829D9784fCBe7b9e26D4BD8d0")
         account.setPassword("secret")
     })
 
