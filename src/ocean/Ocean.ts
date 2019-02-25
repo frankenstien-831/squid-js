@@ -190,7 +190,7 @@ export default class Ocean {
         cb: (files: string[]) => void,
         consumer: Account,
     ) {
-        return await this.assets.consume(serviceDefinitionId, did, serviceDefinitionId, consumer)
+        return await this.assets.consume(serviceAgreementId, did, serviceDefinitionId, consumer)
     }
 
     /**

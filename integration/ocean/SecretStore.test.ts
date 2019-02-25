@@ -28,7 +28,7 @@ describe("Secret Store", () => {
         assert.match(encryptedContent, /^0x[a-f0-9]{86}$/i)
     })
 
-    it("should decrypt a text", async () => {
+    xit("should decrypt a text", async () => {
         const decryptedContent = await ocean.secretStore.decrypt(did.getId(), encryptedContent, account)
 
         assert.deepEqual(decryptedContent, content)

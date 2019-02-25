@@ -248,10 +248,10 @@ export default class OceanAssets {
         consumer: Account,
     ): Promise<string> {
 
-        const oceanAreements = await OceanAgreements.getInstance()
+        const oceanAgreements = await OceanAgreements.getInstance()
 
         Logger.log("Asking for agreement signature")
-        const {agreementId, signature} = await oceanAreements.prepare(did, serviceDefinitionId, consumer)
+        const {agreementId, signature} = await oceanAgreements.prepare(did, serviceDefinitionId, consumer)
         Logger.log(`Agreement ${agreementId} signed`)
 
         const ddo = await this.resolve(did)
@@ -294,7 +294,7 @@ export default class OceanAssets {
         })
 
         Logger.log("Sending agreement request")
-        await oceanAreements.send(did, agreementId, serviceDefinitionId, signature, consumer)
+        await oceanAgreements.send(did, agreementId, serviceDefinitionId, signature, consumer)
 
         await paymentFlow
 
