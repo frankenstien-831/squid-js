@@ -20,8 +20,8 @@ export const escrowAccessSecretStoreTemplateServiceAgreementTemplate: ServiceAgr
     ],
     "conditionDependency": {
         "lockReward": [],
-        "grantSecretStoreAccess": [],
-        "releaseReward": [
+        "accessSecretStore": [],
+        "escrowReward": [
             "lockReward",
             "accessSecretStore"
         ]
