@@ -90,7 +90,6 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
         return agreementId
     }
 
-
     async getServiceAgreementTemplateValuesMap(ddo: DDO, agreementId: string, consumer: string): Promise<{[value: string]: string}> {
         const keeper = await Keeper.getInstance()
         const ddoOwner = ddo.proof && ddo.proof.creator

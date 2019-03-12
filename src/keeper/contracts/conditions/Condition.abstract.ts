@@ -8,6 +8,8 @@ export enum ConditionState {
     Aborted = 3,
 }
 
+export const conditionStateNames = ["Uninitialized", "Unfulfilled", "Fulfilled", "Aborted"]
+
 export abstract class Condition extends ContractBase {
 
     protected constructor(contractName: string) {

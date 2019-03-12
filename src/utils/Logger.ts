@@ -12,6 +12,10 @@ export class Logger {
         this.logLevel = level
     }
 
+    public static bypass(...args: any[]) {
+        Logger.dispatch("log", <any>-Infinity, ...args)
+    }
+
     public static debug(...args: any[]) {
         Logger.dispatch("debug", LogLevel.Verbose, ...args)
     }
