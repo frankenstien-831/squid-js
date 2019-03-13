@@ -15,13 +15,11 @@ export default class ServiceAgreement {
         ddo: DDO,
         serviceDefinitionId: string,
         serviceAgreementId: string,
-        valuesMap: {[value: string]: string},
+        agreementConditionsIds: string[],
         consumer: Account,
     ): Promise<string> {
 
         const service = ddo.findServiceById<"Access">(serviceDefinitionId)
-        const values: ValuePair[][] = ServiceAgreement.getValuesFromService(service, valuesMap)
-        const valueHashes: string[] = ServiceAgreement.createValueHashes(values)
         const timelockValues: number[] = ServiceAgreement.getTimeValuesFromService(service, "timelock")
         const timeoutValues: number[] = ServiceAgreement.getTimeValuesFromService(service, "timeout")
 
@@ -32,7 +30,7 @@ export default class ServiceAgreement {
         const serviceAgreementHashSignature = await ServiceAgreement.createHashSignature(
             service.templateId,
             serviceAgreementId,
-            valueHashes,
+            agreementConditionsIds,
             timelockValues,
             timeoutValues,
             consumer,
@@ -65,27 +63,6 @@ export default class ServiceAgreement {
         return serviceAgreementHashSignature
     }
 
-    private static createValueHashes(parameterValuePairs: ValuePair[][]): string[] {
-        return parameterValuePairs
-            .map((valuePairs: ValuePair[]) =>  ServiceAgreement.hashValuePairArray(valuePairs))
-    }
-
-    private static hashValuePairArray(valuePairs: ValuePair[]): string {
-        let hash: string
-        try {
-            hash = (Web3Provider as any).getWeb3().utils.soliditySha3(...valuePairs).toString("hex")
-        } catch (err) {
-            Logger.error(`Hashing of ${JSON.stringify(valuePairs, null, 2)} failed.`)
-            throw err
-        }
-
-        if (!hash) {
-            throw new Error("hashValuePairArray failed to create hash.")
-        }
-
-        return hash
-    }
-
     public static hashServiceAgreement(
         serviceAgreementTemplateId: string,
         serviceAgreementId: string,
@@ -110,16 +87,5 @@ export default class ServiceAgreement {
             .map((condition: ServiceAgreementTemplateCondition) => condition[type])
 
         return timeoutValues
-    }
-
-    private static getValuesFromService(service: ServiceAccess, valuesMap: {[key: string]: string}): ValuePair[][] {
-        return (service.serviceAgreementTemplate.conditions || [])
-            .map(condition =>
-                (condition.parameters || [])
-                    .map(({type, name}) => ({
-                        type,
-                        value: valuesMap[name.replace(/^_/, "")] || "",
-                    }))
-            )
     }
 }

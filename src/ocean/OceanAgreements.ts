@@ -10,7 +10,7 @@ import { zeroX, didPrefixed } from "../utils"
 
 import OceanAgreementsConditions from "./OceanAgreementsConditions"
 
-export interface AgreementPreparionResult {
+export interface AgreementPrepareResult {
     agreementId: string
     signature: string
 }
@@ -50,25 +50,30 @@ export default class OceanAgreements {
      * @param  {string} did Decentralized ID.
      * @param  {string} serviceDefinitionId Service definition ID.
      * @param  {Account} consumer Consumer account.
-     * @return {Promise<AgreementPreparionResult>} Agreement ID and signaturee.
+     * @return {Promise<AgreementPrepareResult>} Agreement ID and signaturee.
      */
     public async prepare(
         did: string,
         serviceDefinitionId: string,
         consumer: Account,
-    ): Promise<AgreementPreparionResult> {
-        const keeper = await Keeper.getInstance()
-
+    ): Promise<AgreementPrepareResult> {
         const d: DID = DID.parse(did as string)
         const ddo = await AquariusProvider.getAquarius().retrieveDDO(d)
         const agreementId: string = generateId()
 
+        const keeper = await Keeper.getInstance()
         const templateName = ddo.findServiceByType("Access").serviceAgreementTemplate.contractName
-        const valuesMap = await keeper
+        const agreementConditionsIds = await keeper
             .getTemplateByName(templateName)
-            .getServiceAgreementTemplateValuesMap(ddo, agreementId, consumer.getId())
+            .getAgreementIdsFromDDO(agreementId, ddo, consumer.getId())
 
-        const signature = await ServiceAgreement.signServiceAgreement(ddo, serviceDefinitionId, agreementId, valuesMap, consumer)
+        const signature = await ServiceAgreement.signServiceAgreement(
+            ddo,
+            serviceDefinitionId,
+            agreementId,
+            agreementConditionsIds,
+            consumer,
+        )
 
         return {agreementId, signature}
     }

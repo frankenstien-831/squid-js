@@ -3,7 +3,7 @@ import { AgreementStoreManager, ConditionStoreManager } from "../managers"
 import { Condition, ConditionState, conditionStateNames } from "../conditions/Condition.abstract"
 import Keeper from "../../Keeper"
 import { DDO } from '../../../ddo/DDO'
-import { ServiceAgreementTemplate, ServiceAgreementTemplateCondition } from '../../../ddo/ServiceAgreementTemplate'
+import { ServiceAgreementTemplate } from '../../../ddo/ServiceAgreementTemplate'
 import { zeroX, Logger } from "../../../utils"
 
 export abstract class AgreementTemplate extends ContractBase {
@@ -53,9 +53,9 @@ export abstract class AgreementTemplate extends ContractBase {
             .map(address => keeper.getConditionByAddress(address))
     }
 
-    abstract async getServiceAgreementTemplateValuesMap(ddo: DDO, agreementId: string, consumer: string): Promise<{[value: string]: string}>
+    abstract getAgreementIdsFromDDO(agreementId: string, ddo: DDO, from: string): Promise<string[]>
 
-    abstract getServiceAgreementTemplate(): Promise<ServiceAgreementTemplate>
+    abstract async getServiceAgreementTemplate(): Promise<ServiceAgreementTemplate>
 
     public async getServiceAgreementTemplateConditions() {
         const serviceAgreementTemplate = await this.getServiceAgreementTemplate()
