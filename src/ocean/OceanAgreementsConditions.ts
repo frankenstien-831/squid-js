@@ -39,7 +39,8 @@ export default class OceanAgreementsConditions {
 
         await this.keeper.token.approve(lockRewardCondition.getAddress(), amount, from.getId())
 
-        return await lockRewardCondition.fulfill(agreementId, escrowReward.getAddress(), amount, from.getId())
+        const receipt = await lockRewardCondition.fulfill(agreementId, escrowReward.getAddress(), amount, from.getId())
+        return !!receipt.events.Fulfilled
     }
 
 
@@ -53,7 +54,8 @@ export default class OceanAgreementsConditions {
     public async grantAccess(agreementId: string, did: string, grantee: string, from: Account = new Account()) {
         const {accessSecretStoreCondition} = this.keeper.conditions
 
-        return await accessSecretStoreCondition.fulfill(agreementId, did, grantee, from.getId())
+        const receipt = await accessSecretStoreCondition.fulfill(agreementId, did, grantee, from.getId())
+        return !!receipt.events.Fulfilled
     }
 
     /**
@@ -82,7 +84,7 @@ export default class OceanAgreementsConditions {
         const conditionIdAccess = await accessSecretStoreCondition.generateIdHash(agreementId, did, consumer)
         const conditionIdLock = await lockRewardCondition.generateIdHash(agreementId, await escrowReward.getAddress(), amount)
 
-        return await escrowReward.fulfill(
+        const receipt = await escrowReward.fulfill(
             agreementId,
             amount,
             consumer,
@@ -91,5 +93,6 @@ export default class OceanAgreementsConditions {
             conditionIdAccess,
             from.getId(),
         )
+        return !!receipt.events.Fulfilled
     }
 }

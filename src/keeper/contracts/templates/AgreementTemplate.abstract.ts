@@ -5,6 +5,8 @@ import Keeper from "../../Keeper"
 import { DDO } from '../../../ddo/DDO'
 import { ServiceAgreementTemplate } from '../../../ddo/ServiceAgreementTemplate'
 import { zeroX, Logger } from "../../../utils"
+import EventListener from "../../../keeper/EventListener"
+import Event from "../../../keeper/Event"
 
 export abstract class AgreementTemplate extends ContractBase {
 
@@ -43,17 +45,41 @@ export abstract class AgreementTemplate extends ContractBase {
         )
     }
 
+    /**
+     * Conditions address list.
+     * @return {Promise<string[]>} Conditions address.
+     */
     public getConditionTypes(): Promise<string[]> {
         return this.call("getConditionTypes", [])
     }
 
+    /**
+     * List of condition contracts.
+     * @return {Promise<Condition[]>} Conditions contracts.
+     */
     public async getConditions(): Promise<Condition[]> {
         const keeper = await Keeper.getInstance()
         return (await this.getConditionTypes())
             .map(address => keeper.getConditionByAddress(address))
     }
 
-    abstract getAgreementIdsFromDDO(agreementId: string, ddo: DDO, from: string): Promise<string[]>
+    /**
+     * Get agreement conditions IDs.
+     * @param  {string}            agreementId Agreement ID.
+     * @param  {DDO}               ddo         DDO.
+     * @param  {string}            from        Consumer address.
+     * @return {Promise<string[]>}             Condition IDs.
+     */
+    abstract getAgreementIdsFromDDO(agreementId: string, ddo: DDO, consumer: string, from?: string): Promise<string[]>
+
+    /**
+     * Create a new agreement using the data of a DDO.
+     * @param  {string}            agreementId Agreement ID.
+     * @param  {DDO}               ddo         DDO.
+     * @param  {string}            from        Creator address.
+     * @return {Promise<boolean>}              Success.
+     */
+    abstract createAgreementFromDDO(agreementId: string, ddo: DDO, consumer: string, from?: string): Promise<boolean>
 
     abstract async getServiceAgreementTemplate(): Promise<ServiceAgreementTemplate>
 
@@ -90,12 +116,18 @@ export abstract class AgreementTemplate extends ContractBase {
             blocked: boolean,
             blockedBy: string[]
         }
-    }> {
+    } | false> {
         const agreementStore = await AgreementStoreManager.getInstance()
         const conditionStore = await ConditionStoreManager.getInstance()
 
         const dependencies = await this.getServiceAgreementTemplateDependencies()
         const {conditionIds} = await agreementStore.getAgreement(agreementId)
+
+        if (!conditionIds.length) {
+            Logger.error(`Agreement not creeated yet: "${agreementId}"`)
+            return false
+        }
+
         const conditionIdByConddition = (await this.getConditions())
             .reduce((acc, {contractName}, i) => ({...acc, [contractName]: conditionIds[i]}), {})
 
@@ -139,7 +171,10 @@ export abstract class AgreementTemplate extends ContractBase {
         Logger.bypass("Template:", this.contractName)
         Logger.bypass("Agreement ID:", agreementId)
         Logger.bypass("-".repeat(40))
-        Object.values(status)
+        if (!status) {
+            Logger.bypass("Agreement not created yet!")
+        }
+        Object.values(status || [])
             .forEach(({condition, contractName, state, blocked, blockedBy}, i) => {
                 if (i) {
                     Logger.bypass("-".repeat(20))
@@ -151,5 +186,19 @@ export abstract class AgreementTemplate extends ContractBase {
                 }
             })
         Logger.bypass("-".repeat(80))
+    }
+
+    /**
+     * Generates and returns the agreement creation event.
+     * @param  {string} agreementId Agreement ID.
+     * @return {Event}              Agreement created event.
+     */
+    public getAgreementCreatedEvent(agreementId: string): Event {
+        return EventListener
+            .subscribe(
+                this.contractName,
+                "AgreementCreated",
+                {agreementId: zeroX(agreementId)},
+            )
     }
 }

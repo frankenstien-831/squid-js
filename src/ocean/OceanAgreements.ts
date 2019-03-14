@@ -3,7 +3,6 @@ import BrizoProvider from "../brizo/BrizoProvider"
 import { generateId } from "../utils/GeneratorHelpers"
 import Account from "./Account"
 import DID from "./DID"
-import { DDO } from "../ddo/DDO"
 import ServiceAgreement from "./ServiceAgreements/ServiceAgreement"
 import { Keeper } from "../keeper/Keeper"
 import { zeroX, didPrefixed } from "../utils"
@@ -57,6 +56,7 @@ export default class OceanAgreements {
         serviceDefinitionId: string,
         consumer: Account,
     ): Promise<AgreementPrepareResult> {
+
         const d: DID = DID.parse(did as string)
         const ddo = await AquariusProvider.getAquarius().retrieveDDO(d)
         const agreementId: string = generateId()
@@ -65,7 +65,7 @@ export default class OceanAgreements {
         const templateName = ddo.findServiceByType("Access").serviceAgreementTemplate.contractName
         const agreementConditionsIds = await keeper
             .getTemplateByName(templateName)
-            .getAgreementIdsFromDDO(agreementId, ddo, consumer.getId())
+            .getAgreementIdsFromDDO(agreementId, ddo, consumer.getId(), consumer.getId())
 
         const signature = await ServiceAgreement.signServiceAgreement(
             ddo,
@@ -118,7 +118,7 @@ export default class OceanAgreements {
      * @param  {string} signature Service agreement signature.
      * @param  {Account} consumer Consumer account.
      * @param  {Account} publisher Publisher account.
-     * @return {Promise<ServiceAgreement>}
+     * @return {Promise<boolean>}
      */
     public async create(
         did: string,
@@ -127,23 +127,17 @@ export default class OceanAgreements {
         signature: string,
         consumer: Account,
         publisher: Account,
-    ): Promise<ServiceAgreement> {
+    ) {
+        const keeper = await Keeper.getInstance()
+
         const d: DID = DID.parse(did)
         const ddo = await AquariusProvider.getAquarius().retrieveDDO(d)
 
-        // TODO: Use Keeper 0.7+
+        const templateName = ddo.findServiceById<"Access">(serviceDefinitionId).serviceAgreementTemplate.contractName
+        await keeper
+            .getTemplateByName(templateName)
+            .createAgreementFromDDO(agreementId, ddo, consumer.getId(), publisher.getId())
 
-        // const serviceAgreement: ServiceAgreement = await ServiceAgreement
-        //     .executeServiceAgreement(
-        //         d,
-        //         ddo,
-        //         agreementId,
-        //         serviceDefinitionId,
-        //         signature,
-        //         consumer,
-        //         publisher)
-
-        // return serviceAgreement
-        return undefined
+        return true
     }
 }

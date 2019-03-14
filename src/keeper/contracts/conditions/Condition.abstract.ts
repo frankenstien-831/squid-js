@@ -1,5 +1,7 @@
 import ContractBase from "../ContractBase"
 import { zeroX } from "../../../utils"
+import EventListener from "../../../keeper/EventListener"
+import Event from "../../../keeper/Event"
 
 export enum ConditionState {
     Uninitialized = 0,
@@ -42,5 +44,14 @@ export abstract class Condition extends ContractBase {
 
     abortByTimeOut(agreementId: string, from?: string) {
         return this.sendFrom("abortByTimeOut", [zeroX(agreementId)], from)
+    }
+
+    public getConditionFulfilledEvent(agreementId: string): Event {
+        return EventListener
+            .subscribe(
+                this.contractName,
+                "Fulfilled",
+                {agreementId: zeroX(agreementId)},
+            )
     }
 }

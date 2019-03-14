@@ -2,20 +2,18 @@ import AquariusProvider from "../aquarius/AquariusProvider"
 import { SearchQuery } from "../aquarius/query/SearchQuery"
 import BrizoProvider from "../brizo/BrizoProvider"
 import ConfigProvider from "../ConfigProvider"
-import { Condition } from "../ddo/Condition"
 import { DDO } from "../ddo/DDO"
 import { MetaData } from "../ddo/MetaData"
+import { ServiceAgreementTemplate, ServiceAgreementTemplateCondition } from "../ddo/ServiceAgreementTemplate"
 import { Service, ServiceAuthorization } from "../ddo/Service"
 import EventListener from "../keeper/EventListener"
 import Keeper from "../keeper/Keeper"
 import SecretStoreProvider from "../secretstore/SecretStoreProvider"
-import Logger from "../utils/Logger"
+import { Logger, fillConditionsWithDDO } from "../utils"
 import Account from "./Account"
 import DID from "./DID"
 import OceanAgreements from "./OceanAgreements"
 import ServiceAgreement from "./ServiceAgreements/ServiceAgreement"
-import ServiceAgreementTemplate from "./ServiceAgreements/ServiceAgreementTemplate"
-import Access from "./ServiceAgreements/Templates/Access"
 
 /**
  * Assets submodule of Ocean Protocol.
@@ -58,7 +56,7 @@ export default class OceanAssets {
      */
     public async create(metadata: MetaData, publisher: Account, services: Service[] = []): Promise<DDO> {
         const {secretStoreUri} = ConfigProvider.getConfig()
-        const {didRegistry} = await Keeper.getInstance()
+        const {didRegistry, templates} = await Keeper.getInstance()
         const aquarius = AquariusProvider.getAquarius()
         const brizo = BrizoProvider.getBrizo()
 
@@ -72,21 +70,18 @@ export default class OceanAssets {
 
         const encryptedFiles = await SecretStoreProvider.getSecretStore(secretStoreConfig).encryptDocument(did.getId(), metadata.base.files)
 
-        const template = new Access()
-        const serviceAgreementTemplate = new ServiceAgreementTemplate(template)
-
-        const conditions: Condition[] = await serviceAgreementTemplate.getConditions(metadata, did.getId())
+        const serviceAgreementTemplate: ServiceAgreementTemplate = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplate()
 
         const serviceEndpoint = aquarius.getServiceEndpoint(did)
 
         let serviceDefinitionIdCount = 0
         // create ddo itself
         const ddo: DDO = new DDO({
+            id: did.getDid(),
             authentication: [{
                 type: "RsaSignatureAuthentication2018",
                 publicKey: did.getDid() + "#keys-1",
             }],
-            id: did.getDid(),
             publicKey: [
                 {
                     id: did.getDid() + "#keys-1",
@@ -97,29 +92,12 @@ export default class OceanAssets {
             ],
             service: [
                 {
-                    type: template.templateName,
+                    type: "Access",
                     purchaseEndpoint: brizo.getPurchaseEndpoint(),
                     serviceEndpoint: brizo.getConsumeEndpoint(),
-                    // the id of the service agreement?
                     serviceDefinitionId: String(serviceDefinitionIdCount++),
-                    // the id of the service agreement template
-                    templateId: serviceAgreementTemplate.getId(),
-                    serviceAgreementContract: {
-                        contractName: "ServiceExecutionAgreement",
-                        fulfillmentOperator: template.fulfillmentOperator,
-                        events: [
-                            {
-                                name: "AgreementInitialized",
-                                actorType: "consumer",
-                                handler: {
-                                    moduleName: "payment",
-                                    functionName: "lockPayment",
-                                    version: "0.1",
-                                },
-                            },
-                        ],
-                    },
-                    conditions,
+                    templateId: templates.escrowAccessSecretStoreTemplate.getAddress(),
+                    serviceAgreementTemplate,
                 },
                 {
                     type: "Compute",
@@ -166,11 +144,15 @@ export default class OceanAssets {
                 .reverse() as Service[],
         })
 
+        // Overwritte initial service agreement conditions
+        const rawConditions: ServiceAgreementTemplateCondition[] = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplateConditions()
+        const conditions: ServiceAgreementTemplateCondition[] = fillConditionsWithDDO(rawConditions, ddo)
+        serviceAgreementTemplate.conditions = conditions
+
         ddo.addChecksum()
         await ddo.addProof(publisher.getId(), publisher.getPassword())
 
         const storedDdo = await aquarius.storeDDO(ddo)
-
         await didRegistry.registerAttribute(
             did.getId(),
             ddo.getChecksum(),
@@ -256,20 +238,22 @@ export default class OceanAssets {
 
         const ddo = await this.resolve(did)
 
+        const keeper = await Keeper.getInstance()
+        const templateName = ddo.findServiceByType("Access").serviceAgreementTemplate.contractName
+        const template = await keeper.getTemplateByName(templateName)
+        const accessCondition = await keeper.conditions.accessSecretStoreCondition
+
         const paymentFlow = new Promise((resolve, reject) => {
-            EventListener
-                .subscribe(
-                    "ServiceExecutionAgreement",
-                    "AgreementInitialized",
-                    {agreementId: "0x" + agreementId},
-                )
+            template
+                .getAgreementCreatedEvent(agreementId)
                 .listenOnce(async (...args) => {
                     Logger.log("Agreement initialized")
-                    const serviceAgreement = new ServiceAgreement("0x" + agreementId)
+
                     const {metadata} = ddo.findServiceByType("Metadata")
 
                     Logger.log("Locking payment")
-                    const paid = await serviceAgreement.payAsset(ddo.shortId(), metadata.base.price, consumer)
+
+                    const paid = await oceanAgreements.conditions.lockReward(agreementId, metadata.base.price, consumer)
 
                     if (paid) {
                         Logger.log("Payment was OK")
@@ -281,12 +265,8 @@ export default class OceanAssets {
                     }
                 })
 
-            EventListener
-                .subscribe(
-                    "AccessConditions",
-                    "AccessGranted",
-                    {agreementId: "0x" + agreementId},
-                )
+            accessCondition
+                .getConditionFulfilledEvent(agreementId)
                 .listenOnce(async (...args) => {
                     Logger.log("Access granted")
                     resolve()

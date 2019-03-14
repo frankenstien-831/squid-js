@@ -47,6 +47,23 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
         )
     }
 
+
+    public async createAgreementFromDDO(agreementId: string, ddo: DDO, consumer: string, from?: string) {
+        return !!await this.createFullAgreement(
+            ddo.shortId(),
+            ddo.findServiceByType("Metadata").metadata.base.price,
+            consumer,
+            from,
+            agreementId,
+        )
+    }
+
+    public async getAgreementIdsFromDDO(agreementId: string, ddo: DDO, consumer: string, from?: string) {
+        const {accessSecretStoreConditionId, lockRewardConditionId, escrowRewardId} =
+            await this.createFullAgreementData(agreementId, ddo.shortId(), ddo.findServiceByType("Metadata").metadata.base.price, from)
+        return [accessSecretStoreConditionId, lockRewardConditionId, escrowRewardId]
+    }
+
     /**
      * Create a agreement using EscrowAccessSecretStoreTemplate using only the most important information.
      * @param  {string}          did    Asset DID.
@@ -54,11 +71,10 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
      * @param  {string}          from   Consumer address.
      * @return {Promise<string>}        Agreement ID.
      */
-    public async createFullAgreement(did: string, amount: number, from?: string): Promise<string> {
-        const agreementId = zeroX(generateId())
+    public async createFullAgreement(did: string, amount: number, consumer: string, from?: string, agreementId?: string): Promise<string> {
+        agreementId = agreementId || zeroX(generateId())
         const {accessSecretStoreConditionId, lockRewardConditionId, escrowRewardId} =
             await this.createFullAgreementData(agreementId, did, amount, from)
-
 
         await this.createAgreement(
             agreementId,
@@ -66,16 +82,11 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
             [accessSecretStoreConditionId, lockRewardConditionId, escrowRewardId],
             [0, 0, 0],
             [0, 0, 0],
+            consumer,
             from,
         )
 
         return agreementId
-    }
-
-    public async getAgreementIdsFromDDO(agreementId: string, ddo: DDO, from: string) {
-        const {accessSecretStoreConditionId, lockRewardConditionId, escrowRewardId} =
-            await this.createFullAgreementData(agreementId, ddo.shortId(), ddo.findServiceByType("Metadata").metadata.base.price, from)
-        return [accessSecretStoreConditionId, lockRewardConditionId, escrowRewardId]
     }
 
     private async createFullAgreementData(agreementId: string, did: string, amount: number, from?: string) {

@@ -69,7 +69,7 @@ export default abstract class ContractBase {
             })
             return tx
         } catch (err) {
-            const mappedArgs = this.searchMethod(name).inputs.map((input, i) => {
+            const mappedArgs = this.searchMethod(name, args).inputs.map((input, i) => {
                 return {
                     name: input.name,
                     value: args[i],
@@ -99,10 +99,11 @@ export default abstract class ContractBase {
         }
     }
 
-    private searchMethod(methodName: string) {
-        const foundMethod = this.contract.options.jsonInterface
+    private searchMethod(methodName: string, args: any[] = []) {
+        const methods = this.contract.options.jsonInterface
             .map(method => ({...method, signature: (method as any).signature}))
-            .find((method: any) => method.name === methodName)
+            .filter((method: any) => method.name === methodName)
+        const foundMethod = methods.find(({inputs}) => inputs.length === args.length) || methods[0]
         if (!foundMethod) {
             throw new Error(`Method "${methodName}" is not part of contract "${this.contractName}"`)
         }
