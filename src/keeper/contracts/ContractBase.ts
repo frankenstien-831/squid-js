@@ -7,9 +7,9 @@ import Web3Provider from "../Web3Provider"
 export default abstract class ContractBase {
 
     protected static instance = null
+    public contractName: string
 
     private contract: Contract = null
-    contractName: string
 
     constructor(contractName) {
         this.contractName = contractName
@@ -101,7 +101,7 @@ export default abstract class ContractBase {
 
     private searchMethod(methodName: string, args: any[] = []) {
         const methods = this.contract.options.jsonInterface
-            .map(method => ({...method, signature: (method as any).signature}))
+            .map((method) => ({...method, signature: (method as any).signature}))
             .filter((method: any) => method.name === methodName)
         const foundMethod = methods.find(({inputs}) => inputs.length === args.length) || methods[0]
         if (!foundMethod) {

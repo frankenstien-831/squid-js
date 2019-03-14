@@ -2,22 +2,22 @@ import ContractBase from "../ContractBase"
 import { AgreementStoreManager, ConditionStoreManager } from "../managers"
 import { Condition, ConditionState, conditionStateNames } from "../conditions/Condition.abstract"
 import Keeper from "../../Keeper"
-import { DDO } from '../../../ddo/DDO'
-import { ServiceAgreementTemplate } from '../../../ddo/ServiceAgreementTemplate'
+import { DDO } from "../../../ddo/DDO"
+import { ServiceAgreementTemplate } from "../../../ddo/ServiceAgreementTemplate"
 import { zeroX, Logger } from "../../../utils"
 import EventListener from "../../../keeper/EventListener"
 import Event from "../../../keeper/Event"
 
 export abstract class AgreementTemplate extends ContractBase {
 
-    protected constructor(contractName: string) {
-        super(contractName)
-    }
-
     public static async getInstance(conditionName: string, templateClass: any): Promise<AgreementTemplate & any> {
         const condition: AgreementTemplate = new (templateClass as any)(conditionName)
         await condition.init()
         return condition
+    }
+
+    protected constructor(contractName: string) {
+        super(contractName)
     }
 
     // tslint:disable-next-line
@@ -60,7 +60,7 @@ export abstract class AgreementTemplate extends ContractBase {
     public async getConditions(): Promise<Condition[]> {
         const keeper = await Keeper.getInstance()
         return (await this.getConditionTypes())
-            .map(address => keeper.getConditionByAddress(address))
+            .map((address) => keeper.getConditionByAddress(address))
     }
 
     /**
@@ -70,7 +70,7 @@ export abstract class AgreementTemplate extends ContractBase {
      * @param  {string}            from        Consumer address.
      * @return {Promise<string[]>}             Condition IDs.
      */
-    abstract getAgreementIdsFromDDO(agreementId: string, ddo: DDO, consumer: string, from?: string): Promise<string[]>
+    public abstract getAgreementIdsFromDDO(agreementId: string, ddo: DDO, consumer: string, from?: string): Promise<string[]>
 
     /**
      * Create a new agreement using the data of a DDO.
@@ -79,9 +79,9 @@ export abstract class AgreementTemplate extends ContractBase {
      * @param  {string}            from        Creator address.
      * @return {Promise<boolean>}              Success.
      */
-    abstract createAgreementFromDDO(agreementId: string, ddo: DDO, consumer: string, from?: string): Promise<boolean>
+    public abstract createAgreementFromDDO(agreementId: string, ddo: DDO, consumer: string, from?: string): Promise<boolean>
 
-    abstract async getServiceAgreementTemplate(): Promise<ServiceAgreementTemplate>
+    public abstract async getServiceAgreementTemplate(): Promise<ServiceAgreementTemplate>
 
     public async getServiceAgreementTemplateConditions() {
         const serviceAgreementTemplate = await this.getServiceAgreementTemplate()
@@ -93,7 +93,7 @@ export abstract class AgreementTemplate extends ContractBase {
             .find(({name: conditionRef}) => conditionRef === ref)
             .contractName
         return (await this.getConditions())
-            .find(condition => condition.contractName === name)
+            .find((condition) => condition.contractName === name)
     }
 
     public async getServiceAgreementTemplateDependencies() {
@@ -107,15 +107,15 @@ export abstract class AgreementTemplate extends ContractBase {
      * @return {Promise}             Conditions status.
      */
     public async getAgreementStatus(
-        agreementId: string
+        agreementId: string,
     ): Promise<{
         [condition: string]: {
             condition: string,
             contractName: string,
             state: ConditionState,
             blocked: boolean,
-            blockedBy: string[]
-        }
+            blockedBy: string[],
+        },
     } | false> {
         const agreementStore = await AgreementStoreManager.getInstance()
         const conditionStore = await ConditionStoreManager.getInstance()
@@ -137,7 +137,7 @@ export abstract class AgreementTemplate extends ContractBase {
                 return {
                     ref,
                     contractName,
-                    state: (await conditionStore.getCondition(conditionIdByConddition[contractName])).state
+                    state: (await conditionStore.getCondition(conditionIdByConddition[contractName])).state,
                 }
             })
         const states = await Promise.all(statesPromises)
@@ -145,8 +145,8 @@ export abstract class AgreementTemplate extends ContractBase {
         return states
             .reduce((acc, {contractName, ref, state}) => {
                 const blockers = dependencies[ref]
-                    .map(dependency => states.find(({ref}) => ref === dependency))
-                    .filter(condition => condition.state !== ConditionState.Fulfilled)
+                    .map((dependency) => states.find((_) => _.ref === dependency))
+                    .filter((condition) => condition.state !== ConditionState.Fulfilled)
                 return {
                     ...acc,
                     [ref]: {
@@ -154,8 +154,8 @@ export abstract class AgreementTemplate extends ContractBase {
                         contractName,
                         state,
                         blocked: !!blockers.length,
-                        blockedBy: blockers.map(_ => _.ref),
-                    }
+                        blockedBy: blockers.map((_) => _.ref),
+                    },
                 }
             }, {})
     }

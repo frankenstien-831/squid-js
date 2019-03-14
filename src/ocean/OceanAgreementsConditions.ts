@@ -43,7 +43,6 @@ export default class OceanAgreementsConditions {
         return !!receipt.events.Fulfilled
     }
 
-
     /**
      * Authorize the consumer defined in the agreement to access (consume) this asset.
      * @param {string}  agreementId Agreement ID.

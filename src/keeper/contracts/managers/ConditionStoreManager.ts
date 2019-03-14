@@ -21,7 +21,7 @@ export class ConditionStoreManager extends ContractBase {
         return templateStoreManeger
     }
 
-    getOwner(): Promise<string> {
+    public getOwner(): Promise<string> {
         return this.call("owner", [])
     }
 

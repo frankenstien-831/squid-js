@@ -1,8 +1,8 @@
-import { assert } from 'chai'
+import { assert } from "chai"
 
 import { config } from "../config"
 
-import { Ocean, MetaData, DDO, DID, Account/*, ServiceAgreement*/ } from '../../src' // @oceanprotocol/squid
+import { Ocean, MetaData, DDO, DID, Account/*, ServiceAgreement*/ } from "../../src" // @oceanprotocol/squid
 
 describe("Consume Asset", () => {
     let ocean: Ocean
@@ -71,7 +71,7 @@ describe("Consume Asset", () => {
     })
 
     it("should be able to request tokens for consumer", async () => {
-        const initialBalance = (await consumer.getBalance()).ocn;
+        const initialBalance = (await consumer.getBalance()).ocn
         await consumer.requestTokens(metadata.base.price)
 
         assert.equal((await consumer.getBalance()).ocn, initialBalance + metadata.base.price, "OCN Tokens not delivered")

@@ -1,8 +1,8 @@
-import { assert } from 'chai'
+import { assert } from "chai"
 
 import { config } from "../config"
 
-import { Ocean, templates, conditions, utils, Keeper, Account } from '../../src' // @oceanprotocol/squid
+import { Ocean, templates, conditions, utils, Keeper, Account } from "../../src" // @oceanprotocol/squid
 
 const { LockRewardCondition, EscrowReward, AccessSecretStoreCondition } = conditions
 const { EscrowAccessSecretStoreTemplate } = templates
@@ -13,7 +13,7 @@ describe("Register Escrow Access Secret Store Template", () => {
 
     let template: templates.EscrowAccessSecretStoreTemplate
 
-    const url = 'https://example.com/did/ocean/test-attr-example.txt'
+    const url = "https://example.com/did/ocean/test-attr-example.txt"
     const checksum = "b".repeat(32)
     const escrowAmount = 12
 
@@ -46,13 +46,13 @@ describe("Register Escrow Access Secret Store Template", () => {
         it("should propose the template", async () => {
             await keeper.templateStoreManager.proposeTemplate(template.getAddress(), consumer.getId(), true)
             // TODO: Use a event to detect template mined
-            await new Promise(_ => setTimeout(_, 6 * 1000))
+            await new Promise((_) => setTimeout(_, 6 * 1000))
         })
 
         it("should approve the template", async () => {
             await keeper.templateStoreManager.approveTemplate(template.getAddress(), templateManagerOwner.getId(), true)
             // TODO: Use a event to detect template mined
-            await new Promise(_ => setTimeout(_, 6 * 1000))
+            await new Promise((_) => setTimeout(_, 6 * 1000))
         })
     })
 
@@ -93,16 +93,15 @@ describe("Register Escrow Access Secret Store Template", () => {
         })
 
         it("should have condition instances asociated", async () => {
-            const conditions = await template.getConditions()
+            const conditionInstances = await template.getConditions()
 
-            assert.equal(conditions.length, 3, "Expected 3 conditions.")
-
+            assert.equal(conditionInstances.length, 3, "Expected 3 conditions.")
 
             const conditionClasses = [AccessSecretStoreCondition, EscrowReward, LockRewardCondition]
             conditionClasses
-                .forEach(conditionClass => {
-                    if (!conditions.find(condition => condition instanceof conditionClass)) {
-                        throw `${conditionClass.name} is not part of the conditions.`;
+                .forEach((conditionClass) => {
+                    if (!conditionInstances.find((condition) => condition instanceof conditionClass)) {
+                        throw new Error(`${conditionClass.name} is not part of the conditions.`)
                     }
                 })
         })

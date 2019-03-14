@@ -1,6 +1,6 @@
 import { assert } from "chai"
-import * as Web3 from "web3";
-import * as fs from "fs";
+import * as Web3 from "web3"
+import * as fs from "fs"
 
 import { config } from "../config"
 
@@ -17,7 +17,7 @@ describe("Consume Asset (Brizo)", () => {
 
     const testHash = Math.random().toString(36).substr(2)
     let metadata: Partial<MetaData>
-    let metadataGenerator = (name: string) => ({
+    const metadataGenerator = (name: string) => ({
         ...metadata,
         base: {
             ...metadata.base,
@@ -28,7 +28,8 @@ describe("Consume Asset (Brizo)", () => {
     before(async () => {
         ocean = await Ocean.getInstance({
             ...config,
-            web3Provider: new Web3.providers.HttpProvider("http://localhost:8545", 0, "0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e", "node0"),
+            web3Provider: new Web3.providers
+                .HttpProvider("http://localhost:8545", 0, "0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e", "node0"),
         })
 
         // Accounts
@@ -76,7 +77,7 @@ describe("Consume Asset (Brizo)", () => {
     })
 
     it("should regiester an asset", async () => {
-        ddo = await ocean.assets.create(metadataGenerator("ToBeConsumed") as any, publisher);
+        ddo = await ocean.assets.create(metadataGenerator("ToBeConsumed") as any, publisher)
 
         assert.instanceOf(ddo, DDO)
     })
@@ -99,10 +100,10 @@ describe("Consume Asset (Brizo)", () => {
 
         assert.include(path, folder, "The storage path is not correct.")
 
-        const files = await new Promise(resolve => {
-            fs.readdir(path, (err, files) => {
-                resolve(files)
-            });
+        const files = await new Promise((resolve) => {
+            fs.readdir(path, (err, fileList) => {
+                resolve(fileList)
+            })
         })
 
         assert.deepEqual(files, ["README.md", "testzkp.pdf"], "Stored files are not correct.")

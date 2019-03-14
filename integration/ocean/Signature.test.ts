@@ -16,7 +16,8 @@ describe("Signature", () => {
     before(async () => {
         await Ocean.getInstance({
             ...config,
-            web3Provider: new (Web3 as any).providers.HttpProvider("http://localhost:8545", 0, "0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e", "node0"),
+            web3Provider: new (Web3 as any).providers
+                .HttpProvider("http://localhost:8545", 0, "0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e", "node0"),
         })
 
         // Accounts
@@ -69,8 +70,8 @@ describe("Signature", () => {
                     metadata: {
                         base: {
                             price: 10,
-                        }
-                    }
+                        },
+                    },
                 } as any,
             ],
         })

@@ -4,16 +4,14 @@ import BrizoProvider from "../brizo/BrizoProvider"
 import ConfigProvider from "../ConfigProvider"
 import { DDO } from "../ddo/DDO"
 import { MetaData } from "../ddo/MetaData"
-import { ServiceAgreementTemplate, ServiceAgreementTemplateCondition } from "../ddo/ServiceAgreementTemplate"
+import { ServiceAgreementTemplateCondition } from "../ddo/ServiceAgreementTemplate"
 import { Service, ServiceAuthorization } from "../ddo/Service"
-import EventListener from "../keeper/EventListener"
 import Keeper from "../keeper/Keeper"
 import SecretStoreProvider from "../secretstore/SecretStoreProvider"
 import { Logger, fillConditionsWithDDO } from "../utils"
 import Account from "./Account"
 import DID from "./DID"
 import OceanAgreements from "./OceanAgreements"
-import ServiceAgreement from "./ServiceAgreements/ServiceAgreement"
 
 /**
  * Assets submodule of Ocean Protocol.
@@ -70,7 +68,7 @@ export default class OceanAssets {
 
         const encryptedFiles = await SecretStoreProvider.getSecretStore(secretStoreConfig).encryptDocument(did.getId(), metadata.base.files)
 
-        const serviceAgreementTemplate: ServiceAgreementTemplate = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplate()
+        const serviceAgreementTemplate = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplate()
 
         const serviceEndpoint = aquarius.getServiceEndpoint(did)
 
@@ -145,8 +143,8 @@ export default class OceanAssets {
         })
 
         // Overwritte initial service agreement conditions
-        const rawConditions: ServiceAgreementTemplateCondition[] = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplateConditions()
-        const conditions: ServiceAgreementTemplateCondition[] = fillConditionsWithDDO(rawConditions, ddo)
+        const rawConditions = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplateConditions()
+        const conditions = fillConditionsWithDDO(rawConditions, ddo)
         serviceAgreementTemplate.conditions = conditions
 
         ddo.addChecksum()

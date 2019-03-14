@@ -11,7 +11,8 @@
     "semicolon": [
       true,
       "never"
-    ]
+    ],
+    "ordered-imports": false
   },
   "rulesDirectory": []
 }

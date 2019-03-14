@@ -20,7 +20,7 @@ describe("ConversionTypeHelpers", () => {
         it("should return the value without 0x prefix", async () => {
             const result1 = noZeroX("0x1234")
             const result2 = noZeroX("1234")
-            assert.equal(result1, "1234",)
+            assert.equal(result1, "1234")
             assert.equal(result2, "1234")
         })
     })

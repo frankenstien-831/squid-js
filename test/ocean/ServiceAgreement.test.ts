@@ -9,7 +9,6 @@ import { generateId } from "../../src/utils/GeneratorHelpers"
 import config from "../config"
 import TestContractHandler from "../keeper/TestContractHandler"
 
-
 const did: DID = DID.generate()
 
 describe("ServiceAgreement", () => {

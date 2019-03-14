@@ -11,7 +11,7 @@ export async function signText(text: string, publicKey: string, password?: strin
         Logger.error(e)
         try {
             return await web3.eth.sign(text, publicKey, password)
-        } catch(e2) {
+        } catch (e2) {
             Logger.error("Error on sign.")
             Logger.error(e2)
             throw new Error("Error executing personal sign")

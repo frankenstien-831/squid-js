@@ -7,11 +7,11 @@ export class LockRewardCondition extends Condition {
         return Condition.getInstance("LockRewardCondition", LockRewardCondition)
     }
 
-    hashValues(rewardAddress: string, amount: number) {
+    public hashValues(rewardAddress: string, amount: number) {
         return super.hashValues(zeroX(rewardAddress), amount)
     }
 
-    fulfill(agreementId: string, rewardAddress: string, amount: number, from?: string) {
+    public fulfill(agreementId: string, rewardAddress: string, amount: number, from?: string) {
         return super.fulfill(agreementId, [zeroX(rewardAddress), amount], from)
     }
 }

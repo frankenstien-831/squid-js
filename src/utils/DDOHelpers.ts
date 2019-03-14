@@ -2,7 +2,7 @@ import { DDO } from "../ddo/DDO"
 import { ServiceAgreementTemplateCondition, ServiceAgreementTemplateParameter } from "../ddo/ServiceAgreementTemplate"
 
 function fillParameterWithDDO(parameter: ServiceAgreementTemplateParameter, ddo: DDO): ServiceAgreementTemplateParameter {
-    const getValue = name => {
+    const getValue = (name) => {
         switch (name) {
             case "amount":
             case "price":
@@ -28,11 +28,11 @@ function fillParameterWithDDO(parameter: ServiceAgreementTemplateParameter, ddo:
  */
 export function fillConditionsWithDDO(conditions: ServiceAgreementTemplateCondition[], ddo: DDO): ServiceAgreementTemplateCondition[] {
     return conditions
-        .map(condition => ({
+        .map((condition) => ({
             ...condition,
             parameters: condition.parameters
-                .map(parameter => ({
-                    ...fillParameterWithDDO(parameter, ddo)
-                }))
+                .map((parameter) => ({
+                    ...fillParameterWithDDO(parameter, ddo),
+                })),
         }))
 }

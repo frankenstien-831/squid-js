@@ -1,8 +1,8 @@
-import { assert } from 'chai'
+import { assert } from "chai"
 
 import { config } from "../config"
 
-import { Ocean, MetaData, Account, DDO } from '../../src' // @oceanprotocol/squid
+import { Ocean, MetaData, Account, DDO } from "../../src" // @oceanprotocol/squid
 
 describe("Search Asset", () => {
     let ocean: Ocean
@@ -11,7 +11,7 @@ describe("Search Asset", () => {
 
     const testHash = Math.random().toString(36).substr(2)
     let metadata: Partial<MetaData>
-    let metadataGenerator = (name: string) => ({
+    const metadataGenerator = (name: string) => ({
         ...metadata,
         base: {
             ...metadata.base,
@@ -95,7 +95,7 @@ describe("Search Asset", () => {
         const ddos: DDO[] = await ocean.assets.search(`Test1${testHash}`)
 
         assert.equal(ddos.length - test1length, 1, "Something was wrong searching the assets")
-        ddos.map(ddo => assert.instanceOf(ddo, DDO, "The DDO is not an instance of a DDO"))
+        ddos.map((ddo) => assert.instanceOf(ddo, DDO, "The DDO is not an instance of a DDO"))
     })
 
     it("should be able to do a query to get a list of DDOs", async () => {
@@ -112,6 +112,6 @@ describe("Search Asset", () => {
         })
 
         assert.equal(ddos.length, 1, "Something was wrong searching the assets")
-        ddos.map(ddo => assert.instanceOf(ddo, DDO, "The DDO is not an instance of a DDO"))
+        ddos.map((ddo) => assert.instanceOf(ddo, DDO, "The DDO is not an instance of a DDO"))
     })
 })

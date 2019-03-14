@@ -13,7 +13,7 @@ export class Logger {
     }
 
     public static bypass(...args: any[]) {
-        Logger.dispatch("log", <any>-Infinity, ...args)
+        Logger.dispatch("log", -Infinity as any, ...args)
     }
 
     public static debug(...args: any[]) {

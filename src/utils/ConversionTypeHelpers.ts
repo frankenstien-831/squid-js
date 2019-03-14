@@ -1,4 +1,4 @@
-import { Logger } from './Logger'
+import { Logger } from "./Logger"
 
 // Ox transformer
 export const zeroX = (input: string) => zeroXTransformer(input, true)
@@ -24,12 +24,12 @@ function inputMatch(input: string, regexp: RegExp, conversorName: string): {vali
         if (typeof input !== "string") {
         Logger.debug("Not input string:")
         Logger.debug(input)
-        throw new Error(`[${conversorName}] Expected string, input type: ${typeof input}`);
+        throw new Error(`[${conversorName}] Expected string, input type: ${typeof input}`)
     }
-    const match = input.match(regexp)
-    if (!match) {
+        const match = input.match(regexp)
+        if (!match) {
         Logger.warn(`[${conversorName}] Input transformation failed.`)
         return {valid: false, output: input}
     }
-    return {valid: true, output: match[1]}
+        return {valid: true, output: match[1]}
 }

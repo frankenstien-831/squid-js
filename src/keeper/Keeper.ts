@@ -101,12 +101,12 @@ export class Keeper {
      */
     public getConditionByAddress(address: string): Condition {
         return Object.values(this.conditions)
-            .find(condition => condition.getAddress() === address)
+            .find((condition) => condition.getAddress() === address)
     }
 
     public getTemplateByName(name: string): AgreementTemplate {
         return Object.values(this.templates)
-            .find(template => template.contractName === name)
+            .find((template) => template.contractName === name)
     }
 
     /**

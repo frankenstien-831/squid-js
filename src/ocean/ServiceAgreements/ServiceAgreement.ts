@@ -7,7 +7,6 @@ import Logger from "../../utils/Logger"
 import Account from "../Account"
 import { signText, zeroX } from "../../utils"
 
-
 // TODO: move this class to helpers, it only contains pure functions
 export default class ServiceAgreement {
 
@@ -58,7 +57,7 @@ export default class ServiceAgreement {
             timeoutValues,
         )
 
-        let serviceAgreementHashSignature = await signText(serviceAgreementHash, consumer.getId(), consumer.getPassword())
+        const serviceAgreementHashSignature = await signText(serviceAgreementHash, consumer.getId(), consumer.getPassword())
 
         return serviceAgreementHashSignature
     }

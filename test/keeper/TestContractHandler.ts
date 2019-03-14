@@ -62,7 +62,6 @@ export default class TestContractHandler extends ContractHandler {
             deployerAddress, conditionStoreManager.options.address, token.options.address,
         ])
 
-
         // Templates
         await TestContractHandler.deployContract("EscrowAccessSecretStoreTemplate", deployerAddress, [
             deployerAddress,

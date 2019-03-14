@@ -10,7 +10,7 @@ export interface ServiceAgreementTemplateEvent {
     handler: {
         moduleName: string
         functionName: string
-        version: string
+        version: string,
     }
 }
 
