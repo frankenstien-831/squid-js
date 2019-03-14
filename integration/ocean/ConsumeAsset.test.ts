@@ -1,47 +1,32 @@
-import { assert } from "chai"
-import * as Web3 from "web3"
-import * as fs from "fs";
+import { assert } from 'chai'
 
 import { config } from "../config"
 
-import { Ocean, MetaData, Account, DDO } from "../../src" // @oceanprotocol/squid
+import { Ocean, MetaData, DDO, DID, Account/*, ServiceAgreement*/ } from '../../src' // @oceanprotocol/squid
 
-xdescribe("Consume Asset", () => {
+describe("Consume Asset", () => {
     let ocean: Ocean
 
     let publisher: Account
     let consumer: Account
 
-    let ddo: DDO
-    let agreementId: string
-
-    const testHash = Math.random().toString(36).substr(2)
     let metadata: Partial<MetaData>
-    let metadataGenerator = (name: string) => ({
-        ...metadata,
-        base: {
-            ...metadata.base,
-            name: `${name}${testHash}`,
-        },
-    })
+
+    let ddo: DDO
+    let serviceAgreementSignatureResult: {agreementId: string, signature: string}
 
     before(async () => {
-        ocean = await Ocean.getInstance({
-            ...config,
-            verbose: true,
-            web3Provider: new Web3.providers.HttpProvider("http://localhost:8545", 0, "0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e", "node0"),
-        })
+        ocean = await Ocean.getInstance(config)
 
         // Accounts
-        publisher = new Account("0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e")
-        publisher.setPassword("node0")
-        consumer = new Account("0x068Ed00cF0441e4829D9784fCBe7b9e26D4BD8d0")
-        consumer.setPassword("secret")
+        publisher = (await ocean.accounts.list())[0]
+        publisher.setPassword(process.env.ACCOUNT_PASSWORD)
+        consumer = (await ocean.accounts.list())[1]
 
         // Data
         metadata = {
             base: {
-                name: undefined,
+                name: "Office Humidity",
                 type: "dataset",
                 description: "Weather information of UK including temperature and humidity",
                 size: "3.1gb",
@@ -56,12 +41,12 @@ xdescribe("Consume Asset", () => {
                 workExample: "stationId,latitude,longitude,datetime,temperature,humidity423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68",
                 files: [
                     {
-                        url: "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.pdf",
+                        url: "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip",
                         checksum: "085340abffh21495345af97c6b0e761",
                         contentLength: "12324",
                     },
                     {
-                        url: "https://raw.githubusercontent.com/oceanprotocol/squid-js/develop/README.md",
+                        url: "https://testocnfiles.blob.core.windows.net/testfiles/testzkp2.zip",
                     },
                 ],
                 links: [
@@ -74,41 +59,70 @@ xdescribe("Consume Asset", () => {
                 price: 10,
             },
         }
-
     })
 
-    it("should regiester an asset", async () => {
-        ddo = await ocean.assets.create(metadataGenerator("ToBeConsumed") as any, publisher);
+    it("should regiester a asset", async () => {
+        ddo = await ocean.assets.create(metadata as any, publisher)
 
-        assert.instanceOf(ddo, DDO)
+        assert.isDefined(ddo, "Register has not returned a DDO")
+        assert.match(ddo.id, /^did:op:[a-f0-9]{64}$/, "DDO id is not valid")
+        assert.isAtLeast(ddo.authentication.length, 1, "Default authentication not added")
+        assert.isDefined(ddo.findServiceByType("Access"), "DDO Access service doesn't exist")
     })
 
-    it("should order the asset", async () => {
+    it("should be able to request tokens for consumer", async () => {
+        const initialBalance = (await consumer.getBalance()).ocn;
+        await consumer.requestTokens(metadata.base.price)
+
+        assert.equal((await consumer.getBalance()).ocn, initialBalance + metadata.base.price, "OCN Tokens not delivered")
+    })
+
+    it("should sign the service agreement", async () => {
         const accessService = ddo.findServiceByType("Access")
 
-        try {
+        serviceAgreementSignatureResult = await ocean.agreements.prepare(ddo.id, accessService.serviceDefinitionId, consumer)
 
-            agreementId = await ocean.assets.order(ddo.id, accessService.serviceDefinitionId, consumer)
-        } catch(e) {
-            console.warn(e)
-        }
-        assert.isDefined(agreementId)
+        const {agreementId, signature} = serviceAgreementSignatureResult
+        assert.match(agreementId, /^[a-f0-9]{64}$/, "Service agreement ID seems not valid")
+        assert.match(signature, /^0x[a-f0-9]{130}$/, "Service agreement signature seems not valid")
     })
 
-    xit("should consume and store the assets", async () => {
+    it("should execute the service agreement", async () => {
         const accessService = ddo.findServiceByType("Access")
 
-        const folder = "/tmp/ocean/squid-js"
-        const path = await ocean.assets.consume(agreementId, ddo.id, accessService.serviceDefinitionId, consumer, folder)
+        const success = await ocean.agreements.create(
+            ddo.id,
+            serviceAgreementSignatureResult.agreementId,
+            accessService.serviceDefinitionId,
+            serviceAgreementSignatureResult.signature,
+            consumer,
+            publisher,
+        )
 
-        assert.include(path, folder, "The storage path is not correct.")
+        assert.isTrue(success)
+    })
 
-        const files = await new Promise(resolve => {
-            fs.readdir(path, (err, files) => {
-                resolve(files)
-            });
-        })
+    xit("should lock the payment", async () => {
+        const paid = await ocean.agreements.conditions
+            .lockReward(
+                serviceAgreementSignatureResult.agreementId,
+                ddo.findServiceByType("Metadata").metadata.base.price,
+                publisher,
+            )
 
-        assert.deepEqual(files, ["README.md", "testzkp.pdf"], "Stored files are not correct.")
+        assert.isTrue(paid, "The asset has not been paid correctly")
+    })
+
+    xit("should lock the payment", async () => {
+        const granted = await ocean.agreements.conditions
+            .grantAccess(serviceAgreementSignatureResult.agreementId, ddo.id, consumer.getId(), publisher)
+
+        assert.isTrue(granted, "The asset has not been granted correctly")
+    })
+
+    xit("should consume the assets", async () => {
+        const accessService = ddo.findServiceByType("Access")
+
+        await ocean.assets.consume(serviceAgreementSignatureResult.agreementId, ddo.id, accessService.serviceDefinitionId, consumer)
     })
 })
