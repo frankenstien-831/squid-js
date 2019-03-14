@@ -1,7 +1,7 @@
 import { assert } from "chai"
 import { zeroX, noZeroX, didPrefixed, noDidPrefixed } from "../../src/utils/ConversionTypeHelpers"
 
-describe.only("ConversionTypeHelpers", () => {
+describe("ConversionTypeHelpers", () => {
     describe("#zeroXTransformer()", () => {
         it("should return the input if it's not hex value", async () => {
             const result1 = zeroX("Test 1")

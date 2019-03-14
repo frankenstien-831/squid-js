@@ -45,9 +45,9 @@ export class DDO {
     public service: Service[] = []
     public proof: Proof
 
-    public constructor(ddo?: Partial<DDO>) {
+    public constructor(ddo: Partial<DDO> = {}) {
         Object.assign(this, ddo, {
-            created: ddo.created  || new Date().toISOString().replace(/\.[0-9]{3}/, ""),
+            created: (ddo && ddo.created) || new Date().toISOString().replace(/\.[0-9]{3}/, ""),
         })
     }
 
