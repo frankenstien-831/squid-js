@@ -1,4 +1,5 @@
 import { assert } from "chai"
+import * as Web3 from "web3"
 
 import { config } from "../config"
 
@@ -13,7 +14,10 @@ describe("Signature", () => {
     let consumer: Account
 
     before(async () => {
-        await Ocean.getInstance(config)
+        await Ocean.getInstance({
+            ...config,
+            web3Provider: new (Web3 as any).providers.HttpProvider("http://localhost:8545", 0, "0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e", "node0"),
+        })
 
         // Accounts
         consumer = new Account("0x00bd138abd70e2f00903268f3db08f2d25677c9e")
@@ -45,12 +49,7 @@ describe("Signature", () => {
         const did = `did:op:${"c".repeat(64)}`
         const templateId = `0x${"f".repeat(40)}`
         const agreementId = `0x${"e".repeat(64)}`
-        const ddoOwner = `0x${"9".repeat(40)}`
         const serviceDefinitionId = "0"
-        const amount = "10"
-
-        const accessId = `0x${"a".repeat(64)}`
-        const lockId = `0x${"b".repeat(64)}`
 
         const serviceAgreementTemplate = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplate()
 
@@ -65,34 +64,32 @@ describe("Signature", () => {
                     templateId,
                     serviceAgreementTemplate,
                 } as any,
+                {
+                    type: "Metadata",
+                    metadata: {
+                        base: {
+                            price: 10,
+                        }
+                    }
+                } as any,
             ],
         })
 
-
-        const valuesMap = {
-            rewardAddress: ddoOwner,
-            amount,
-            documentId: ddo.shortId(),
-            grantee: consumer.getId(),
-            receiver: consumer.getId(),
-            sender: ddoOwner,
-
-            lockCondition: lockId,
-            releaseCondition: accessId,
-        }
+        const agreementConditionIds = await templates.escrowAccessSecretStoreTemplate
+            .getAgreementIdsFromDDO(agreementId, ddo, consumer.getId(), consumer.getId())
 
         const signature = await ServiceAgreement.signServiceAgreement(
             ddo,
             serviceDefinitionId,
             agreementId,
-            valuesMap,
+            agreementConditionIds,
             consumer,
         )
 
         assert.equal(
             signature,
             // tslint:disable-next-line
-            "0x6bd49301a4a98d4e2ca149d649cc22fa0c5bd69269716d91c5cc17576ec3caef12a0edf611bb318e684683eec77b202bbbe484ceb698aec0e1250b7d1cf874dd1c",
+            "0x842c61796f8dab8dc18ff7499a98054fcaeaddfd2384dbf7d545f00e8d44bb391a1dea96a4df692d9b9f141239024b9112cb1c815f9c4063d3a79ccf450abf3e1b",
             "The signatuere is not correct.",
         )
     })
