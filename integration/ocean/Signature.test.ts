@@ -89,7 +89,7 @@ describe("Signature", () => {
         assert.equal(
             signature,
             // tslint:disable-next-line
-            "0x842c61796f8dab8dc18ff7499a98054fcaeaddfd2384dbf7d545f00e8d44bb391a1dea96a4df692d9b9f141239024b9112cb1c815f9c4063d3a79ccf450abf3e1b",
+            "0x2164dd54b1df9908b3aa31a2d195c3e3a244ff62b51b0403958234f50cb313615ac5ca6660f7a76957612deeca84e6953f2ce74f56def351d9eb0f155a4eddff1c",
             "The signatuere is not correct.",
         )
     })

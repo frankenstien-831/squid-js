@@ -113,7 +113,7 @@ describe("Consume Asset", () => {
         assert.isTrue(paid, "The asset has not been paid correctly")
     })
 
-    xit("should lock the payment", async () => {
+    xit("should grant the access", async () => {
         const granted = await ocean.agreements.conditions
             .grantAccess(serviceAgreementSignatureResult.agreementId, ddo.id, consumer.getId(), publisher)
 

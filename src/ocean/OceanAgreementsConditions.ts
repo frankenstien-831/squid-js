@@ -87,8 +87,8 @@ export default class OceanAgreementsConditions {
         const receipt = await escrowReward.fulfill(
             agreementId,
             amount,
-            consumer,
             publisher,
+            consumer,
             conditionIdLock,
             conditionIdAccess,
             from.getId(),

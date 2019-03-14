@@ -74,8 +74,8 @@ describe("Register Escrow Access Secret Store Template", () => {
             conditionIdEscrow = await escrowReward.generateIdHash(
                 agreementId,
                 escrowAmount,
-                consumer.getId(),
                 publisher.getId(),
+                consumer.getId(),
                 conditionIdLock,
                 conditionIdAccess,
             )
@@ -147,8 +147,8 @@ describe("Register Escrow Access Secret Store Template", () => {
             const fulfill = await escrowReward.fulfill(
                 agreementId,
                 escrowAmount,
-                consumer.getId(),
                 publisher.getId(),
+                consumer.getId(),
                 conditionIdLock,
                 conditionIdAccess,
                 consumer.getId(),
