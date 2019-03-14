@@ -96,14 +96,16 @@ export abstract class AgreementTemplate extends ContractBase {
 
         const dependencies = await this.getServiceAgreementTemplateDependencies()
         const {conditionIds} = await agreementStore.getAgreement(agreementId)
+        const conditionIdByConddition = (await this.getConditions())
+            .reduce((acc, {contractName}, i) => ({...acc, [contractName]: conditionIds[i]}), {})
 
         const statesPromises = Object.keys(dependencies)
             .map(async (ref, i) => {
-                const condition = await this.getServiceAgreementTemplateConditionByRef(ref)
+                const {contractName} = await this.getServiceAgreementTemplateConditionByRef(ref)
                 return {
                     ref,
-                    contractName: condition.contractName,
-                    state: (await conditionStore.getCondition(conditionIds[i])).state
+                    contractName,
+                    state: (await conditionStore.getCondition(conditionIdByConddition[contractName])).state
                 }
             })
         const states = await Promise.all(statesPromises)
