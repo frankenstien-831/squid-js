@@ -13,6 +13,8 @@ until [ $COMMAND_STATUS -eq 0 ] || [ $RETRY_COUNT -eq 120 ]; do
   let RETRY_COUNT=RETRY_COUNT+1
 done
 
+rm -rf ./artifacts/
+
 if [ $COMMAND_STATUS -ne 0 ]; then
   echo "Waited for more than two minutes, but keeper contracts have not been migrated yet. Did you run an Ethereum RPC client and the migration script?"
   exit 1

@@ -56,9 +56,7 @@ describe("Consume Asset (Brizo)", () => {
                 workExample: "stationId,latitude,longitude,datetime,temperature,humidity423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68",
                 files: [
                     {
-                        url: "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.pdf",
-                        checksum: "085340abffh21495345af97c6b0e761",
-                        contentLength: "12324",
+                        url: "https://raw.githubusercontent.com/oceanprotocol/squid-js/develop/package.json",
                     },
                     {
                         url: "https://raw.githubusercontent.com/oceanprotocol/squid-js/develop/README.md",
@@ -100,12 +98,12 @@ describe("Consume Asset (Brizo)", () => {
 
         assert.include(path, folder, "The storage path is not correct.")
 
-        const files = await new Promise((resolve) => {
+        const files = await new Promise<string[]>((resolve) => {
             fs.readdir(path, (err, fileList) => {
                 resolve(fileList)
             })
         })
 
-        assert.deepEqual(files, ["README.md", "testzkp.pdf"], "Stored files are not correct.")
+        assert.deepEqual(files, ["README.md", "package.json"], "Stored files are not correct.")
     })
 })
