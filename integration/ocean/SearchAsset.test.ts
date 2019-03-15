@@ -2,7 +2,9 @@ import { assert } from "chai"
 
 import { config } from "../config"
 
-import { Ocean, MetaData, Account, DDO } from "../../src" // @oceanprotocol/squid
+import { generateMetadata } from "../utils"
+
+import { Ocean, Account, DDO } from "../../src" // @oceanprotocol/squid
 
 describe("Search Asset", () => {
     let ocean: Ocean
@@ -10,14 +12,7 @@ describe("Search Asset", () => {
     let publisher: Account
 
     const testHash = Math.random().toString(36).substr(2)
-    let metadata: Partial<MetaData>
-    const metadataGenerator = (name: string) => ({
-        ...metadata,
-        base: {
-            ...metadata.base,
-            name: `${name}${testHash}`,
-        },
-    })
+    const metadataGenerator = (name: string) => generateMetadata(`${name}${testHash}`)
 
     let test1length
     let test2length
@@ -29,44 +24,6 @@ describe("Search Asset", () => {
         // Accounts
         publisher = (await ocean.accounts.list())[0]
         publisher.setPassword(process.env.ACCOUNT_PASSWORD)
-
-        // Data
-        metadata = {
-            base: {
-                name: undefined,
-                type: "dataset",
-                description: "Weather information of UK including temperature and humidity",
-                size: "3.1gb",
-                dateCreated: "2012-02-01T10:55:11+00:00",
-                author: "Met Office",
-                license: "CC-BY",
-                copyrightHolder: "Met Office",
-                encoding: "UTF-8",
-                compression: "zip",
-                contentType: "text/csv",
-                // tslint:disable-next-line
-                workExample: "stationId,latitude,longitude,datetime,temperature,humidity423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68",
-                files: [
-                    {
-                        url: "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip",
-                        checksum: "085340abffh21495345af97c6b0e761",
-                        contentLength: "12324",
-                    },
-                    {
-                        url: "https://testocnfiles.blob.core.windows.net/testfiles/testzkp2.zip",
-                    },
-                ],
-                links: [
-                    {sample1: "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-daily/"},
-                    {sample2: "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-averages-25km/"},
-                    {fieldsDescription: "http://data.ceda.ac.uk/badc/ukcp09/"},
-                ],
-                inLanguage: "en",
-                tags: "weather, uk, 2011, temperature, humidity",
-                price: 10,
-            },
-        }
-
     })
 
     it("should be able to search the assets", async () => {

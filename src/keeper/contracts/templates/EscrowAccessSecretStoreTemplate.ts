@@ -59,7 +59,7 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
 
     public async getAgreementIdsFromDDO(agreementId: string, ddo: DDO, consumer: string, from?: string) {
         const {accessSecretStoreConditionId, lockRewardConditionId, escrowRewardId} =
-            await this.createFullAgreementData(agreementId, ddo.shortId(), ddo.findServiceByType("Metadata").metadata.base.price, from)
+            await this.createFullAgreementData(agreementId, ddo.shortId(), ddo.findServiceByType("Metadata").metadata.base.price, consumer)
         return [accessSecretStoreConditionId, lockRewardConditionId, escrowRewardId]
     }
 
@@ -71,9 +71,9 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
      * @return {Promise<string>}        Agreement ID.
      */
     public async createFullAgreement(did: string, amount: number, consumer: string, from?: string, agreementId?: string): Promise<string> {
-        agreementId = agreementId || zeroX(generateId())
+        agreementId = agreementId || generateId()
         const {accessSecretStoreConditionId, lockRewardConditionId, escrowRewardId} =
-            await this.createFullAgreementData(agreementId, did, amount, from)
+            await this.createFullAgreementData(agreementId, did, amount, consumer)
 
         await this.createAgreement(
             agreementId,
@@ -85,12 +85,10 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
             from,
         )
 
-        return agreementId
+        return zeroX(agreementId)
     }
 
-    private async createFullAgreementData(agreementId: string, did: string, amount: number, from?: string) {
-        from = await this.getFromAddress(from)
-
+    private async createFullAgreementData(agreementId: string, did: string, amount: number, consumer: string) {
         const didRegistry = await DIDRegistry.getInstance()
 
         const accessSecretStoreCondition = await AccessSecretStoreCondition.getInstance()
@@ -100,12 +98,12 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
         const publisher = await didRegistry.getDIDOwner(did)
 
         const lockRewardConditionId = await lockRewardCondition.generateIdHash(agreementId, await escrowReward.getAddress(), amount)
-        const accessSecretStoreConditionId = await accessSecretStoreCondition.generateIdHash(agreementId, did, from)
+        const accessSecretStoreConditionId = await accessSecretStoreCondition.generateIdHash(agreementId, did, consumer)
         const escrowRewardId = await escrowReward.generateIdHash(
             agreementId,
             amount,
             publisher,
-            from,
+            consumer,
             lockRewardConditionId,
             accessSecretStoreConditionId,
         )

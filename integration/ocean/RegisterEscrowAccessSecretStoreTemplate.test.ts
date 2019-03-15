@@ -163,8 +163,7 @@ describe("Register Escrow Access Secret Store Template", () => {
         })
     })
 
-    // Not consisten flow on `condition.grantAccess`
-    xdescribe("Short flow", () => {
+    describe("Short flow", () => {
         const did = utils.generateId()
 
         let agreementId

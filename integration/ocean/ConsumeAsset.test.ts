@@ -1,8 +1,10 @@
 import { assert } from "chai"
+import * as fs from "fs"
 
 import { config } from "../config"
+import { getMetadata } from "../utils"
 
-import { Ocean, MetaData, DDO, DID, Account/*, ServiceAgreement*/ } from "../../src" // @oceanprotocol/squid
+import { Ocean, DDO, Account } from "../../src" // @oceanprotocol/squid
 
 describe("Consume Asset", () => {
     let ocean: Ocean
@@ -10,7 +12,7 @@ describe("Consume Asset", () => {
     let publisher: Account
     let consumer: Account
 
-    let metadata: Partial<MetaData>
+    const metadata = getMetadata()
 
     let ddo: DDO
     let serviceAgreementSignatureResult: {agreementId: string, signature: string}
@@ -22,43 +24,6 @@ describe("Consume Asset", () => {
         publisher = (await ocean.accounts.list())[0]
         publisher.setPassword(process.env.ACCOUNT_PASSWORD)
         consumer = (await ocean.accounts.list())[1]
-
-        // Data
-        metadata = {
-            base: {
-                name: "Office Humidity",
-                type: "dataset",
-                description: "Weather information of UK including temperature and humidity",
-                size: "3.1gb",
-                dateCreated: "2012-02-01T10:55:11+00:00",
-                author: "Met Office",
-                license: "CC-BY",
-                copyrightHolder: "Met Office",
-                encoding: "UTF-8",
-                compression: "zip",
-                contentType: "text/csv",
-                // tslint:disable-next-line
-                workExample: "stationId,latitude,longitude,datetime,temperature,humidity423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68",
-                files: [
-                    {
-                        url: "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip",
-                        checksum: "085340abffh21495345af97c6b0e761",
-                        contentLength: "12324",
-                    },
-                    {
-                        url: "https://testocnfiles.blob.core.windows.net/testfiles/testzkp2.zip",
-                    },
-                ],
-                links: [
-                    {sample1: "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-daily/"},
-                    {sample2: "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-averages-25km/"},
-                    {fieldsDescription: "http://data.ceda.ac.uk/badc/ukcp09/"},
-                ],
-                inLanguage: "en",
-                tags: "weather, uk, 2011, temperature, humidity",
-                price: 10,
-            },
-        }
     })
 
     it("should regiester a asset", async () => {
@@ -102,27 +67,44 @@ describe("Consume Asset", () => {
         assert.isTrue(success)
     })
 
-    xit("should lock the payment", async () => {
+    it("should lock the payment", async () => {
         const paid = await ocean.agreements.conditions
             .lockReward(
                 serviceAgreementSignatureResult.agreementId,
                 ddo.findServiceByType("Metadata").metadata.base.price,
-                publisher,
+                consumer,
             )
 
         assert.isTrue(paid, "The asset has not been paid correctly")
     })
 
-    xit("should grant the access", async () => {
+    it("should grant the access", async () => {
         const granted = await ocean.agreements.conditions
             .grantAccess(serviceAgreementSignatureResult.agreementId, ddo.id, consumer.getId(), publisher)
 
         assert.isTrue(granted, "The asset has not been granted correctly")
     })
 
-    xit("should consume the assets", async () => {
+    it("should consume and store the assets", async () => {
         const accessService = ddo.findServiceByType("Access")
 
-        await ocean.assets.consume(serviceAgreementSignatureResult.agreementId, ddo.id, accessService.serviceDefinitionId, consumer)
+        const folder = "/tmp/ocean/squid-js"
+        const path = await ocean.assets.consume(
+            serviceAgreementSignatureResult.agreementId,
+            ddo.id,
+            accessService.serviceDefinitionId,
+            consumer,
+            folder,
+        )
+
+        assert.include(path, folder, "The storage path is not correct.")
+
+        const files = await new Promise<string[]>((resolve) => {
+            fs.readdir(path, (err, fileList) => {
+                resolve(fileList)
+            })
+        })
+
+        assert.deepEqual(files, ["README.md", "package.json"], "Stored files are not correct.")
     })
 })
