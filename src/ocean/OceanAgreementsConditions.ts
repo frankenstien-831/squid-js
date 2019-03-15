@@ -81,7 +81,7 @@ export default class OceanAgreementsConditions {
         const {escrowReward, accessSecretStoreCondition, lockRewardCondition} = this.keeper.conditions
 
         const conditionIdAccess = await accessSecretStoreCondition.generateIdHash(agreementId, did, consumer)
-        const conditionIdLock = await lockRewardCondition.generateIdHash(agreementId, await escrowReward.getAddress(), amount)
+        const conditionIdLock = await lockRewardCondition.generateIdHash(agreementId, escrowReward.getAddress(), amount)
 
         const receipt = await escrowReward.fulfill(
             agreementId,

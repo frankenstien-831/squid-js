@@ -238,8 +238,8 @@ export default class OceanAssets {
 
         const keeper = await Keeper.getInstance()
         const templateName = ddo.findServiceByType("Access").serviceAgreementTemplate.contractName
-        const template = await keeper.getTemplateByName(templateName)
-        const accessCondition = await keeper.conditions.accessSecretStoreCondition
+        const template = keeper.getTemplateByName(templateName)
+        const accessCondition = keeper.conditions.accessSecretStoreCondition
 
         const paymentFlow = new Promise((resolve, reject) => {
             template
