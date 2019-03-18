@@ -29,11 +29,12 @@ before_script:
 
 script:
   - export ETH_PORT=18545; npm run test:cover
-  - npm run report-coverage
   - npm run build
   - npm run doc
   - ./scripts/wait_for_migration_and_extract_keeper_artifacts.sh
-  - npm run integration
+  - npm run integration:cover
+  - npm run merge-coverages
+  - npm run report-coverage
 
 after_script:
   - greenkeeper-lockfile-upload

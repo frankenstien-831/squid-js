@@ -36,11 +36,15 @@ describe("EventListener", () => {
                     to: acc.getId(),
                 })
 
+            let doneCalled: boolean
             event.listen((events) => {
                 assert(events)
                 assert(events.length === 2)
                 EventListener.unsubscribe(event)
-                done()
+                if (!doneCalled) {
+                    doneCalled = true
+                    done()
+                }
             })
 
             const {dispenser} = keeper
