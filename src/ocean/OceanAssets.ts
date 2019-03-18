@@ -193,7 +193,9 @@ export default class OceanAssets {
         }
 
         Logger.log("Decrypting files")
-        const decryptedFiles = await SecretStoreProvider.getSecretStore(secretStoreConfig).decryptDocument(DID.parse(did).getId(), files)
+        const decryptedFiles = await SecretStoreProvider
+            .getSecretStore(secretStoreConfig)
+            .decryptDocument(DID.parse(did).getId(), files)
         Logger.log("Files decrypted")
 
         Logger.log("Consuming files")

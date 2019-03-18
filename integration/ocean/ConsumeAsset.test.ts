@@ -1,4 +1,5 @@
 import { assert } from "chai"
+import * as Web3 from "web3"
 import * as fs from "fs"
 
 import { config } from "../config"
@@ -18,12 +19,17 @@ describe("Consume Asset", () => {
     let serviceAgreementSignatureResult: {agreementId: string, signature: string}
 
     before(async () => {
-        ocean = await Ocean.getInstance(config)
+        ocean = await Ocean.getInstance({
+            ...config,
+            web3Provider: new Web3.providers
+                .HttpProvider("http://localhost:8545", 0, "0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e", "node0"),
+        })
 
         // Accounts
-        publisher = (await ocean.accounts.list())[0]
-        publisher.setPassword(process.env.ACCOUNT_PASSWORD)
-        consumer = (await ocean.accounts.list())[1]
+        publisher = new Account("0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e")
+        publisher.setPassword("node0")
+        consumer = new Account("0x068Ed00cF0441e4829D9784fCBe7b9e26D4BD8d0")
+        consumer.setPassword("secret")
     })
 
     it("should regiester a asset", async () => {
@@ -67,7 +73,7 @@ describe("Consume Asset", () => {
         assert.isTrue(success)
     })
 
-    it("should lock the payment", async () => {
+    it("should lock the payment by the consumer", async () => {
         const paid = await ocean.agreements.conditions
             .lockReward(
                 serviceAgreementSignatureResult.agreementId,
@@ -78,7 +84,7 @@ describe("Consume Asset", () => {
         assert.isTrue(paid, "The asset has not been paid correctly")
     })
 
-    it("should grant the access", async () => {
+    it("should grant the access by the publisher", async () => {
         const granted = await ocean.agreements.conditions
             .grantAccess(serviceAgreementSignatureResult.agreementId, ddo.id, consumer.getId(), publisher)
 
