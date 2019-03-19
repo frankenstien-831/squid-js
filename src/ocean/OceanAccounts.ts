@@ -5,7 +5,7 @@ import Account from "./Account"
 /**
  * Account submodule of Ocean Protocol.
  */
-export default class OceanAccounts {
+export class OceanAccounts {
 
     /**
      * Returns the instance of OceanAccounts.

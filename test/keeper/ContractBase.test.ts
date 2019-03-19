@@ -1,7 +1,7 @@
 import {assert} from "chai"
 import ConfigProvider from "../../src/ConfigProvider"
 import Account from "../../src/ocean/Account"
-import Ocean from "../../src/ocean/Ocean"
+import { Ocean } from "../../src/ocean/Ocean"
 import config from "../config"
 import ContractBaseMock from "../mocks/ContractBase.Mock"
 import TestContractHandler from "./TestContractHandler"

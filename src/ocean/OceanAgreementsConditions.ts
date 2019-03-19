@@ -4,7 +4,7 @@ import Account from "./Account"
 /**
  * Agreements Conditions submodule of Ocean Protocol.
  */
-export default class OceanAgreementsConditions {
+export class OceanAgreementsConditions {
 
     /**
      * Returns the instance of OceanAgreementsConditions.

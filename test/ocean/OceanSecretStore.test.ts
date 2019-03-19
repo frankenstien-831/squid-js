@@ -3,8 +3,8 @@ import * as spies from "chai-spies"
 
 import ConfigProvider from "../../src/ConfigProvider"
 import Account from "../../src/ocean/Account"
-import Ocean from "../../src/ocean/Ocean"
-import OceanSecretStore from "../../src/ocean/OceanSecretStore"
+import { Ocean } from "../../src/ocean/Ocean"
+import { OceanSecretStore } from "../../src/ocean/OceanSecretStore"
 import SecretStoreProvider from "../../src/secretstore/SecretStoreProvider"
 import config from "../config"
 

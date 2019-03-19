@@ -2,7 +2,7 @@ import { assert, /*expect,*/ spy, use } from "chai"
 import * as spies from "chai-spies"
 
 import Account from "../../src/ocean/Account"
-import OceanAccounts from "../../src/ocean/OceanAccounts"
+import { OceanAccounts } from "../../src/ocean/OceanAccounts"
 
 use(spies)
 

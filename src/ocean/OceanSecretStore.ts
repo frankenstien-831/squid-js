@@ -4,7 +4,7 @@ import Account from "./Account"
 /**
  * SecretStore submodule of Ocean Protocol.
  */
-export default class OceanSecretStore {
+export class OceanSecretStore {
 
     /**
      * Returns the instance of OceanSecretStore.

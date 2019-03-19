@@ -1,10 +1,10 @@
 import deprecated from "deprecated-decorator"
 
-import OceanAccounts from "./OceanAccounts"
-import OceanAgreements from "./OceanAgreements"
-import OceanAssets from "./OceanAssets"
-import OceanSecretStore from "./OceanSecretStore"
-import OceanTokens from "./OceanTokens"
+import { OceanAccounts } from "./OceanAccounts"
+import { OceanAgreements } from "./OceanAgreements"
+import { OceanAssets } from "./OceanAssets"
+import { OceanSecretStore } from "./OceanSecretStore"
+import { OceanTokens } from "./OceanTokens"
 
 import AquariusProvider from "../aquarius/AquariusProvider"
 import { SearchQuery } from "../aquarius/query/SearchQuery"
@@ -27,7 +27,7 @@ import EventListener from "../keeper/EventListener"
 /**
  * Main interface for Ocean Protocol.
  */
-export default class Ocean {
+export class Ocean {
 
     /**
      * Returns the instance of Ocean.
@@ -35,13 +35,6 @@ export default class Ocean {
      * @return {Promise<Ocean>}
      */
     public static async getInstance(config: Config): Promise<Ocean> {
-        // Must be defined on instance level, right now, calling getInstance twice is going to rewrite that
-        // WARN: is called on ConfigProvider.setConfig too (to work fine on test)
-        Logger.setLevel(
-            typeof config.verbose !== "number"
-                ? (config.verbose ? LogLevel.Log : LogLevel.None)
-                : config.verbose as LogLevel,
-        )
         ConfigProvider.setConfig(config)
 
         if (!Ocean.instance) {

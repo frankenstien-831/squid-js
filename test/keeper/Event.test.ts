@@ -3,7 +3,7 @@ import ConfigProvider from "../../src/ConfigProvider"
 import EventListener from "../../src/keeper/EventListener"
 import Keeper from "../../src/keeper/Keeper"
 import Account from "../../src/ocean/Account"
-import Ocean from "../../src/ocean/Ocean"
+import { Ocean } from "../../src/ocean/Ocean"
 import config from "../config"
 import TestContractHandler from "./TestContractHandler"
 

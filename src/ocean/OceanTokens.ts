@@ -4,7 +4,7 @@ import Account from "./Account"
 /**
  * Tokens submodule of Ocean Protocol.
  */
-export default class OceanTokens {
+export class OceanTokens {
 
     /**
      * Returns the instance of OceanTokens.

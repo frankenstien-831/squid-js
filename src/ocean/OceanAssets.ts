@@ -11,12 +11,12 @@ import SecretStoreProvider from "../secretstore/SecretStoreProvider"
 import { Logger, fillConditionsWithDDO } from "../utils"
 import Account from "./Account"
 import DID from "./DID"
-import OceanAgreements from "./OceanAgreements"
+import { OceanAgreements } from "./OceanAgreements"
 
 /**
  * Assets submodule of Ocean Protocol.
  */
-export default class OceanAssets {
+export class OceanAssets {
 
     /**
      * Returns the instance of OceanAssets.

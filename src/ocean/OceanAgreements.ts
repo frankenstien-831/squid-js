@@ -7,7 +7,7 @@ import ServiceAgreement from "./ServiceAgreements/ServiceAgreement"
 import { Keeper } from "../keeper/Keeper"
 import { zeroX, didPrefixed } from "../utils"
 
-import OceanAgreementsConditions from "./OceanAgreementsConditions"
+import { OceanAgreementsConditions } from "./OceanAgreementsConditions"
 
 export interface AgreementPrepareResult {
     agreementId: string
@@ -17,7 +17,7 @@ export interface AgreementPrepareResult {
 /**
  * Agreements submodule of Ocean Protocol.
  */
-export default class OceanAgreements {
+export class OceanAgreements {
 
     /**
      * Returns the instance of OceanAgreements.
