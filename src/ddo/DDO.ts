@@ -1,5 +1,5 @@
 import Web3Provider from "../keeper/Web3Provider"
-import Logger from "../utils/Logger"
+import LoggerInstance from "../utils/Logger"
 import * as signatureHelpers from "../utils/SignatureHelpers"
 import { Authentication } from "./Authentication"
 import { Proof } from "./Proof"
@@ -130,7 +130,7 @@ export class DDO {
     public addChecksum(): void {
         const metadataService = this.findServiceByType("Metadata")
         if (metadataService.metadata.base.checksum) {
-            Logger.log("Checksum already exists")
+            LoggerInstance.log("Checksum already exists")
             return
         }
         metadataService.metadata.base.checksum = this.getChecksum()

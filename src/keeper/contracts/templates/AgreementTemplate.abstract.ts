@@ -4,7 +4,7 @@ import { Condition, ConditionState, conditionStateNames } from "../conditions/Co
 import Keeper from "../../Keeper"
 import { DDO } from "../../../ddo/DDO"
 import { ServiceAgreementTemplate } from "../../../ddo/ServiceAgreementTemplate"
-import { zeroX, Logger } from "../../../utils"
+import { zeroX, LoggerInstance } from "../../../utils"
 import EventListener from "../../../keeper/EventListener"
 import Event from "../../../keeper/Event"
 
@@ -124,7 +124,7 @@ export abstract class AgreementTemplate extends ContractBase {
         const {conditionIds} = await agreementStore.getAgreement(agreementId)
 
         if (!conditionIds.length) {
-            Logger.error(`Agreement not creeated yet: "${agreementId}"`)
+            LoggerInstance.error(`Agreement not creeated yet: "${agreementId}"`)
             return false
         }
 
@@ -167,25 +167,25 @@ export abstract class AgreementTemplate extends ContractBase {
     public async printAgreementStatus(agreementId: string) {
         const status = await this.getAgreementStatus(agreementId)
 
-        Logger.bypass("-".repeat(80))
-        Logger.bypass("Template:", this.contractName)
-        Logger.bypass("Agreement ID:", agreementId)
-        Logger.bypass("-".repeat(40))
+        LoggerInstance.bypass("-".repeat(80))
+        LoggerInstance.bypass("Template:", this.contractName)
+        LoggerInstance.bypass("Agreement ID:", agreementId)
+        LoggerInstance.bypass("-".repeat(40))
         if (!status) {
-            Logger.bypass("Agreement not created yet!")
+            LoggerInstance.bypass("Agreement not created yet!")
         }
         Object.values(status || [])
             .forEach(({condition, contractName, state, blocked, blockedBy}, i) => {
                 if (i) {
-                    Logger.bypass("-".repeat(20))
+                    LoggerInstance.bypass("-".repeat(20))
                 }
-                Logger.bypass(`${condition} (${contractName})`)
-                Logger.bypass("  Status:", state, `(${conditionStateNames[state]})`)
+                LoggerInstance.bypass(`${condition} (${contractName})`)
+                LoggerInstance.bypass("  Status:", state, `(${conditionStateNames[state]})`)
                 if (blocked) {
-                    Logger.bypass("  Blocked by:", blockedBy)
+                    LoggerInstance.bypass("  Blocked by:", blockedBy)
                 }
             })
-        Logger.bypass("-".repeat(80))
+        LoggerInstance.bypass("-".repeat(80))
     }
 
     /**

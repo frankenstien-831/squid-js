@@ -1,4 +1,4 @@
-import Logger from "../utils/Logger"
+import LoggerInstance from "../utils/Logger"
 import GenericContract from "./contracts/GenericContract"
 import EventListener from "./EventListener"
 import Web3Provider from "./Web3Provider"
@@ -55,7 +55,7 @@ export default class Event {
                 callback(events)
             }
         } catch (err) {
-            Logger.log(err)
+            LoggerInstance.log(err)
         }
     }
 }

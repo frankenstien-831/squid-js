@@ -3,7 +3,7 @@ import * as EthJsUtils from "ethereumjs-util"
 import Keeper from "../keeper/Keeper"
 import Web3Provider from "../keeper/Web3Provider"
 import Balance from "../models/Balance"
-import Logger from "../utils/Logger"
+import LoggerInstance from "../utils/Logger"
 
 /**
  * Account information.
@@ -84,7 +84,7 @@ export default class Account {
                 .dispenser
                 .requestTokens(amount, this.id)
         } catch (e) {
-            Logger.error(e)
+            LoggerInstance.error(e)
             throw new Error("Error requesting tokens")
 
         }

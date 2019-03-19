@@ -1,5 +1,5 @@
 import Web3Provider from "../keeper/Web3Provider"
-import Logger from "./Logger"
+import LoggerInstance from "./Logger"
 
 export async function signText(text: string, publicKey: string, password?: string): Promise<string> {
     const web3 = Web3Provider.getWeb3()
@@ -7,13 +7,13 @@ export async function signText(text: string, publicKey: string, password?: strin
     try {
         return await web3.eth.personal.sign(text, publicKey, password)
     } catch (e) {
-        Logger.error("Error on personal sign.")
-        Logger.error(e)
+        LoggerInstance.error("Error on personal sign.")
+        LoggerInstance.error(e)
         try {
             return await web3.eth.sign(text, publicKey, password)
         } catch (e2) {
-            Logger.error("Error on sign.")
-            Logger.error(e2)
+            LoggerInstance.error("Error on sign.")
+            LoggerInstance.error(e2)
             throw new Error("Error executing personal sign")
         }
     }

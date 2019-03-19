@@ -1,4 +1,4 @@
-import Logger from "../../../utils/Logger"
+import LoggerInstance from "../../../utils/Logger"
 import ContractBase from "../ContractBase"
 import { ConditionState } from "../conditions/Condition.abstract"
 import { zeroX } from "../../../utils"

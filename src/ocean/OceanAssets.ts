@@ -8,7 +8,7 @@ import { ServiceAgreementTemplateCondition } from "../ddo/ServiceAgreementTempla
 import { Service, ServiceAuthorization } from "../ddo/Service"
 import Keeper from "../keeper/Keeper"
 import SecretStoreProvider from "../secretstore/SecretStoreProvider"
-import { Logger, fillConditionsWithDDO } from "../utils"
+import { LoggerInstance, fillConditionsWithDDO } from "../utils"
 import Account from "./Account"
 import DID from "./DID"
 import { OceanAgreements } from "./OceanAgreements"
@@ -192,13 +192,13 @@ export class OceanAssets {
             secretStoreUri: secretStoreUrl,
         }
 
-        Logger.log("Decrypting files")
+        LoggerInstance.log("Decrypting files")
         const decryptedFiles = await SecretStoreProvider
             .getSecretStore(secretStoreConfig)
             .decryptDocument(DID.parse(did).getId(), files)
-        Logger.log("Files decrypted")
+        LoggerInstance.log("Files decrypted")
 
-        Logger.log("Consuming files")
+        LoggerInstance.log("Consuming files")
 
         resultPath = resultPath ? `${resultPath}/datafile.${ddo.shortId()}.${agreementId}/` : undefined
         await brizo.consumeService(
@@ -208,7 +208,7 @@ export class OceanAssets {
             decryptedFiles,
             resultPath,
         )
-        Logger.log("Files consumed")
+        LoggerInstance.log("Files consumed")
 
         if (resultPath) {
             return resultPath
@@ -232,9 +232,9 @@ export class OceanAssets {
 
         const oceanAgreements = await OceanAgreements.getInstance()
 
-        Logger.log("Asking for agreement signature")
+        LoggerInstance.log("Asking for agreement signature")
         const {agreementId, signature} = await oceanAgreements.prepare(did, serviceDefinitionId, consumer)
-        Logger.log(`Agreement ${agreementId} signed`)
+        LoggerInstance.log(`Agreement ${agreementId} signed`)
 
         const ddo = await this.resolve(did)
 
@@ -247,20 +247,20 @@ export class OceanAssets {
             template
                 .getAgreementCreatedEvent(agreementId)
                 .listenOnce(async (...args) => {
-                    Logger.log("Agreement initialized")
+                    LoggerInstance.log("Agreement initialized")
 
                     const {metadata} = ddo.findServiceByType("Metadata")
 
-                    Logger.log("Locking payment")
+                    LoggerInstance.log("Locking payment")
 
                     const paid = await oceanAgreements.conditions.lockReward(agreementId, metadata.base.price, consumer)
 
                     if (paid) {
-                        Logger.log("Payment was OK")
+                        LoggerInstance.log("Payment was OK")
                     } else {
-                        Logger.error("Payment was KO")
-                        Logger.error("Agreement ID: ", agreementId)
-                        Logger.error("DID: ", ddo.id)
+                        LoggerInstance.error("Payment was KO")
+                        LoggerInstance.error("Agreement ID: ", agreementId)
+                        LoggerInstance.error("DID: ", ddo.id)
                         reject("Error on payment")
                     }
                 })
@@ -268,12 +268,12 @@ export class OceanAssets {
             accessCondition
                 .getConditionFulfilledEvent(agreementId)
                 .listenOnce(async (...args) => {
-                    Logger.log("Access granted")
+                    LoggerInstance.log("Access granted")
                     resolve()
                 })
         })
 
-        Logger.log("Sending agreement request")
+        LoggerInstance.log("Sending agreement request")
         await oceanAgreements.send(did, agreementId, serviceDefinitionId, signature, consumer)
 
         await paymentFlow

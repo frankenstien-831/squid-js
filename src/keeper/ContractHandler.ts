@@ -1,5 +1,5 @@
 import { Contract } from "web3-eth-contract"
-import Logger from "../utils/Logger"
+import LoggerInstance from "../utils/Logger"
 import Keeper from "./Keeper"
 import Web3Provider from "./Web3Provider"
 
@@ -10,7 +10,7 @@ export default class ContractHandler {
         try {
             return ContractHandler.contracts.get(what) || await ContractHandler.load(what, where)
         } catch (err) {
-            Logger.error("Failed to load", what, "from", where, err)
+            LoggerInstance.error("Failed to load", what, "from", where, err)
             throw err
         }
     }
@@ -27,7 +27,7 @@ export default class ContractHandler {
 
     private static async load(what: string, where: string): Promise<Contract> {
         const web3 = Web3Provider.getWeb3()
-        Logger.debug("Loading", what, "from", where)
+        LoggerInstance.debug("Loading", what, "from", where)
         const artifact = require(`@oceanprotocol/keeper-contracts/artifacts/${what}.${where}.json`)
         // Logger.log('Loaded artifact', artifact)
         const code = await web3.eth.getCode(artifact.address)
@@ -37,7 +37,7 @@ export default class ContractHandler {
         }
         const contract = new web3.eth.Contract(artifact.abi, artifact.address)
 
-        Logger.debug("Getting instance of", what, "from", where, "at address", artifact.address)
+        LoggerInstance.debug("Getting instance of", what, "from", where, "at address", artifact.address)
         ContractHandler.contracts.set(what, contract)
         return ContractHandler.contracts.get(what)
     }

@@ -1,4 +1,4 @@
-import Logger from "../../../utils/Logger"
+import LoggerInstance from "../../../utils/Logger"
 import ContractBase from "../ContractBase"
 import { zeroX } from "../../../utils"
 
@@ -31,7 +31,7 @@ export class TemplateStoreManager extends ContractBase {
     public async proposeTemplate(address: string, from?: string, ignoreExists?: boolean) {
         const template = await this.getTemplate(address)
         if (template.blockNumberUpdated !== 0) {
-            Logger.warn(`Template "${address}" already exist.`)
+            LoggerInstance.warn(`Template "${address}" already exist.`)
             if (!ignoreExists) {
                 throw new Error("Template already exist.")
             }
@@ -43,7 +43,7 @@ export class TemplateStoreManager extends ContractBase {
     public async approveTemplate(address: string, from?: string, ignoreApproved?: boolean) {
         const template = await this.getTemplate(address)
         if (template.state !== TemplateState.Proposed) {
-            Logger.warn(`Template "${address}" is not in "proposed" state.`)
+            LoggerInstance.warn(`Template "${address}" is not in "proposed" state.`)
             if (!ignoreApproved) {
                 throw new Error(`Template not in "proposed" state.`)
             }

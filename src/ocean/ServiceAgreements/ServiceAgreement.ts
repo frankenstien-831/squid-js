@@ -3,7 +3,7 @@ import { DDO } from "../../ddo/DDO"
 import { ServiceAccess } from "../../ddo/Service"
 import Web3Provider from "../../keeper/Web3Provider"
 import ValuePair from "../../models/ValuePair"
-import Logger from "../../utils/Logger"
+import LoggerInstance from "../../utils/Logger"
 import Account from "../Account"
 import { signText, zeroX } from "../../utils"
 
@@ -35,7 +35,7 @@ export default class ServiceAgreement {
             consumer,
         )
 
-        Logger.log("SA hash signature:", serviceAgreementHashSignature)
+        LoggerInstance.log("SA hash signature:", serviceAgreementHashSignature)
 
         return serviceAgreementHashSignature
     }

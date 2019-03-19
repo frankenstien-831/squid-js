@@ -1,5 +1,5 @@
 import fetch, { BodyInit, RequestInit, Response } from "node-fetch"
-import Logger from "./Logger"
+import LoggerInstance from "./Logger"
 
 /**
  * Provides a common interface to web services.
@@ -38,8 +38,8 @@ export default class WebServiceConnector {
     private async fetch(url: string, opts: RequestInit): Promise<Response> {
         const result = await fetch(url, opts)
         if (!result.ok) {
-            Logger.error(`Error requesting [${opts.method}] ${url}`)
-            Logger.error(`Response message: \n${await result.text()}`)
+            LoggerInstance.error(`Error requesting [${opts.method}] ${url}`)
+            LoggerInstance.error(`Response message: \n${await result.text()}`)
             throw result
         }
         return result

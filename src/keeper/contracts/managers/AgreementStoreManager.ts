@@ -1,4 +1,4 @@
-import Logger from "../../../utils/Logger"
+import LoggerInstance from "../../../utils/Logger"
 import ContractBase from "../ContractBase"
 import { zeroX } from "../../../utils"
 

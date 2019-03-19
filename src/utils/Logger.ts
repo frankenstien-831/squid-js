@@ -8,36 +8,39 @@ export enum LogLevel {
 
 export class Logger {
 
-    public static setLevel(level: LogLevel) {
-        this.logLevel = level
+    constructor(private logLevel: LogLevel = LogLevel.Verbose) { }
+
+    public setLevel(logLevel: LogLevel) {
+        this.warn("Logger.setLevel is deprecated")
+        this.logLevel = logLevel
     }
 
-    public static bypass(...args: any[]) {
-        Logger.dispatch("log", -Infinity as any, ...args)
+    public bypass(...args: any[]) {
+        this.dispatch("log", -Infinity as any, ...args)
     }
 
-    public static debug(...args: any[]) {
-        Logger.dispatch("debug", LogLevel.Verbose, ...args)
+    public debug(...args: any[]) {
+        this.dispatch("debug", LogLevel.Verbose, ...args)
     }
 
-    public static log(...args: any[]) {
-        Logger.dispatch("log", LogLevel.Log, ...args)
+    public log(...args: any[]) {
+        this.dispatch("log", LogLevel.Log, ...args)
     }
 
-    public static warn(...args: any[]) {
-        Logger.dispatch("warn", LogLevel.Warn, ...args)
+    public warn(...args: any[]) {
+        this.dispatch("warn", LogLevel.Warn, ...args)
     }
 
-    public static error(...args: any[]) {
-        Logger.dispatch("error", LogLevel.Error, ...args)
+    public error(...args: any[]) {
+        this.dispatch("error", LogLevel.Error, ...args)
     }
-    private static logLevel: LogLevel = LogLevel.Verbose
 
-    private static dispatch(verb: string, level: LogLevel, ...args: any[]) {
+    private dispatch(verb: string, level: LogLevel, ...args: any[]) {
         if (this.logLevel >= level) {
             console[verb](...args)
         }
     }
 }
 
-export default Logger
+export const LoggerInstance = new Logger()
+export default LoggerInstance

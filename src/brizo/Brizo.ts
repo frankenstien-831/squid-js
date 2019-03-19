@@ -2,7 +2,7 @@ import save = require("save-file")
 import { File } from "../ddo/MetaData"
 import Config from "../models/Config"
 import Account from "../ocean/Account"
-import Logger from "../utils/Logger"
+import LoggerInstance from "../utils/Logger"
 import WebServiceConnectorProvider from "../utils/WebServiceConnectorProvider"
 
 const apiPath = "/api/v1/brizo/services"
@@ -55,7 +55,7 @@ export default class Brizo {
                     decodeURI(JSON.stringify(args)),
                 )
         } catch (e) {
-            Logger.error(e)
+            LoggerInstance.error(e)
             throw new Error("HTTP request failed")
         }
     }
@@ -81,8 +81,8 @@ export default class Brizo {
                         destination,
                     )
                 } catch (e) {
-                    Logger.error("Error consuming assets")
-                    Logger.error(e)
+                    LoggerInstance.error("Error consuming assets")
+                    LoggerInstance.error(e)
                     throw new Error("Error consuming assets")
                 }
             })

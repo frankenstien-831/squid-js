@@ -8,10 +8,5 @@ describe("Squid", () => {
         it("should expose Ocean", async () => {
             assert(squid.Ocean)
         })
-
-        it("should expose Logger", async () => {
-            assert(squid.Logger)
-        })
     })
-
 })

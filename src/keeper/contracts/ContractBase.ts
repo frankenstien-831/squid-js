@@ -1,6 +1,6 @@
 import { Contract } from "web3-eth-contract"
 import { TransactionReceipt } from "web3-core"
-import Logger from "../../utils/Logger"
+import LoggerInstance from "../../utils/Logger"
 import ContractHandler from "../ContractHandler"
 import Web3Provider from "../Web3Provider"
 
@@ -75,12 +75,12 @@ export default abstract class ContractBase {
                     value: args[i],
                 }
             })
-            Logger.error("-".repeat(40))
-            Logger.error(`Sending transaction "${name}" on contract "${this.contractName}" failed.`)
-            Logger.error(`Error: ${err.message}`)
-            Logger.error(`From: ${from}`)
-            Logger.error(`Parameters: ${JSON.stringify(mappedArgs, null, 2)}`)
-            Logger.error("-".repeat(40))
+            LoggerInstance.error("-".repeat(40))
+            LoggerInstance.error(`Sending transaction "${name}" on contract "${this.contractName}" failed.`)
+            LoggerInstance.error(`Error: ${err.message}`)
+            LoggerInstance.error(`From: ${from}`)
+            LoggerInstance.error(`Parameters: ${JSON.stringify(mappedArgs, null, 2)}`)
+            LoggerInstance.error("-".repeat(40))
             throw err
         }
     }
@@ -94,7 +94,7 @@ export default abstract class ContractBase {
             const method = this.contract.methods[name](...args)
             return method.call(from ? {from} : null)
         } catch (err) {
-            Logger.error(`Calling method "${name}" on contract "${this.contractName}" failed. Args: ${args}`, err)
+            LoggerInstance.error(`Calling method "${name}" on contract "${this.contractName}" failed. Args: ${args}`, err)
             throw err
         }
     }
