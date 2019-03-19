@@ -4,13 +4,22 @@ import Keeper from "../keeper/Keeper"
 import Web3Provider from "../keeper/Web3Provider"
 import Balance from "../models/Balance"
 import Logger from "../utils/Logger"
-import OceanBase from "./OceanBase"
 
 /**
  * Account information.
  */
-export default class Account extends OceanBase {
+export default class Account {
     private password?: string
+
+    constructor(private id: string = "0x0") { }
+
+    public getId() {
+        return this.id
+    }
+
+    public setId(id) {
+        this.id = id
+    }
 
     /**
      * Set account password.
