@@ -3,7 +3,7 @@ import * as Web3 from "web3"
 
 import { config } from "../config"
 
-import { Ocean, Account, DDO, Keeper } from "../../src" // @oceanprotocol/squid
+import { Ocean, Account, DDO } from "../../src" // @oceanprotocol/squid
 
 import ServiceAgreement from "../../src/ocean/ServiceAgreements/ServiceAgreement"
 
@@ -11,14 +11,17 @@ import ServiceAgreement from "../../src/ocean/ServiceAgreements/ServiceAgreement
 // depends on the first account on spree (only accessible from integration test)
 describe("Signature", () => {
 
+    let ocean: Ocean
+    let web3: Web3
     let consumer: Account
 
     before(async () => {
-        await Ocean.getInstance({
+        ocean = await Ocean.getInstance({
             ...config,
             web3Provider: new (Web3 as any).providers
                 .HttpProvider("http://localhost:8545", 0, "0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e", "node0"),
         })
+        web3 = (ocean as any).web3
 
         // Accounts
         consumer = new Account("0x00bd138abd70e2f00903268f3db08f2d25677c9e")
@@ -45,7 +48,7 @@ describe("Signature", () => {
     })
 
     it("should generate the correct signature", async () => {
-        const templates = (await Keeper.getInstance()).templates
+        const templates = ocean.keeper.templates
 
         const did = `did:op:${"c".repeat(64)}`
         const templateId = `0x${"f".repeat(40)}`
@@ -80,6 +83,7 @@ describe("Signature", () => {
             .getAgreementIdsFromDDO(agreementId, ddo, consumer.getId(), consumer.getId())
 
         const signature = await ServiceAgreement.signServiceAgreement(
+            web3,
             ddo,
             serviceDefinitionId,
             agreementId,

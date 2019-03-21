@@ -3,4 +3,4 @@
 --full-trace
 --exit
 --timeout 300000
-integration/ocean/RegisterEscrowAccessSecretStoreTemplate.test.ts integration/**/*.test.ts
+integration/**/*.test.ts

@@ -2,10 +2,9 @@ import { assert } from "chai"
 
 import { config } from "../config"
 
-import { Ocean, templates, conditions, utils, Keeper, Account } from "../../src" // @oceanprotocol/squid
+import { Ocean, templates, conditions, utils, Account, Keeper } from "../../src" // @oceanprotocol/squid
 
 const { LockRewardCondition, EscrowReward, AccessSecretStoreCondition } = conditions
-const { EscrowAccessSecretStoreTemplate } = templates
 
 describe("Register Escrow Access Secret Store Template", () => {
     let ocean: Ocean
@@ -27,9 +26,9 @@ describe("Register Escrow Access Secret Store Template", () => {
 
     before(async () => {
         ocean = await Ocean.getInstance(config)
-        keeper = await Keeper.getInstance()
+        keeper = ocean.keeper
 
-        template = await EscrowAccessSecretStoreTemplate.getInstance()
+        template = keeper.templates.escrowAccessSecretStoreTemplate
 
         // Accounts
         templateManagerOwner = (await ocean.accounts.list())[0]
@@ -37,22 +36,22 @@ describe("Register Escrow Access Secret Store Template", () => {
         consumer = (await ocean.accounts.list())[2]
 
         // Conditions
-        accessSecretStoreCondition = await AccessSecretStoreCondition.getInstance()
-        lockRewardCondition = await LockRewardCondition.getInstance()
-        escrowReward = await EscrowReward.getInstance()
+        accessSecretStoreCondition = keeper.conditions.accessSecretStoreCondition
+        lockRewardCondition = keeper.conditions.lockRewardCondition
+        escrowReward = keeper.conditions.escrowReward
     })
 
     describe("Propose and approve template", () => {
         it("should propose the template", async () => {
             await keeper.templateStoreManager.proposeTemplate(template.getAddress(), consumer.getId(), true)
             // TODO: Use a event to detect template mined
-            await new Promise((_) => setTimeout(_, 6 * 1000))
+            await new Promise((_) => setTimeout(_, 2 * 1000))
         })
 
         it("should approve the template", async () => {
             await keeper.templateStoreManager.approveTemplate(template.getAddress(), templateManagerOwner.getId(), true)
             // TODO: Use a event to detect template mined
-            await new Promise((_) => setTimeout(_, 6 * 1000))
+            await new Promise((_) => setTimeout(_, 2 * 1000))
         })
     })
 
