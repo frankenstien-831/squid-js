@@ -1,7 +1,6 @@
 import {assert} from "chai"
-import ConfigProvider from "../../../src/ConfigProvider"
 import { LockRewardCondition } from "../../../src/keeper/contracts/conditions"
-import Keeper from "../../../src/keeper/Keeper"
+import { Ocean } from "../../../src/ocean/Ocean"
 import config from "../../config"
 import TestContractHandler from "../TestContractHandler"
 
@@ -14,10 +13,8 @@ describe("LockRewardCondition", () => {
     const amount = 15
 
     before(async () => {
-        ConfigProvider.setConfig(config)
         await TestContractHandler.prepareContracts()
-        condition = (await Keeper.getInstance()).conditions.lockRewardCondition
-
+        condition = (await Ocean.getInstance(config)).keeper.conditions.lockRewardCondition
     })
 
     describe("#hashValues()", () => {

@@ -1,6 +1,7 @@
-import LoggerInstance from "../../../utils/Logger"
 import ContractBase from "../ContractBase"
 import { zeroX } from "../../../utils"
+import { InstantiableConfig } from "../../../Instantiable.abstract"
+
 
 export enum TemplateState {
     Uninitialized = 0,
@@ -18,9 +19,9 @@ export interface TemplateMetadata {
 
 export class TemplateStoreManager extends ContractBase {
 
-    public static async getInstance(): Promise<TemplateStoreManager> {
+    public static async getInstance(config: InstantiableConfig): Promise<TemplateStoreManager> {
         const templateStoreManeger: TemplateStoreManager = new TemplateStoreManager("TemplateStoreManager")
-        await templateStoreManeger.init()
+        await templateStoreManeger.init(config)
         return templateStoreManeger
     }
 
@@ -31,7 +32,7 @@ export class TemplateStoreManager extends ContractBase {
     public async proposeTemplate(address: string, from?: string, ignoreExists?: boolean) {
         const template = await this.getTemplate(address)
         if (template.blockNumberUpdated !== 0) {
-            LoggerInstance.warn(`Template "${address}" already exist.`)
+            this.logger.warn(`Template "${address}" already exist.`)
             if (!ignoreExists) {
                 throw new Error("Template already exist.")
             }
@@ -43,7 +44,7 @@ export class TemplateStoreManager extends ContractBase {
     public async approveTemplate(address: string, from?: string, ignoreApproved?: boolean) {
         const template = await this.getTemplate(address)
         if (template.state !== TemplateState.Proposed) {
-            LoggerInstance.warn(`Template "${address}" is not in "proposed" state.`)
+            this.logger.warn(`Template "${address}" is not in "proposed" state.`)
             if (!ignoreApproved) {
                 throw new Error(`Template not in "proposed" state.`)
             }

@@ -1,10 +1,11 @@
 import { Condition } from "./Condition.abstract"
 import { zeroX } from "../../../utils"
+import { InstantiableConfig } from "../../../Instantiable.abstract"
 
 export class LockRewardCondition extends Condition {
 
-    public static async getInstance(): Promise<LockRewardCondition> {
-        return Condition.getInstance("LockRewardCondition", LockRewardCondition)
+    public static async getInstance(config: InstantiableConfig): Promise<LockRewardCondition> {
+        return Condition.getInstance(config, "LockRewardCondition", LockRewardCondition)
     }
 
     public hashValues(rewardAddress: string, amount: number) {

@@ -1,5 +1,4 @@
 import {assert} from "chai"
-import ConfigProvider from "../../src/ConfigProvider"
 import { DDO } from "../../src/ddo/DDO"
 import Account from "../../src/ocean/Account"
 import DID from "../../src/ocean/DID"
@@ -18,10 +17,9 @@ describe("ServiceAgreement", () => {
     let consumerAccount: Account
 
     before(async () => {
-        ConfigProvider.setConfig(config)
         await TestContractHandler.prepareContracts()
         ocean = await Ocean.getInstance(config)
-        const accounts = await ocean.getAccounts()
+        const accounts = await ocean.accounts.list()
 
         publisherAccount = accounts[1]
         consumerAccount = accounts[2]

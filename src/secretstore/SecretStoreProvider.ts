@@ -1,42 +1,22 @@
 import SecretStore from "@oceanprotocol/secret-store-client"
 import SecretStoreConfig from "@oceanprotocol/secret-store-client/dist/models/SecretStoreConfig"
-import ConfigProvider from "../ConfigProvider"
-import Config from "../models/Config"
 
 export default class SecretStoreProvider {
 
-    public static setSecretStore(secretStore: SecretStore) {
-
-        SecretStoreProvider.secretStore = secretStore
-    }
-
-    public static getSecretStore(config?: Partial<SecretStoreConfig>): SecretStore {
-        config = {...config}
+    public static getSecretStore(config: SecretStoreConfig): SecretStore {
+        const {secretStoreUri, parityUri, password, address, threshold} = config
+        config = {secretStoreUri, parityUri, password, address, threshold}
         // Cleaning undefined parameters
         Object.keys(config)
-            .forEach((key) => config[key] || delete config[key])
+            .forEach((key) => config[key] || config[key] === 0 || delete config[key])
 
-        if (!Object.keys(config).length) {
-            if (!SecretStoreProvider.secretStore) {
-                SecretStoreProvider.secretStore = new SecretStore(ConfigProvider.getConfig())
-            }
-
-            return SecretStoreProvider.secretStore
-        } else {
-            const configRef = JSON.stringify(config)
-            if (!SecretStoreProvider.secretStoreWithConfig.get(configRef)) {
-                SecretStoreProvider.secretStoreWithConfig.set(configRef,
-                    new SecretStore({
-                        ...ConfigProvider.getConfig(),
-                        ...config,
-                    }),
-                )
-            }
-
-            return SecretStoreProvider.secretStoreWithConfig.get(configRef)
+        const configRef = JSON.stringify(config)
+        if (!SecretStoreProvider.secretStoreWithConfig.get(configRef)) {
+            SecretStoreProvider.secretStoreWithConfig.set(configRef, new SecretStore({...config}))
         }
+
+        return SecretStoreProvider.secretStoreWithConfig.get(configRef)
     }
 
-    private static secretStore: SecretStore
     private static secretStoreWithConfig = new Map<string, SecretStore>()
 }

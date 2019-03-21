@@ -2,7 +2,7 @@ import Config from "./models/Config"
 import Account from "./ocean/Account"
 import DID from "./ocean/DID"
 import { Ocean } from "./ocean/Ocean"
-import LoggerInstance from "./utils/Logger"
+import { LoggerInstance as Logger} from "./utils/Logger"
 import WebServiceConnectorProvider from "./utils/WebServiceConnectorProvider"
 import Keeper from "./keeper/Keeper"
 import EventListener from "./keeper/EventListener"
@@ -24,9 +24,8 @@ export {
     Account,
     Config,
     DID,
-    EventListener,
+    Logger,
     Keeper,
-    LoggerInstance,
     WebServiceConnectorProvider,
 
     conditions,

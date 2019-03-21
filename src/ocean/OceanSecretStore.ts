@@ -1,28 +1,23 @@
 import SecretStoreProvider from "../secretstore/SecretStoreProvider"
 import Account from "./Account"
+import { noDidPrefixed } from "../utils"
+import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 /**
  * SecretStore submodule of Ocean Protocol.
  */
-export class OceanSecretStore {
+export class OceanSecretStore extends Instantiable {
 
     /**
      * Returns the instance of OceanSecretStore.
      * @return {Promise<OceanSecretStore>}
      */
-    public static async getInstance(): Promise<OceanSecretStore> {
-        if (!OceanSecretStore.instance) {
-            OceanSecretStore.instance = new OceanSecretStore()
-        }
+    public static async getInstance(config: InstantiableConfig): Promise<OceanSecretStore> {
+        const instance = new OceanSecretStore()
+        instance.setInstanceConfig(config)
 
-        return OceanSecretStore.instance
+        return instance
     }
-
-    /**
-     * OceanSecretStore instance.
-     * @type {OceanSecretStore}
-     */
-    private static instance: OceanSecretStore = null
 
     /**
      * Encrypt the given text and store the encryption keys using the `did`.
@@ -32,10 +27,9 @@ export class OceanSecretStore {
      * @param  {string}          publisher Publisher account.
      * @return {Promise<string>}           Encrypted text.
      */
-    public async encrypt(did: string, content: any, publisher: Account): Promise<string> {
-        return await this.getSecretStoreByAccount(publisher)
-            // TODO did to id
-            .encryptDocument(did, content)
+    public async encrypt(did: string, content: any, publisher?: Account, secretStoreUrl?: string): Promise<string> {
+        return await this.getSecretStoreByAccount(publisher, secretStoreUrl)
+            .encryptDocument(noDidPrefixed(did), content)
     }
 
     /**
@@ -46,16 +40,21 @@ export class OceanSecretStore {
      * @param  {string}          consumer cONSUMER account.
      * @return {Promise<string>}          Encrypted text.
      */
-    public async decrypt(did: string, content: string, consumer: Account): Promise<any> {
-        return await this.getSecretStoreByAccount(consumer)
-            // TODO did to id
-            .decryptDocument(did, content)
+    public async decrypt(did: string, content: string, consumer?: Account, secretStoreUrl?: string): Promise<any> {
+        return await this.getSecretStoreByAccount(consumer, secretStoreUrl)
+            .decryptDocument(noDidPrefixed(did), content)
     }
 
-    private getSecretStoreByAccount(account: Account) {
-        const config: any = {address: account.getId()}
-        if (account.getPassword()) {
+    private getSecretStoreByAccount(account: Account, secretStoreUrl?: string) {
+        const config: any = {...this.config}
+        if (account) {
+            config.address = account.getId()
+        }
+        if (account && account.getPassword()) {
             config.password = account.getPassword()
+        }
+        if (secretStoreUrl) {
+            config.secretStoreUri = secretStoreUrl
         }
         return SecretStoreProvider.getSecretStore(config)
     }

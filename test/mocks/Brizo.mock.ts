@@ -1,4 +1,4 @@
-import Brizo from "../../src/brizo/Brizo"
+import { Brizo } from "../../src/brizo/Brizo"
 
 export default class BrizoMock extends Brizo {
 

@@ -1,10 +1,11 @@
 import { assert, expect, spy, use } from "chai"
 import * as spies from "chai-spies"
+import * as Web3 from "web3"
 
-import ConfigProvider from "../../src/ConfigProvider"
 import { DDO } from "../../src/ddo/DDO"
 import { Service } from "../../src/ddo/Service"
 import * as signatureHelpers from "../../src/utils/SignatureHelpers"
+import { Ocean } from "../../src/ocean/Ocean"
 import config from "../config"
 
 import * as jsonDDO from "../testdata/ddo.json"
@@ -162,8 +163,10 @@ describe("DDO", () => {
         ],
     })
 
-    before(async () => {
-        ConfigProvider.setConfig(config)
+    let web3: Web3
+
+    beforeEach(async () => {
+        web3 = (await Ocean.getInstance(config) as any).web3
     })
 
     afterEach(() => {
@@ -254,7 +257,7 @@ describe("DDO", () => {
             const signTextSpy = spy.on(signatureHelpers, "signText", () => signature)
             const ddo = new DDO(testDDO)
             const checksum = ddo.getChecksum()
-            const proof = await ddo.generateProof(publicKey)
+            const proof = await ddo.generateProof(web3, publicKey)
 
             assert.include(proof as any, {
                 creator: publicKey,
@@ -278,7 +281,7 @@ describe("DDO", () => {
             } as any
             const ddo = new DDO(testDDO)
             const generateProofSpy = spy.on(ddo, "generateProof", () => fakeProof)
-            await ddo.addProof(publicKey)
+            await ddo.addProof(web3, publicKey)
 
             assert.equal(ddo.proof, fakeProof)
             expect(generateProofSpy).to.have.been.called.with(publicKey)

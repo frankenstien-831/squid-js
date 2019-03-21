@@ -1,40 +1,27 @@
-import AquariusProvider from "../aquarius/AquariusProvider"
 import { SearchQuery } from "../aquarius/query/SearchQuery"
-import BrizoProvider from "../brizo/BrizoProvider"
-import ConfigProvider from "../ConfigProvider"
 import { DDO } from "../ddo/DDO"
 import { MetaData } from "../ddo/MetaData"
-import { ServiceAgreementTemplateCondition } from "../ddo/ServiceAgreementTemplate"
 import { Service, ServiceAuthorization } from "../ddo/Service"
-import Keeper from "../keeper/Keeper"
-import SecretStoreProvider from "../secretstore/SecretStoreProvider"
-import { LoggerInstance, fillConditionsWithDDO } from "../utils"
 import Account from "./Account"
 import DID from "./DID"
-import { OceanAgreements } from "./OceanAgreements"
+import { fillConditionsWithDDO } from "../utils"
+import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 /**
  * Assets submodule of Ocean Protocol.
  */
-export class OceanAssets {
+export class OceanAssets extends Instantiable {
 
     /**
      * Returns the instance of OceanAssets.
      * @return {Promise<OceanAssets>}
      */
-    public static async getInstance(): Promise<OceanAssets> {
-        if (!OceanAssets.instance) {
-            OceanAssets.instance = new OceanAssets()
-        }
+    public static async getInstance(config: InstantiableConfig): Promise<OceanAssets> {
+        const instance = new OceanAssets()
+        instance.setInstanceConfig(config)
 
-        return OceanAssets.instance
+        return instance
     }
-
-    /**
-     * OceanAssets instance.
-     * @type {OceanAssets}
-     */
-    private static instance: OceanAssets = null
 
     /**
      * Returns a DDO by DID.
@@ -43,7 +30,7 @@ export class OceanAssets {
      */
     public async resolve(did: string): Promise<DDO> {
         const d: DID = DID.parse(did)
-        return AquariusProvider.getAquarius().retrieveDDO(d)
+        return this.ocean.aquarius.retrieveDDO(d)
     }
 
     /**
@@ -53,24 +40,19 @@ export class OceanAssets {
      * @return {Promise<DDO>}
      */
     public async create(metadata: MetaData, publisher: Account, services: Service[] = []): Promise<DDO> {
-        const {secretStoreUri} = ConfigProvider.getConfig()
-        const {didRegistry, templates} = await Keeper.getInstance()
-        const aquarius = AquariusProvider.getAquarius()
-        const brizo = BrizoProvider.getBrizo()
+        const {secretStoreUri} = this.config
+        const {didRegistry, templates} = this.ocean.keeper
 
         const did: DID = DID.generate()
 
         const authorizationService = (services.find(({type}) => type === "Authorization") || {}) as ServiceAuthorization
         const secretStoreUrl = authorizationService.service === "SecretStore" && authorizationService.serviceEndpoint
-        const secretStoreConfig = {
-            secretStoreUri: secretStoreUrl,
-        }
 
-        const encryptedFiles = await SecretStoreProvider.getSecretStore(secretStoreConfig).encryptDocument(did.getId(), metadata.base.files)
+        const encryptedFiles = await this.ocean.secretStore.encrypt(did.getId(), metadata.base.files, null, secretStoreUrl)
 
         const serviceAgreementTemplate = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplate()
 
-        const serviceEndpoint = aquarius.getServiceEndpoint(did)
+        const serviceEndpoint = this.ocean.aquarius.getServiceEndpoint(did)
 
         let serviceDefinitionIdCount = 0
         // create ddo itself
@@ -91,15 +73,15 @@ export class OceanAssets {
             service: [
                 {
                     type: "Access",
-                    purchaseEndpoint: brizo.getPurchaseEndpoint(),
-                    serviceEndpoint: brizo.getConsumeEndpoint(),
+                    purchaseEndpoint: this.ocean.brizo.getPurchaseEndpoint(),
+                    serviceEndpoint: this.ocean.brizo.getConsumeEndpoint(),
                     serviceDefinitionId: String(serviceDefinitionIdCount++),
                     templateId: templates.escrowAccessSecretStoreTemplate.getAddress(),
                     serviceAgreementTemplate,
                 },
                 {
                     type: "Compute",
-                    serviceEndpoint: brizo.getComputeEndpoint(publisher.getId(), String(serviceDefinitionIdCount), "xxx", "xxx"),
+                    serviceEndpoint: this.ocean.brizo.getComputeEndpoint(publisher.getId(), String(serviceDefinitionIdCount), "xxx", "xxx"),
                     serviceDefinitionId: String(serviceDefinitionIdCount++),
                 },
                 {
@@ -148,9 +130,9 @@ export class OceanAssets {
         serviceAgreementTemplate.conditions = conditions
 
         ddo.addChecksum()
-        await ddo.addProof(publisher.getId(), publisher.getPassword())
+        await ddo.addProof(this.web3, publisher.getId(), publisher.getPassword())
 
-        const storedDdo = await aquarius.storeDDO(ddo)
+        const storedDdo = await this.ocean.aquarius.storeDDO(ddo)
         await didRegistry.registerAttribute(
             did.getId(),
             ddo.getChecksum(),
@@ -172,7 +154,6 @@ export class OceanAssets {
         resultPath?: string,
     ): Promise<string | true> {
 
-        const brizo = BrizoProvider.getBrizo()
         const ddo = await this.resolve(did)
         const {metadata} = ddo.findServiceByType("Metadata")
 
@@ -188,27 +169,23 @@ export class OceanAssets {
         }
 
         const secretStoreUrl = authorizationService.service === "SecretStore" && authorizationService.serviceEndpoint
-        const secretStoreConfig = {
-            secretStoreUri: secretStoreUrl,
-        }
 
-        LoggerInstance.log("Decrypting files")
-        const decryptedFiles = await SecretStoreProvider
-            .getSecretStore(secretStoreConfig)
-            .decryptDocument(DID.parse(did).getId(), files)
-        LoggerInstance.log("Files decrypted")
+        this.logger.log("Decrypting files")
+        const decryptedFiles = await this.ocean.secretStore
+            .decrypt(did, files, consumerAccount, secretStoreUrl)
+        this.logger.log("Files decrypted")
 
-        LoggerInstance.log("Consuming files")
+        this.logger.log("Consuming files")
 
         resultPath = resultPath ? `${resultPath}/datafile.${ddo.shortId()}.${agreementId}/` : undefined
-        await brizo.consumeService(
+        await this.ocean.brizo.consumeService(
             agreementId,
             serviceEndpoint,
             consumerAccount,
             decryptedFiles,
             resultPath,
         )
-        LoggerInstance.log("Files consumed")
+        this.logger.log("Files consumed")
 
         if (resultPath) {
             return resultPath
@@ -230,53 +207,54 @@ export class OceanAssets {
         consumer: Account,
     ): Promise<string> {
 
-        const oceanAgreements = await OceanAgreements.getInstance()
+        const oceanAgreements = this.ocean.agreements
 
-        LoggerInstance.log("Asking for agreement signature")
+        this.logger.log("Asking for agreement signature")
         const {agreementId, signature} = await oceanAgreements.prepare(did, serviceDefinitionId, consumer)
-        LoggerInstance.log(`Agreement ${agreementId} signed`)
+        this.logger.log(`Agreement ${agreementId} signed`)
 
         const ddo = await this.resolve(did)
 
-        const keeper = await Keeper.getInstance()
+        const keeper = this.ocean.keeper
         const templateName = ddo.findServiceByType("Access").serviceAgreementTemplate.contractName
         const template = keeper.getTemplateByName(templateName)
         const accessCondition = keeper.conditions.accessSecretStoreCondition
 
-        const paymentFlow = new Promise((resolve, reject) => {
-            template
-                .getAgreementCreatedEvent(agreementId)
-                .listenOnce(async (...args) => {
-                    LoggerInstance.log("Agreement initialized")
+        const paymentFlow = new Promise(async (resolve, reject) => {
+            await template.getAgreementCreatedEvent(agreementId).once()
 
-                    const {metadata} = ddo.findServiceByType("Metadata")
+            this.logger.log("Agreement initialized")
 
-                    LoggerInstance.log("Locking payment")
+            const {metadata} = ddo.findServiceByType("Metadata")
 
-                    const paid = await oceanAgreements.conditions.lockReward(agreementId, metadata.base.price, consumer)
+            this.logger.log("Locking payment")
 
-                    if (paid) {
-                        LoggerInstance.log("Payment was OK")
-                    } else {
-                        LoggerInstance.error("Payment was KO")
-                        LoggerInstance.error("Agreement ID: ", agreementId)
-                        LoggerInstance.error("DID: ", ddo.id)
-                        reject("Error on payment")
-                    }
-                })
+            const paid = await oceanAgreements.conditions.lockReward(agreementId, metadata.base.price, consumer)
 
-            accessCondition
-                .getConditionFulfilledEvent(agreementId)
-                .listenOnce(async (...args) => {
-                    LoggerInstance.log("Access granted")
-                    resolve()
-                })
+            if (paid) {
+                this.logger.log("Payment was OK")
+            } else {
+                this.logger.error("Payment was KO")
+                this.logger.error("Agreement ID: ", agreementId)
+                this.logger.error("DID: ", ddo.id)
+                reject("Error on payment")
+            }
+
+            await accessCondition.getConditionFulfilledEvent(agreementId).once()
+
+            this.logger.log("Access granted")
+            resolve()
         })
 
-        LoggerInstance.log("Sending agreement request")
+        this.logger.log("Sending agreement request")
         await oceanAgreements.send(did, agreementId, serviceDefinitionId, signature, consumer)
+        this.logger.log("Agreement request sent")
 
-        await paymentFlow
+        try {
+            await paymentFlow
+        } catch(e) {
+            throw new Error("Error paying the asset.")
+        }
 
         return agreementId
     }
@@ -287,7 +265,7 @@ export class OceanAssets {
      * @return {Promise<DDO[]>}
      */
     public async query(query: SearchQuery): Promise<DDO[]> {
-        return AquariusProvider.getAquarius().queryMetadataByText(query)
+        return this.ocean.aquarius.queryMetadataByText(query)
     }
 
     /**
@@ -296,7 +274,7 @@ export class OceanAssets {
      * @return {Promise<DDO[]>}
      */
     public async search(text: string): Promise<DDO[]> {
-        return AquariusProvider.getAquarius().queryMetadataByText({
+        return this.ocean.aquarius.queryMetadataByText({
             text,
             page: 0,
             offset: 100,

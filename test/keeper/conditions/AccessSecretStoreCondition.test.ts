@@ -1,7 +1,6 @@
 import {assert} from "chai"
-import ConfigProvider from "../../../src/ConfigProvider"
 import { AccessSecretStoreCondition } from "../../../src/keeper/contracts/conditions"
-import Keeper from "../../../src/keeper/Keeper"
+import { Ocean } from "../../../src/ocean/Ocean"
 import config from "../../config"
 import TestContractHandler from "../TestContractHandler"
 
@@ -10,14 +9,12 @@ let condition: AccessSecretStoreCondition
 describe("AccessSecretStoreCondition", () => {
 
     const agreementId = `0x${"a".repeat(64)}`
-    const did = `0x${"a".repeat(64)}`
+    const did = `did:op:${"a".repeat(64)}`
     const address = `0x${"a".repeat(40)}`
 
     before(async () => {
-        ConfigProvider.setConfig(config)
         await TestContractHandler.prepareContracts()
-        condition = (await Keeper.getInstance()).conditions.accessSecretStoreCondition
-
+        condition = (await Ocean.getInstance(config)).keeper.conditions.accessSecretStoreCondition
     })
 
     describe("#hashValues()", () => {

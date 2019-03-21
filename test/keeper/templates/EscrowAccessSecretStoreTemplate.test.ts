@@ -1,18 +1,18 @@
 import {assert} from "chai"
-import ConfigProvider from "../../../src/ConfigProvider"
 import { EscrowAccessSecretStoreTemplate } from "../../../src/keeper/contracts/templates"
-import Keeper from "../../../src/keeper/Keeper"
 import config from "../../config"
 import TestContractHandler from "../TestContractHandler"
+import { Ocean } from "../../../src/ocean/Ocean"
+
 
 let condition: EscrowAccessSecretStoreTemplate
 
 describe("EscrowAccessSecretStoreTemplate", () => {
 
     before(async () => {
-        ConfigProvider.setConfig(config)
+        const ocean: Ocean = await Ocean.getInstance(config)
         await TestContractHandler.prepareContracts()
-        condition = (await Keeper.getInstance()).templates.escrowAccessSecretStoreTemplate
+        condition = ocean.keeper.templates.escrowAccessSecretStoreTemplate
 
     })
 

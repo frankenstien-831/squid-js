@@ -1,18 +1,15 @@
 import ContractBase from "../ContractBase"
-import { AgreementStoreManager, ConditionStoreManager } from "../managers"
 import { Condition, ConditionState, conditionStateNames } from "../conditions/Condition.abstract"
-import Keeper from "../../Keeper"
 import { DDO } from "../../../ddo/DDO"
 import { ServiceAgreementTemplate } from "../../../ddo/ServiceAgreementTemplate"
-import { zeroX, LoggerInstance } from "../../../utils"
-import EventListener from "../../../keeper/EventListener"
-import Event from "../../../keeper/Event"
+import { zeroX } from "../../../utils"
+import { InstantiableConfig } from "../../../Instantiable.abstract"
 
 export abstract class AgreementTemplate extends ContractBase {
 
-    public static async getInstance(conditionName: string, templateClass: any): Promise<AgreementTemplate & any> {
+    public static async getInstance(config: InstantiableConfig, conditionName: string, templateClass: any): Promise<AgreementTemplate & any> {
         const condition: AgreementTemplate = new (templateClass as any)(conditionName)
-        await condition.init()
+        await condition.init(config)
         return condition
     }
 
@@ -58,9 +55,8 @@ export abstract class AgreementTemplate extends ContractBase {
      * @return {Promise<Condition[]>} Conditions contracts.
      */
     public async getConditions(): Promise<Condition[]> {
-        const keeper = await Keeper.getInstance()
         return (await this.getConditionTypes())
-            .map((address) => keeper.getConditionByAddress(address))
+            .map((address) => this.ocean.keeper.getConditionByAddress(address))
     }
 
     /**
@@ -117,14 +113,14 @@ export abstract class AgreementTemplate extends ContractBase {
             blockedBy: string[],
         },
     } | false> {
-        const agreementStore = await AgreementStoreManager.getInstance()
-        const conditionStore = await ConditionStoreManager.getInstance()
+        const agreementStore = this.ocean.keeper.agreementStoreManager
+        const conditionStore = this.ocean.keeper.conditionStoreManager
 
         const dependencies = await this.getServiceAgreementTemplateDependencies()
         const {conditionIds} = await agreementStore.getAgreement(agreementId)
 
         if (!conditionIds.length) {
-            LoggerInstance.error(`Agreement not creeated yet: "${agreementId}"`)
+            this.logger.error(`Agreement not creeated yet: "${agreementId}"`)
             return false
         }
 
@@ -167,25 +163,25 @@ export abstract class AgreementTemplate extends ContractBase {
     public async printAgreementStatus(agreementId: string) {
         const status = await this.getAgreementStatus(agreementId)
 
-        LoggerInstance.bypass("-".repeat(80))
-        LoggerInstance.bypass("Template:", this.contractName)
-        LoggerInstance.bypass("Agreement ID:", agreementId)
-        LoggerInstance.bypass("-".repeat(40))
+        this.logger.bypass("-".repeat(80))
+        this.logger.bypass("Template:", this.contractName)
+        this.logger.bypass("Agreement ID:", agreementId)
+        this.logger.bypass("-".repeat(40))
         if (!status) {
-            LoggerInstance.bypass("Agreement not created yet!")
+            this.logger.bypass("Agreement not created yet!")
         }
         Object.values(status || [])
             .forEach(({condition, contractName, state, blocked, blockedBy}, i) => {
                 if (i) {
-                    LoggerInstance.bypass("-".repeat(20))
+                    this.logger.bypass("-".repeat(20))
                 }
-                LoggerInstance.bypass(`${condition} (${contractName})`)
-                LoggerInstance.bypass("  Status:", state, `(${conditionStateNames[state]})`)
+                this.logger.bypass(`${condition} (${contractName})`)
+                this.logger.bypass("  Status:", state, `(${conditionStateNames[state]})`)
                 if (blocked) {
-                    LoggerInstance.bypass("  Blocked by:", blockedBy)
+                    this.logger.bypass("  Blocked by:", blockedBy)
                 }
             })
-        LoggerInstance.bypass("-".repeat(80))
+        this.logger.bypass("-".repeat(80))
     }
 
     /**
@@ -193,12 +189,7 @@ export abstract class AgreementTemplate extends ContractBase {
      * @param  {string} agreementId Agreement ID.
      * @return {Event}              Agreement created event.
      */
-    public getAgreementCreatedEvent(agreementId: string): Event {
-        return EventListener
-            .subscribe(
-                this.contractName,
-                "AgreementCreated",
-                {agreementId: zeroX(agreementId)},
-            )
+    public getAgreementCreatedEvent(agreementId: string) {
+        return this.getEvent("AgreementCreated", {agreementId: zeroX(agreementId)})
     }
 }

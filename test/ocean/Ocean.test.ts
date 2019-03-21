@@ -1,23 +1,13 @@
 import { assert, spy, use } from "chai"
 import * as spies from "chai-spies"
 
-import AquariusProvider from "../../src/aquarius/AquariusProvider"
 import { SearchQuery } from "../../src/aquarius/query/SearchQuery"
-import BrizoProvider from "../../src/brizo/BrizoProvider"
-import ConfigProvider from "../../src/ConfigProvider"
 import { DDO } from "../../src/ddo/DDO"
-import { Service } from "../../src/ddo/Service"
 import Account from "../../src/ocean/Account"
 import { Ocean } from "../../src/ocean/Ocean"
-import SecretStoreProvider from "../../src/secretstore/SecretStoreProvider"
 import * as signatureHelpers from "../../src/utils/SignatureHelpers"
-import WebServiceConnectorProvider from "../../src/utils/WebServiceConnectorProvider"
 import config from "../config"
 import TestContractHandler from "../keeper/TestContractHandler"
-import AquariusMock from "../mocks/Aquarius.mock"
-import BrizoMock from "../mocks/Brizo.mock"
-import SecretStoreMock from "../mocks/SecretStore.mock"
-import WebServiceConnectorMock from "../mocks/WebServiceConnector.mock"
 import { metadataMock } from "../testdata/MetaData"
 
 use(spies)
@@ -30,10 +20,6 @@ describe("Ocean", () => {
 
     const metadata = metadataMock
 
-    before(async () => {
-        ConfigProvider.setConfig(config)
-    })
-
     beforeEach(async () => {
         spy.on(signatureHelpers, "signText", () => `0x${"a".repeat(130)}`)
     })
@@ -42,13 +28,9 @@ describe("Ocean", () => {
     })
 
     before(async () => {
-        ConfigProvider.setConfig(config)
-        AquariusProvider.setAquarius(new AquariusMock(config))
-        BrizoProvider.setBrizo(new BrizoMock(config))
-        SecretStoreProvider.setSecretStore(new SecretStoreMock(config))
         await TestContractHandler.prepareContracts()
         ocean = await Ocean.getInstance(config)
-        accounts = await ocean.getAccounts()
+        accounts = await ocean.accounts.list()
 
         testPublisher = accounts[0]
     })
@@ -65,33 +47,11 @@ describe("Ocean", () => {
     describe("#getAccounts()", () => {
         it("should list accounts", async () => {
 
-            const accs: Account[] = await ocean.getAccounts()
+            const accs: Account[] = await ocean.accounts.list()
 
             assert(10 === accs.length)
             assert(0 === (await accs[5].getBalance()).ocn)
             assert("string" === typeof accs[0].getId())
-        })
-    })
-
-    // TODO: ensure if it should fail or not
-    describe("#resolveDID()", () => {
-        it("should resolve a did to a ddo", async () => {
-            const ddo: DDO = await ocean.registerAsset(metadata, testPublisher)
-
-            const resolvedDDO: DDO = await ocean.resolveDID(ddo.id)
-
-            assert(resolvedDDO)
-            assert(resolvedDDO.id === ddo.id)
-        })
-    })
-
-    // TODO: ensure if it should fail or not
-    describe("#registerAsset()", () => {
-        it("should register an asset", async () => {
-            const ddo: DDO = await ocean.registerAsset(metadata, testPublisher)
-
-            assert(ddo)
-            assert(ddo.id.startsWith("did:op:"))
         })
     })
 
@@ -109,7 +69,7 @@ describe("Ocean", () => {
                 text: "Office",
             } as SearchQuery
 
-            const assets: any[] = await ocean.searchAssets(query)
+            const assets: any[] = await ocean.assets.query(query)
 
             assert(assets)
         })
@@ -118,33 +78,9 @@ describe("Ocean", () => {
     describe("#searchAssetsByText()", () => {
         it("should search for assets", async () => {
             const text = "office"
-            const assets: any[] = await ocean.searchAssetsByText(text)
+            const assets: any[] = await ocean.assets.search(text)
 
             assert(assets)
-        })
-    })
-
-    describe("#signServiceAgreement()", () => {
-        it("should sign an service agreement", async () => {
-            const publisher = accounts[0]
-            const consumer = accounts[1]
-
-            const ddo: DDO = await ocean.registerAsset(metadata, publisher)
-
-            const service: Service = ddo.findServiceByType("Access")
-
-            // @ts-ignore
-            WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(ddo))
-
-            await consumer.requestTokens(metadata.base.price)
-
-            const signServiceAgreementResult: any = await ocean.signServiceAgreement(ddo.id, service.serviceDefinitionId, consumer)
-
-            assert(signServiceAgreementResult)
-            assert(signServiceAgreementResult.agreementId, "no agreementId")
-            assert(signServiceAgreementResult.signature, "no signature")
-            assert(signServiceAgreementResult.signature.startsWith("0x"))
-            assert(signServiceAgreementResult.signature.length === 132)
         })
     })
 })

@@ -1,4 +1,4 @@
-import Aquarius from "../../src/aquarius/Aquarius"
+import { Aquarius } from "../../src/aquarius/Aquarius"
 import { DDO } from "../../src/ddo/DDO"
 import DID from "../../src/ocean/DID"
 

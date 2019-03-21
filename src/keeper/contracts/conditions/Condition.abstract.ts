@@ -1,7 +1,6 @@
 import ContractBase from "../ContractBase"
 import { zeroX } from "../../../utils"
-import EventListener from "../../../keeper/EventListener"
-import Event from "../../../keeper/Event"
+import { InstantiableConfig } from "../../../Instantiable.abstract"
 
 export enum ConditionState {
     Uninitialized = 0,
@@ -14,9 +13,9 @@ export const conditionStateNames = ["Uninitialized", "Unfulfilled", "Fulfilled",
 
 export abstract class Condition extends ContractBase {
 
-    public static async getInstance(conditionName: string, conditionsClass: any): Promise<Condition & any> {
+    public static async getInstance(config: InstantiableConfig, conditionName: string, conditionsClass: any): Promise<Condition & any> {
         const condition: Condition = new (conditionsClass as any)(conditionName)
-        await condition.init()
+        await condition.init(config)
         return condition
     }
 
@@ -45,12 +44,7 @@ export abstract class Condition extends ContractBase {
         return this.sendFrom("abortByTimeOut", [zeroX(agreementId)], from)
     }
 
-    public getConditionFulfilledEvent(agreementId: string): Event {
-        return EventListener
-            .subscribe(
-                this.contractName,
-                "Fulfilled",
-                {agreementId: zeroX(agreementId)},
-            )
+    public getConditionFulfilledEvent(agreementId: string) {
+        return this.getEvent("Fulfilled", {agreementId: zeroX(agreementId)})
     }
 }

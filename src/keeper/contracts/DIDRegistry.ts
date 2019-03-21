@@ -1,12 +1,13 @@
 import Web3Provider from "../Web3Provider"
 import ContractBase from "./ContractBase"
 import { zeroX } from "../../utils"
+import { InstantiableConfig } from "../../Instantiable.abstract"
 
 export default class DIDRegistry extends ContractBase {
 
-    public static async getInstance(): Promise<DIDRegistry> {
+    public static async getInstance(config: InstantiableConfig): Promise<DIDRegistry> {
         const didRegistry: DIDRegistry = new DIDRegistry("DIDRegistry")
-        await didRegistry.init()
+        await didRegistry.init(config)
         return didRegistry
     }
 

@@ -1,28 +1,22 @@
 import Keeper from "../keeper/Keeper"
 import Account from "./Account"
+import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 /**
  * Tokens submodule of Ocean Protocol.
  */
-export class OceanTokens {
+export class OceanTokens extends Instantiable {
 
     /**
      * Returns the instance of OceanTokens.
      * @return {Promise<OceanTokens>}
      */
-    public static async getInstance(): Promise<OceanTokens> {
-        if (!OceanTokens.instance) {
-            OceanTokens.instance = new OceanTokens()
-        }
+    public static async getInstance(config: InstantiableConfig): Promise<OceanTokens> {
+        const instance = new OceanTokens()
+        instance.setInstanceConfig(config)
 
-        return OceanTokens.instance
+        return instance
     }
-
-    /**
-     * OceanTokens instance.
-     * @type {OceanTokens}
-     */
-    private static instance: OceanTokens = null
 
     /**
      * Transfer a number of tokens to the mentioned account.
@@ -32,7 +26,7 @@ export class OceanTokens {
      * @return {Promise<boolean>}        Success,
      */
     public async transfer(to: string, amount: number, from: Account): Promise<boolean> {
-        (await Keeper.getInstance())
+        this.ocean.keeper
             .token
             .transfer(to, amount, from.getId())
         return true

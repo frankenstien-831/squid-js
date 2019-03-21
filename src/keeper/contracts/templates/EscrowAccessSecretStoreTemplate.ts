@@ -3,13 +3,14 @@ import { LockRewardCondition, EscrowReward, AccessSecretStoreCondition } from ".
 import DIDRegistry from "../DIDRegistry"
 import { DDO } from "../../../ddo/DDO"
 import { generateId, zeroX } from "../../../utils"
+import { InstantiableConfig } from "../../../Instantiable.abstract"
 
 import { escrowAccessSecretStoreTemplateServiceAgreementTemplate } from "./EscrowAccessSecretStoreTemplate.serviceAgreementTemplate"
 
 export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
 
-    public static async getInstance(): Promise<EscrowAccessSecretStoreTemplate> {
-        return AgreementTemplate.getInstance("EscrowAccessSecretStoreTemplate", EscrowAccessSecretStoreTemplate)
+    public static async getInstance(config: InstantiableConfig): Promise<EscrowAccessSecretStoreTemplate> {
+        return AgreementTemplate.getInstance(config, "EscrowAccessSecretStoreTemplate", EscrowAccessSecretStoreTemplate)
     }
 
     public async getServiceAgreementTemplate() {
@@ -89,11 +90,9 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
     }
 
     private async createFullAgreementData(agreementId: string, did: string, amount: number, consumer: string) {
-        const didRegistry = await DIDRegistry.getInstance()
+        const {didRegistry, conditions} = this.ocean.keeper
 
-        const accessSecretStoreCondition = await AccessSecretStoreCondition.getInstance()
-        const lockRewardCondition = await LockRewardCondition.getInstance()
-        const escrowReward = await EscrowReward.getInstance()
+        const {accessSecretStoreCondition, lockRewardCondition, escrowReward} = conditions
 
         const publisher = await didRegistry.getDIDOwner(did)
 

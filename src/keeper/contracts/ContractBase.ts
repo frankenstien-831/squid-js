@@ -1,10 +1,10 @@
 import { Contract } from "web3-eth-contract"
 import { TransactionReceipt } from "web3-core"
-import LoggerInstance from "../../utils/Logger"
 import ContractHandler from "../ContractHandler"
-import Web3Provider from "../Web3Provider"
 
-export default abstract class ContractBase {
+import { Instantiable, InstantiableConfig } from "../../Instantiable.abstract"
+
+export default abstract class ContractBase extends Instantiable {
 
     protected static instance = null
     public contractName: string
@@ -12,6 +12,7 @@ export default abstract class ContractBase {
     private contract: Contract = null
 
     constructor(contractName) {
+        super()
         this.contractName = contractName
     }
 
@@ -36,13 +37,15 @@ export default abstract class ContractBase {
         return foundMethod.inputs
     }
 
-    protected async init() {
-        this.contract = await ContractHandler.get(this.contractName)
+    protected async init(config: InstantiableConfig) {
+        this.setInstanceConfig(config)
+        const contractHandler = new ContractHandler(config)
+        this.contract = await contractHandler.get(this.contractName)
     }
 
     protected async getFromAddress(from?: string): Promise<string> {
         if (!from) {
-            from = (await Web3Provider.getWeb3().eth.getAccounts())[0]
+            from = (await this.web3.eth.getAccounts())[0]
         }
         return from
     }
@@ -75,12 +78,12 @@ export default abstract class ContractBase {
                     value: args[i],
                 }
             })
-            LoggerInstance.error("-".repeat(40))
-            LoggerInstance.error(`Sending transaction "${name}" on contract "${this.contractName}" failed.`)
-            LoggerInstance.error(`Error: ${err.message}`)
-            LoggerInstance.error(`From: ${from}`)
-            LoggerInstance.error(`Parameters: ${JSON.stringify(mappedArgs, null, 2)}`)
-            LoggerInstance.error("-".repeat(40))
+            this.logger.error("-".repeat(40))
+            this.logger.error(`Sending transaction "${name}" on contract "${this.contractName}" failed.`)
+            this.logger.error(`Error: ${err.message}`)
+            this.logger.error(`From: ${from}`)
+            this.logger.error(`Parameters: ${JSON.stringify(mappedArgs, null, 2)}`)
+            this.logger.error("-".repeat(40))
             throw err
         }
     }
@@ -94,7 +97,7 @@ export default abstract class ContractBase {
             const method = this.contract.methods[name](...args)
             return method.call(from ? {from} : null)
         } catch (err) {
-            LoggerInstance.error(`Calling method "${name}" on contract "${this.contractName}" failed. Args: ${args}`, err)
+            this.logger.error(`Calling method "${name}" on contract "${this.contractName}" failed. Args: ${args}`, err)
             throw err
         }
     }
@@ -108,5 +111,12 @@ export default abstract class ContractBase {
             throw new Error(`Method "${methodName}" is not part of contract "${this.contractName}"`)
         }
         return foundMethod
+    }
+
+    protected getEvent(eventName: string, filter: {[key: string]: any}) {
+        if (!this.contract.events[eventName]) {
+            throw new Error(`Event ${eventName} is not part of contract ${this.contractName}`)
+        }
+        return this.ocean.keeper.utils.eventHandler.getEvent(this, eventName, filter)
     }
 }

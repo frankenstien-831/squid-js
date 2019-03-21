@@ -1,7 +1,7 @@
-import LoggerInstance from "../../../utils/Logger"
 import ContractBase from "../ContractBase"
 import { ConditionState } from "../conditions/Condition.abstract"
 import { zeroX } from "../../../utils"
+import { InstantiableConfig } from "../../../Instantiable.abstract"
 
 export interface ConditionData {
     typeRef: string
@@ -15,9 +15,9 @@ export interface ConditionData {
 
 export class ConditionStoreManager extends ContractBase {
 
-    public static async getInstance(): Promise<ConditionStoreManager> {
+    public static async getInstance(config: InstantiableConfig): Promise<ConditionStoreManager> {
         const templateStoreManeger: ConditionStoreManager = new ConditionStoreManager("ConditionStoreManager")
-        await templateStoreManeger.init()
+        await templateStoreManeger.init(config)
         return templateStoreManeger
     }
 

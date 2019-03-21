@@ -1,11 +1,9 @@
-import AquariusProvider from "../aquarius/AquariusProvider"
-import BrizoProvider from "../brizo/BrizoProvider"
 import { generateId } from "../utils/GeneratorHelpers"
 import Account from "./Account"
 import DID from "./DID"
 import ServiceAgreement from "./ServiceAgreements/ServiceAgreement"
-import { Keeper } from "../keeper/Keeper"
 import { zeroX, didPrefixed } from "../utils"
+import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 import { OceanAgreementsConditions } from "./OceanAgreementsConditions"
 
@@ -17,26 +15,19 @@ export interface AgreementPrepareResult {
 /**
  * Agreements submodule of Ocean Protocol.
  */
-export class OceanAgreements {
+export class OceanAgreements extends Instantiable {
 
     /**
      * Returns the instance of OceanAgreements.
      * @return {Promise<OceanAgreements>}
      */
-    public static async getInstance(): Promise<OceanAgreements> {
-        if (!OceanAgreements.instance) {
-            OceanAgreements.instance = new OceanAgreements()
-            OceanAgreements.instance.conditions = await OceanAgreementsConditions.getInstance()
-        }
+    public static async getInstance(config: InstantiableConfig): Promise<OceanAgreements> {
+        const instance = new OceanAgreements()
+        instance.setInstanceConfig(config)
+        instance.conditions = await OceanAgreementsConditions.getInstance(config)
 
-        return OceanAgreements.instance
+        return instance
     }
-
-    /**
-     * OceanAgreements instance.
-     * @type {OceanAgreements}
-     */
-    private static instance: OceanAgreements = null
 
     /**
      * Agreements Conditions submodule.
@@ -58,16 +49,16 @@ export class OceanAgreements {
     ): Promise<AgreementPrepareResult> {
 
         const d: DID = DID.parse(did as string)
-        const ddo = await AquariusProvider.getAquarius().retrieveDDO(d)
+        const ddo = await this.ocean.aquarius.retrieveDDO(d)
         const agreementId: string = generateId()
 
-        const keeper = await Keeper.getInstance()
         const templateName = ddo.findServiceByType("Access").serviceAgreementTemplate.contractName
-        const agreementConditionsIds = await keeper
+        const agreementConditionsIds = await this.ocean.keeper
             .getTemplateByName(templateName)
             .getAgreementIdsFromDDO(agreementId, ddo, consumer.getId(), consumer.getId())
 
         const signature = await ServiceAgreement.signServiceAgreement(
+            this.web3,
             ddo,
             serviceDefinitionId,
             agreementId,
@@ -93,8 +84,7 @@ export class OceanAgreements {
         consumer: Account,
     ): Promise<void> {
 
-        const result = await BrizoProvider
-            .getBrizo()
+        const result = await this.ocean.brizo
             .initializeServiceAgreement(
                 didPrefixed(did),
                 zeroX(agreementId),
@@ -128,13 +118,11 @@ export class OceanAgreements {
         consumer: Account,
         publisher: Account,
     ) {
-        const keeper = await Keeper.getInstance()
-
         const d: DID = DID.parse(did)
-        const ddo = await AquariusProvider.getAquarius().retrieveDDO(d)
+        const ddo = await this.ocean.aquarius.retrieveDDO(d)
 
         const templateName = ddo.findServiceById<"Access">(serviceDefinitionId).serviceAgreementTemplate.contractName
-        await keeper
+        await this.ocean.keeper
             .getTemplateByName(templateName)
             .createAgreementFromDDO(agreementId, ddo, consumer.getId(), publisher.getId())
 

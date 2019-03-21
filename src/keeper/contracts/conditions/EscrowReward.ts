@@ -1,10 +1,11 @@
 import { Condition } from "./Condition.abstract"
 import { zeroX } from "../../../utils"
+import { InstantiableConfig } from "../../../Instantiable.abstract"
 
 export class EscrowReward extends Condition {
 
-    public static async getInstance(): Promise<EscrowReward> {
-        return Condition.getInstance("EscrowReward", EscrowReward)
+    public static async getInstance(config: InstantiableConfig): Promise<EscrowReward> {
+        return Condition.getInstance(config, "EscrowReward", EscrowReward)
     }
 
     public hashValues(amount: number, receiver: string, sender: string, lockCondition: string, releaseCondition: string) {

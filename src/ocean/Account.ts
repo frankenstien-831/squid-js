@@ -1,17 +1,21 @@
 import BigNumber from "bignumber.js"
 import * as EthJsUtils from "ethereumjs-util"
-import Keeper from "../keeper/Keeper"
-import Web3Provider from "../keeper/Web3Provider"
 import Balance from "../models/Balance"
-import LoggerInstance from "../utils/Logger"
+
+import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 /**
  * Account information.
  */
-export default class Account {
+export default class Account extends Instantiable {
     private password?: string
 
-    constructor(private id: string = "0x0") { }
+    constructor(private id: string = "0x0", config?: InstantiableConfig) {
+        super()
+        if (config) {
+            this.setInstanceConfig(config)
+        }
+    }
 
     public getId() {
         return this.id
@@ -42,7 +46,7 @@ export default class Account {
      * @return {Promise<number>}
      */
     public async getOceanBalance(): Promise<number> {
-        const token = (await Keeper.getInstance()).token
+        const token = this.ocean.keeper.token
         return await token.balanceOf(this.id) / (10 ** await token.decimals())
     }
 
@@ -51,13 +55,10 @@ export default class Account {
      * @return {Promise<number>}
      */
     public async getEtherBalance(): Promise<number> {
-        // Logger.log("getting balance for", account);
-        return Web3Provider
-            .getWeb3()
+        return this.web3
             .eth
             .getBalance(this.id, "latest")
             .then((balance: string): number => {
-                // Logger.log("balance", balance);
                 return new BigNumber(balance).toNumber()
             })
     }
@@ -80,11 +81,11 @@ export default class Account {
      */
     public async requestTokens(amount: number): Promise<number> {
         try {
-            await (await Keeper.getInstance())
+            await this.ocean.keeper
                 .dispenser
                 .requestTokens(amount, this.id)
         } catch (e) {
-            LoggerInstance.error(e)
+            this.logger.error(e)
             throw new Error("Error requesting tokens")
 
         }
@@ -96,11 +97,8 @@ export default class Account {
      * @return {Promise<string>}
      */
     public async getPublicKey(): Promise<string> {
-
-        const web3 = Web3Provider.getWeb3()
-
-        const msg = web3.utils.sha3(this.getId())
-        const sig = await web3.eth.sign(msg, this.getId())
+        const msg = this.web3.utils.sha3(this.getId())
+        const sig = await this.web3.eth.sign(msg, this.getId())
         const {v, r, s} = EthJsUtils.fromRpcSig(sig)
 
         return EthJsUtils.ecrecover(EthJsUtils.toBuffer(msg), v, r, s).toString("hex")

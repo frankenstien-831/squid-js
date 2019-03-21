@@ -1,9 +1,8 @@
 import save = require("save-file")
 import { File } from "../ddo/MetaData"
-import Config from "../models/Config"
 import Account from "../ocean/Account"
-import LoggerInstance from "../utils/Logger"
 import WebServiceConnectorProvider from "../utils/WebServiceConnectorProvider"
+import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 const apiPath = "/api/v1/brizo/services"
 
@@ -11,11 +10,14 @@ const apiPath = "/api/v1/brizo/services"
  * Provides a interface with Brizo.
  * Brizo is the technical component executed by the Publishers allowing to them to provide extended data services.
  */
-export default class Brizo {
-    private url: string
+export class Brizo  extends Instantiable {
+    private get url() {
+        return this.config.brizoUri
+    }
 
-    constructor(config: Config) {
-        this.url = config.brizoUri
+    constructor(config: InstantiableConfig) {
+        super()
+        this.setInstanceConfig(config)
     }
 
     public getPurchaseEndpoint() {
@@ -55,7 +57,7 @@ export default class Brizo {
                     decodeURI(JSON.stringify(args)),
                 )
         } catch (e) {
-            LoggerInstance.error(e)
+            this.logger.error(e)
             throw new Error("HTTP request failed")
         }
     }
@@ -81,8 +83,8 @@ export default class Brizo {
                         destination,
                     )
                 } catch (e) {
-                    LoggerInstance.error("Error consuming assets")
-                    LoggerInstance.error(e)
+                    this.logger.error("Error consuming assets")
+                    this.logger.error(e)
                     throw new Error("Error consuming assets")
                 }
             })

@@ -1,10 +1,9 @@
 import { URL } from "whatwg-url"
 import { DDO } from "../ddo/DDO"
-import Config from "../models/Config"
 import DID from "../ocean/DID"
-import LoggerInstance from "../utils/Logger"
 import WebServiceConnectorProvider from "../utils/WebServiceConnectorProvider"
 import { SearchQuery } from "./query/SearchQuery"
+import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 const apiPath = "/api/v1/aquarius/assets/ddo"
 
@@ -12,11 +11,14 @@ const apiPath = "/api/v1/aquarius/assets/ddo"
  * Provides a interface with Aquarius.
  * Aquarius provides an off-chain database store for metadata about data assets.
  */
-export default class Aquarius {
-    private url: string
+export class Aquarius extends Instantiable {
+    private get url() {
+        return this.config.aquariusUri
+    }
 
-    constructor(config: Config) {
-        this.url = config.aquariusUri
+    constructor(config: InstantiableConfig) {
+        super()
+        this.setInstanceConfig(config)
     }
 
     public async getAccessUrl(accessToken: any, payload: any): Promise<string> {
@@ -26,15 +28,15 @@ export default class Aquarius {
                 if (response.ok) {
                     return response.text()
                 }
-                LoggerInstance.error("Failed: ", response.status, response.statusText)
+                this.logger.error("Failed: ", response.status, response.statusText)
                 return null
             })
             .then((consumptionUrl: string): string => {
-                LoggerInstance.error("Success accessing consume endpoint: ", consumptionUrl)
+                this.logger.error("Success accessing consume endpoint: ", consumptionUrl)
                 return consumptionUrl
             })
             .catch((error) => {
-                LoggerInstance.error("Error fetching the data asset consumption url: ", error)
+                this.logger.error("Error fetching the data asset consumption url: ", error)
                 return null
             })
 
@@ -53,7 +55,7 @@ export default class Aquarius {
                 if (response.ok) {
                     return response.json() as DDO[]
                 }
-                LoggerInstance.error("queryMetadata failed:", response.status, response.statusText)
+                this.logger.error("queryMetadata failed:", response.status, response.statusText)
                 return [] as DDO[]
             })
             .then((ddos) => {
@@ -62,7 +64,7 @@ export default class Aquarius {
                 })
             })
             .catch((error) => {
-                LoggerInstance.error("Error fetching querying metadata: ", error)
+                this.logger.error("Error fetching querying metadata: ", error)
                 return [] as DDO[]
             })
 
@@ -86,7 +88,7 @@ export default class Aquarius {
                 if (response.ok) {
                     return response.json() as DDO[]
                 }
-                LoggerInstance.log("queryMetadataByText failed:", response.status, response.statusText)
+                this.logger.log("queryMetadataByText failed:", response.status, response.statusText)
                 return [] as DDO[]
             })
             .then((ddos) => {
@@ -95,7 +97,7 @@ export default class Aquarius {
                 })
             })
             .catch((error) => {
-                LoggerInstance.error("Error fetching querying metadata by text: ", error)
+                this.logger.error("Error fetching querying metadata by text: ", error)
                 return [] as DDO[]
             })
 
@@ -115,14 +117,14 @@ export default class Aquarius {
                 if (response.ok) {
                     return response.json()
                 }
-                LoggerInstance.error("storeDDO failed:", response.status, response.statusText, ddo)
+                this.logger.error("storeDDO failed:", response.status, response.statusText, ddo)
                 return null as DDO
             })
             .then((response: DDO) => {
                 return new DDO(response) as DDO
             })
             .catch((error) => {
-                LoggerInstance.error("Error fetching querying metadata: ", error)
+                this.logger.error("Error fetching querying metadata: ", error)
                 return null as DDO
             })
 
@@ -142,14 +144,14 @@ export default class Aquarius {
                 if (response.ok) {
                     return response.json()
                 }
-                LoggerInstance.log("retrieveDDO failed:", response.status, response.statusText, did)
+                this.logger.log("retrieveDDO failed:", response.status, response.statusText, did)
                 return null as DDO
             })
             .then((response: DDO) => {
                 return new DDO(response) as DDO
             })
             .catch((error) => {
-                LoggerInstance.error("Error fetching querying metadata: ", error)
+                this.logger.error("Error fetching querying metadata: ", error)
                 return null as DDO
             })
 

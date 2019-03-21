@@ -1,4 +1,7 @@
-import { Config, LogLevel} from "../src/models/Config"
+import { Config, LogLevel } from "../src/models/Config"
+import { LoggerInstance } from "../src/utils"
+
+LoggerInstance.setLevel(LogLevel.Error)
 
 export default {
     aquariusUri: "http://localhost:5000",

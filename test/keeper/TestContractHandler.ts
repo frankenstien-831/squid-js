@@ -2,13 +2,16 @@ import Contract from "web3-eth-contract"
 import ContractHandler from "../../src/keeper/ContractHandler"
 import Web3Provider from "../../src/keeper/Web3Provider"
 import Logger from "../../src/utils/Logger"
+import config from "../config"
 
 export default class TestContractHandler extends ContractHandler {
 
-    public static async prepareContracts() {
+    private static networkId: number
 
-        const web3 = Web3Provider.getWeb3()
+    public static async prepareContracts() {
+        const web3 = Web3Provider.getWeb3(config)
         const deployerAddress = (await web3.eth.getAccounts())[0]
+        this.networkId = await web3.eth.net.getId()
 
         // deploy contracts
         await TestContractHandler.deployContracts(deployerAddress)
@@ -79,13 +82,17 @@ export default class TestContractHandler extends ContractHandler {
         args: any[] = [],
         tokens: {[name: string]: string} = {},
     ): Promise<Contract & {$initialized: boolean}> {
+        const where = this.networkId
 
         // dont redeploy if there is already something loaded
-        if (ContractHandler.has(name)) {
-            return {...await ContractHandler.get(name), $initialized: true}
+        if (TestContractHandler.hasContract(name, where)) {
+            const contract = await ContractHandler.getContract(name, where)
+            if (contract.testContract) {
+                return {...contract, $initialized: true}
+            }
         }
 
-        const web3 = Web3Provider.getWeb3()
+        const web3 = Web3Provider.getWeb3(config)
 
         let contractInstance: Contract
         try {
@@ -117,7 +124,8 @@ export default class TestContractHandler extends ContractHandler {
             if (isZos) {
                 await contractInstance.methods.initialize(...args).send(sendConfig)
             }
-            TestContractHandler.set(name, contractInstance)
+            contractInstance.testContract = true
+            ContractHandler.setContract(name, where, contractInstance)
             // Logger.log("Deployed", name, "at", contractInstance.options.address);
         } catch (err) {
             Logger.error("Deployment failed for", name, "with args", JSON.stringify(args, null, 2), err.message)

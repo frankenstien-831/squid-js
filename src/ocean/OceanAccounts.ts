@@ -1,29 +1,22 @@
-import Web3Provider from "../keeper/Web3Provider"
 import Balance from "../models/Balance"
 import Account from "./Account"
+import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 /**
  * Account submodule of Ocean Protocol.
  */
-export class OceanAccounts {
+export class OceanAccounts extends Instantiable {
 
     /**
      * Returns the instance of OceanAccounts.
      * @return {Promise<OceanAccounts>}
      */
-    public static async getInstance(): Promise<OceanAccounts> {
-        if (!OceanAccounts.instance) {
-            OceanAccounts.instance = new OceanAccounts()
-        }
+    public static async getInstance(config: InstantiableConfig): Promise<OceanAccounts> {
+        const instance = new OceanAccounts()
+        instance.setInstanceConfig(config)
 
-        return OceanAccounts.instance
+        return instance
     }
-
-    /**
-     * OceanAccounts instance.
-     * @type {OceanAccounts}
-     */
-    private static instance: OceanAccounts = null
 
     /**
      * Returns the list of accounts.
@@ -32,9 +25,9 @@ export class OceanAccounts {
     public async list(): Promise<Account[]> {
 
         // retrieve eth accounts
-        const ethAccounts = await Web3Provider.getWeb3().eth.getAccounts()
+        const ethAccounts = await this.web3.eth.getAccounts()
 
-        return ethAccounts.map((address: string) => new Account(address))
+        return ethAccounts.map((address: string) => new Account(address, this.instanceConfig))
     }
 
     /**

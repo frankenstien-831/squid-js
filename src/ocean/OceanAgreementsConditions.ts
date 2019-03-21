@@ -1,31 +1,21 @@
-import Keeper from "../keeper/Keeper"
 import Account from "./Account"
+import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 /**
  * Agreements Conditions submodule of Ocean Protocol.
  */
-export class OceanAgreementsConditions {
+export class OceanAgreementsConditions extends Instantiable {
 
     /**
      * Returns the instance of OceanAgreementsConditions.
      * @return {Promise<OceanAgreementsConditions>}
      */
-    public static async getInstance(): Promise<OceanAgreementsConditions> {
-        if (!OceanAgreementsConditions.instance) {
-            OceanAgreementsConditions.instance = new OceanAgreementsConditions()
-            OceanAgreementsConditions.instance.keeper = await Keeper.getInstance()
-        }
+    public static async getInstance(config: InstantiableConfig): Promise<OceanAgreementsConditions> {
+        const instance = new OceanAgreementsConditions()
+        instance.setInstanceConfig(config)
 
-        return OceanAgreementsConditions.instance
+        return instance
     }
-
-    /**
-     * OceanAgreementsConditions instance.
-     * @type {OceanAgreementsConditions}
-     */
-    private static instance: OceanAgreementsConditions = null
-
-    private keeper: Keeper
 
     /**
      * Transfers tokens to the EscrowRewardCondition contract as an escrow payment.
@@ -34,12 +24,12 @@ export class OceanAgreementsConditions {
      * @param {number}  amount      Asset amount.
      * @param {Account} from        Account of sender.
      */
-    public async lockReward(agreementId: string, amount: number, from: Account = new Account()) {
-        const {lockRewardCondition, escrowReward} = this.keeper.conditions
+    public async lockReward(agreementId: string, amount: number, from?: Account) {
+        const {lockRewardCondition, escrowReward} = this.ocean.keeper.conditions
 
-        await this.keeper.token.approve(lockRewardCondition.getAddress(), amount, from.getId())
+        await this.ocean.keeper.token.approve(lockRewardCondition.getAddress(), amount, from.getId())
 
-        const receipt = await lockRewardCondition.fulfill(agreementId, escrowReward.getAddress(), amount, from.getId())
+        const receipt = await lockRewardCondition.fulfill(agreementId, escrowReward.getAddress(), amount, from && from.getId())
         return !!receipt.events.Fulfilled
     }
 
@@ -50,10 +40,10 @@ export class OceanAgreementsConditions {
      * @param {string}  grantee     Consumer address.
      * @param {Account} from        Account of sender.
      */
-    public async grantAccess(agreementId: string, did: string, grantee: string, from: Account = new Account()) {
-        const {accessSecretStoreCondition} = this.keeper.conditions
+    public async grantAccess(agreementId: string, did: string, grantee: string, from?: Account) {
+        const {accessSecretStoreCondition} = this.ocean.keeper.conditions
 
-        const receipt = await accessSecretStoreCondition.fulfill(agreementId, did, grantee, from.getId())
+        const receipt = await accessSecretStoreCondition.fulfill(agreementId, did, grantee, from && from.getId())
         return !!receipt.events.Fulfilled
     }
 
@@ -76,9 +66,9 @@ export class OceanAgreementsConditions {
         did: string,
         consumer: string,
         publisher: string,
-        from: Account = new Account(),
+        from?: Account,
     ) {
-        const {escrowReward, accessSecretStoreCondition, lockRewardCondition} = this.keeper.conditions
+        const {escrowReward, accessSecretStoreCondition, lockRewardCondition} = this.ocean.keeper.conditions
 
         const conditionIdAccess = await accessSecretStoreCondition.generateIdHash(agreementId, did, consumer)
         const conditionIdLock = await lockRewardCondition.generateIdHash(agreementId, escrowReward.getAddress(), amount)
@@ -90,7 +80,7 @@ export class OceanAgreementsConditions {
             consumer,
             conditionIdLock,
             conditionIdAccess,
-            from.getId(),
+            from && from.getId(),
         )
         return !!receipt.events.Fulfilled
     }

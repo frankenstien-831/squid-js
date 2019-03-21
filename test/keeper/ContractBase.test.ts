@@ -1,5 +1,4 @@
 import {assert} from "chai"
-import ConfigProvider from "../../src/ConfigProvider"
 import Account from "../../src/ocean/Account"
 import { Ocean } from "../../src/ocean/Ocean"
 import config from "../config"
@@ -12,11 +11,10 @@ let accounts: Account[]
 describe("ContractWrapperBase", () => {
 
     before(async () => {
-        ConfigProvider.setConfig(config)
         await TestContractHandler.prepareContracts()
-        await wrappedContract.initMock()
         const ocean: Ocean = await Ocean.getInstance(config)
-        accounts = await ocean.getAccounts()
+        accounts = await ocean.accounts.list()
+        await wrappedContract.initMock((<any>ocean).instanceConfig)
     })
 
     describe("#call()", () => {

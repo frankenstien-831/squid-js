@@ -1,6 +1,6 @@
-import LoggerInstance from "../../../utils/Logger"
 import ContractBase from "../ContractBase"
 import { zeroX } from "../../../utils"
+import { InstantiableConfig } from "../../../Instantiable.abstract"
 
 export interface AgreementData {
     did: string
@@ -13,9 +13,9 @@ export interface AgreementData {
 
 export class AgreementStoreManager extends ContractBase {
 
-    public static async getInstance(): Promise<AgreementStoreManager> {
+    public static async getInstance(config: InstantiableConfig): Promise<AgreementStoreManager> {
         const templateStoreManeger: AgreementStoreManager = new AgreementStoreManager("AgreementStoreManager")
-        await templateStoreManeger.init()
+        await templateStoreManeger.init(config)
         return templateStoreManeger
     }
 

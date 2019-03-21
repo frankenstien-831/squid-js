@@ -1,7 +1,6 @@
 import {assert} from "chai"
-import ConfigProvider from "../../../src/ConfigProvider"
 import { EscrowReward } from "../../../src/keeper/contracts/conditions"
-import Keeper from "../../../src/keeper/Keeper"
+import { Ocean } from "../../../src/ocean/Ocean"
 import config from "../../config"
 import TestContractHandler from "../TestContractHandler"
 
@@ -18,9 +17,9 @@ describe("EscrowReward", () => {
     let releaseCondition
 
     before(async () => {
-        ConfigProvider.setConfig(config)
+        const keeper = (await Ocean.getInstance(config)).keeper
+
         await TestContractHandler.prepareContracts()
-        const keeper = await Keeper.getInstance()
         condition = keeper.conditions.escrowReward
 
         lockCondition = await keeper.conditions.lockRewardCondition.generateIdHash(agreementId, publisher, amount)

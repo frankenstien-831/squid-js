@@ -1,5 +1,5 @@
 import * as assert from "assert"
-import Aquarius from "../../src/aquarius/Aquarius"
+import { Aquarius } from "../../src/aquarius/Aquarius"
 import { SearchQuery } from "../../src/aquarius/query/SearchQuery"
 import { DDO } from "../../src/ddo/DDO"
 import DID from "../../src/ocean/DID"
@@ -9,7 +9,7 @@ import WebServiceConnectorMock from "../mocks/WebServiceConnector.mock"
 
 describe("Aquarius", () => {
 
-    const aquarius: Aquarius = new Aquarius(config)
+    const aquarius: Aquarius = new Aquarius(<any>{config})
 
     describe("#queryMetadata()", () => {
 

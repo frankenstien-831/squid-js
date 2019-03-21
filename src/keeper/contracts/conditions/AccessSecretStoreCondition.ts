@@ -1,10 +1,11 @@
 import { Condition } from "./Condition.abstract"
 import { zeroX, didZeroX } from "../../../utils"
+import { InstantiableConfig } from "../../../Instantiable.abstract"
 
 export class AccessSecretStoreCondition extends Condition {
 
-    public static async getInstance(): Promise<AccessSecretStoreCondition> {
-        return Condition.getInstance("AccessSecretStoreCondition", AccessSecretStoreCondition)
+    public static async getInstance(config: InstantiableConfig): Promise<AccessSecretStoreCondition> {
+        return Condition.getInstance(config, "AccessSecretStoreCondition", AccessSecretStoreCondition)
     }
 
     public hashValues(did: string, grantee: string) {

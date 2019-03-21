@@ -1,8 +1,8 @@
 import ContractBase from "../../src/keeper/contracts/ContractBase"
 
 export default class ContractBaseMock extends ContractBase {
-    public async initMock() {
-        await this.init()
+    public async initMock(config: any) {
+        await this.init(config)
     }
 
     public async callMock(name: string, args: any[], from?: string) {

@@ -1,7 +1,9 @@
 import { assert, /*expect,*/ spy, use } from "chai"
 import * as spies from "chai-spies"
 
+import config from "../config"
 import Account from "../../src/ocean/Account"
+import { Ocean } from "../../src/ocean/Ocean"
 import { OceanAccounts } from "../../src/ocean/OceanAccounts"
 
 use(spies)
@@ -11,19 +13,11 @@ describe("OceanAccounts", () => {
     let oceanAccounts: OceanAccounts
 
     before(async () => {
-        oceanAccounts = await OceanAccounts.getInstance()
+        oceanAccounts = (await Ocean.getInstance(config)).accounts
     })
 
     afterEach(() => {
         spy.restore()
-    })
-
-    describe("#getInstance()", () => {
-        it("should get an instance of OceanAccounts", async () => {
-            const oceanAccountsInstance: OceanAccounts = await OceanAccounts.getInstance()
-
-            assert.instanceOf(oceanAccountsInstance, OceanAccounts, "No returned OceanAccounts instance")
-        })
     })
 
     describe("#list()", () => {

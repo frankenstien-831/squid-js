@@ -4,4 +4,4 @@
 --bail
 --exit
 --timeout 20000
-test/**/*.test.ts
+test/config.ts test/**/*.test.ts

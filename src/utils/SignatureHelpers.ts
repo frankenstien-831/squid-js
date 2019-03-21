@@ -1,9 +1,8 @@
-import Web3Provider from "../keeper/Web3Provider"
+import * as Web3 from "web3"
 import LoggerInstance from "./Logger"
 
-export async function signText(text: string, publicKey: string, password?: string): Promise<string> {
-    const web3 = Web3Provider.getWeb3()
 
+export async function signText(web3: Web3, text: string, publicKey: string, password?: string): Promise<string> {
     try {
         return await web3.eth.personal.sign(text, publicKey, password)
     } catch (e) {
@@ -19,8 +18,6 @@ export async function signText(text: string, publicKey: string, password?: strin
     }
 }
 
-export async function verifyText(text: string, signature: string): Promise<string> {
-    const web3 = Web3Provider.getWeb3()
-
+export async function verifyText(web3: Web3, text: string, signature: string): Promise<string> {
     return await web3.eth.personal.ecRecover(text, signature)
 }

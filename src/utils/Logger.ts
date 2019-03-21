@@ -11,7 +11,6 @@ export class Logger {
     constructor(private logLevel: LogLevel = LogLevel.Verbose) { }
 
     public setLevel(logLevel: LogLevel) {
-        this.warn("Logger.setLevel is deprecated")
         this.logLevel = logLevel
     }
 

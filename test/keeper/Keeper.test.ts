@@ -1,17 +1,17 @@
 import {assert} from "chai"
-import ConfigProvider from "../../src/ConfigProvider"
-import Keeper from "../../src/keeper/Keeper"
 import config from "../config"
 import TestContractHandler from "./TestContractHandler"
+import Keeper from "../../src/keeper/Keeper"
+import { Ocean } from "../../src/ocean/Ocean"
 
 let keeper: Keeper
 
 describe("Keeper", () => {
 
     before(async () => {
-        ConfigProvider.setConfig(config)
         await TestContractHandler.prepareContracts()
-        keeper = await Keeper.getInstance()
+        const ocean = await Ocean.getInstance(config)
+        keeper = ocean.keeper
     })
 
     describe("public interface", () => {

@@ -3,9 +3,11 @@ import Dispenser from "./contracts/Dispenser"
 import OceanToken from "./contracts/Token"
 import { Condition, LockRewardCondition, EscrowReward, AccessSecretStoreCondition } from "./contracts/conditions"
 import { AgreementTemplate, EscrowAccessSecretStoreTemplate } from "./contracts/templates"
-import { TemplateStoreManager } from "./contracts/managers"
+import { TemplateStoreManager, AgreementStoreManager, ConditionStoreManager } from "./contracts/managers"
 
-import Web3Provider from "./Web3Provider"
+import { EventHandler } from "./EventHandler"
+
+import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 /**
  * Interface with Ocean Keeper contracts.
@@ -14,45 +16,48 @@ import Web3Provider from "./Web3Provider"
  * - Ocean Tokens: the intrinsic tokens circulated inside Ocean network, which is used in the voting of TCRs.
  * - Marketplace: the core marketplace where people can transact with each other with Ocean tokens.
  */
-export class Keeper {
+export class Keeper extends Instantiable {
 
     /**
      * Returns Keeper instance.
      * @return {Promise<Keeper>}
      */
-    public static async getInstance(): Promise<Keeper> {
-        if (Keeper.instance === null) {
-            Keeper.instance = new Keeper()
+    public static async getInstance(config: InstantiableConfig): Promise<Keeper> {
+        const keeper = new Keeper()
+        keeper.setInstanceConfig(config)
 
-            // Main contracts
-            Keeper.instance.dispenser = await Dispenser.getInstance()
-            Keeper.instance.token = await OceanToken.getInstance()
-            Keeper.instance.didRegistry = await DIDRegistry.getInstance()
+        // Adding keeper inside Ocean to prevent `Keeper not defined yet` error
+        config.ocean.keeper = keeper
 
-            // Managers
-            Keeper.instance.templateStoreManager = await TemplateStoreManager.getInstance()
+        // Main contracts
+        keeper.dispenser = await Dispenser.getInstance(config)
+        keeper.token = await OceanToken.getInstance(config)
+        keeper.didRegistry = await DIDRegistry.getInstance(config)
 
-            // Conditions
-            Keeper.instance.conditions = {
-                lockRewardCondition: await LockRewardCondition.getInstance(),
-                escrowReward: await EscrowReward.getInstance(),
-                accessSecretStoreCondition: await AccessSecretStoreCondition.getInstance(),
-            }
+        // Managers
+        keeper.templateStoreManager = await TemplateStoreManager.getInstance(config)
+        keeper.agreementStoreManager = await AgreementStoreManager.getInstance(config)
+        keeper.conditionStoreManager = await ConditionStoreManager.getInstance(config)
 
-            // Conditions
-            Keeper.instance.templates = {
-                escrowAccessSecretStoreTemplate: await EscrowAccessSecretStoreTemplate.getInstance(),
-            }
+        // Conditions
+        keeper.conditions = {
+            lockRewardCondition: await LockRewardCondition.getInstance(config),
+            escrowReward: await EscrowReward.getInstance(config),
+            accessSecretStoreCondition: await AccessSecretStoreCondition.getInstance(config),
         }
 
-        return Keeper.instance
-    }
+        // Conditions
+        keeper.templates = {
+            escrowAccessSecretStoreTemplate: await EscrowAccessSecretStoreTemplate.getInstance(config),
+        }
 
-    /**
-     * Keeper instance.
-     * @type {Keeper}
-     */
-    private static instance: Keeper = null
+        // Utils
+        keeper.utils = {
+            eventHandler: new EventHandler(config),
+        }
+
+        return keeper
+    }
 
     /**
      * Ocean Token smart contract instance.
@@ -79,6 +84,18 @@ export class Keeper {
     public templateStoreManager: TemplateStoreManager
 
     /**
+     * Template store manager smart contract instance.
+     * @type {AgreementStoreManager}
+     */
+    public agreementStoreManager: AgreementStoreManager
+
+    /**
+     * Template store manager smart contract instance.
+     * @type {ConditionStoreManager}
+     */
+    public conditionStoreManager: ConditionStoreManager
+
+    /**
      * Conditions instances.
      */
     public conditions: {
@@ -92,6 +109,13 @@ export class Keeper {
      */
     public templates: {
         escrowAccessSecretStoreTemplate: EscrowAccessSecretStoreTemplate,
+    }
+
+    /**
+     * Helpers for contracts.
+     */
+    public utils: {
+        eventHandler: EventHandler
     }
 
     /**
@@ -110,11 +134,19 @@ export class Keeper {
     }
 
     /**
+     * Returns network id.
+     * @return {Promise<number>} Network ID.
+     */
+    public getNetworkId(): Promise<number> {
+        return this.web3.eth.net.getId()
+    }
+
+    /**
      * Returns the network by name.
      * @return {Promise<string>} Network name.
      */
-    public async getNetworkName(): Promise<string> {
-        return Web3Provider.getWeb3().eth.net.getId()
+    public getNetworkName(): Promise<string> {
+        return this.web3.eth.net.getId()
             .then((networkId) => {
                 let network: string = "Unknown"
 

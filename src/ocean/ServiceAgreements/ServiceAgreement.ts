@@ -1,9 +1,9 @@
+import * as Web3 from "web3"
 import { ServiceAgreementTemplateCondition } from "../../ddo/ServiceAgreementTemplate"
 import { DDO } from "../../ddo/DDO"
 import { ServiceAccess } from "../../ddo/Service"
-import Web3Provider from "../../keeper/Web3Provider"
-import ValuePair from "../../models/ValuePair"
 import LoggerInstance from "../../utils/Logger"
+import Web3Provider from "../../keeper/Web3Provider"
 import Account from "../Account"
 import { signText, zeroX } from "../../utils"
 
@@ -11,6 +11,7 @@ import { signText, zeroX } from "../../utils"
 export default class ServiceAgreement {
 
     public static async signServiceAgreement(
+        web3: Web3,
         ddo: DDO,
         serviceDefinitionId: string,
         serviceAgreementId: string,
@@ -27,6 +28,7 @@ export default class ServiceAgreement {
         }
 
         const serviceAgreementHashSignature = await ServiceAgreement.createHashSignature(
+            web3,
             service.templateId,
             serviceAgreementId,
             agreementConditionsIds,
@@ -41,6 +43,7 @@ export default class ServiceAgreement {
     }
 
     public static async createHashSignature(
+        web3: Web3,
         templateId: string,
         serviceAgreementId: string,
         valueHashes: string[],
@@ -57,7 +60,7 @@ export default class ServiceAgreement {
             timeoutValues,
         )
 
-        const serviceAgreementHashSignature = await signText(serviceAgreementHash, consumer.getId(), consumer.getPassword())
+        const serviceAgreementHashSignature = await signText(web3, serviceAgreementHash, consumer.getId(), consumer.getPassword())
 
         return serviceAgreementHashSignature
     }
