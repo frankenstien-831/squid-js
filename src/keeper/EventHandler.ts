@@ -4,19 +4,41 @@ import ContractBase from "./contracts/ContractBase"
 import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 export class EventHandler extends Instantiable {
+
+    get count() {
+        return this.events.size
+    }
     private events = new Set<(blockNumber) => void>()
     private lastBlock: number
     private interval = 200
     private polling: boolean = false
     private lastTimeout: NodeJS.Timeout
 
-    get count() {
-        return this.events.size
-    }
-
     constructor(config: InstantiableConfig) {
         super()
         this.setInstanceConfig(config)
+    }
+
+    public subscribe(callback: (blockNumber: number) => void) {
+        this.events.add(callback)
+        this.checkBlock()
+
+        return {
+            unsubscribe: () => this.unsubscribe(callback),
+        }
+    }
+
+    public unsubscribe(callback: (blockNumber: number) => void) {
+        this.events.delete(callback)
+        if (!this.count) {
+            clearTimeout(this.lastTimeout)
+            delete this.lastBlock
+            this.polling = false
+        }
+    }
+
+    public getEvent(contract: ContractBase, eventName: string, filter: {[key: string]: any}) {
+        return new ContractEvent(this, contract, eventName, filter)
     }
 
     private async checkBlock(isInterval?: boolean, n = 0) {
@@ -32,31 +54,9 @@ export class EventHandler extends Instantiable {
         }
 
         if (this.lastBlock !== blockNumber) {
-            this.events.forEach(fn => fn(this.lastBlock + 1))
+            this.events.forEach((fn) => fn(this.lastBlock + 1))
             this.lastBlock = blockNumber
         }
         this.lastTimeout = setTimeout(() => this.checkBlock(true, n++), this.interval)
-    }
-
-    public subscribe(callback: (number) => void) {
-        this.events.add(callback)
-        this.checkBlock()
-
-        return {
-            unsubscribe: () => this.unsubscribe(callback),
-        }
-    }
-
-    public unsubscribe(callback: (number) => void) {
-        this.events.delete(callback)
-        if (!this.count) {
-            clearTimeout(this.lastTimeout)
-            delete this.lastBlock
-            this.polling = false
-        }
-    }
-
-    public getEvent(contract: ContractBase, eventName: string, filter: {[key: string]: any}) {
-        return new ContractEvent(this, contract, eventName, filter)
     }
 }

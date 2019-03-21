@@ -4,7 +4,6 @@ import config from "../../config"
 import TestContractHandler from "../TestContractHandler"
 import { Ocean } from "../../../src/ocean/Ocean"
 
-
 let condition: EscrowAccessSecretStoreTemplate
 
 describe("EscrowAccessSecretStoreTemplate", () => {

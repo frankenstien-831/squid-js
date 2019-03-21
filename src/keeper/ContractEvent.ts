@@ -1,12 +1,14 @@
 import ContractBase from "./contracts/ContractBase"
 
 interface EventEmitter {
+    // tslint:disable-next-line
     subscribe: Function
+    // tslint:disable-next-line
     unsubscribe: Function
 }
 
 export interface ContractEventSubscription {
-    unsubscribe: Function
+    unsubscribe: () => void
 }
 
 export class ContractEvent {
@@ -17,8 +19,8 @@ export class ContractEvent {
         private filter: {[key: string]: any},
     ) { }
 
-    subscribe(callback: (events: any[]) => void): ContractEventSubscription {
-        const onEvent = async blockNumber => {
+    public subscribe(callback: (events: any[]) => void): ContractEventSubscription {
+        const onEvent = async (blockNumber) => {
             const events = await this.contract.getEventData(this.eventName, {
                 filter: this.filter,
                 fromBlock: blockNumber,
@@ -35,9 +37,9 @@ export class ContractEvent {
         }
     }
 
-    once(callback?: (events: any[]) => void) {
-        return new Promise(resolve => {
-            const subscription = this.subscribe(events => {
+    public once(callback?: (events: any[]) => void) {
+        return new Promise((resolve) => {
+            const subscription = this.subscribe((events) => {
                 subscription.unsubscribe()
                 if (callback) {
                     callback(events)

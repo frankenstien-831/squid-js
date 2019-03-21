@@ -9,7 +9,7 @@ import WebServiceConnectorMock from "../mocks/WebServiceConnector.mock"
 
 describe("Aquarius", () => {
 
-    const aquarius: Aquarius = new Aquarius(<any>{config})
+    const aquarius: Aquarius = new Aquarius({config} as any)
 
     describe("#queryMetadata()", () => {
 

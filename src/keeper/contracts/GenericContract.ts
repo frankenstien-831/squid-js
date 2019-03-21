@@ -1,7 +1,6 @@
 import ContractBase from "./ContractBase"
 import { InstantiableConfig } from "../../Instantiable.abstract"
 
-
 export default class GenericContract extends ContractBase {
 
     public static async getInstance(config: InstantiableConfig, contractName: string): Promise<ContractBase> {

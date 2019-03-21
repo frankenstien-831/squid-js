@@ -13,7 +13,7 @@ describe("EventHandler", () => {
 
     before(async () => {
         ocean = await Ocean.getInstance(config)
-        eventHandler = new EventHandler((<any>ocean).instanceConfig)
+        eventHandler = new EventHandler((ocean as any).instanceConfig)
     })
 
     afterEach(() => {
@@ -24,22 +24,19 @@ describe("EventHandler", () => {
         it("should subscribe to an event", async () => {
             const countBefore = eventHandler.count
 
-            const subscription = eventHandler.subscribe(() => {})
+            const subscription = eventHandler.subscribe(() => null)
             assert.isDefined(subscription)
 
             const countAfter = eventHandler.count
             assert.equal(countBefore + 1, countAfter, "The event seems not added.")
 
-            try {
-                // Not important in this test
-                subscription.unsubscribe()
-            } catch(e) { }
+            subscription.unsubscribe()
         })
 
         it("should unsubscribe using the subscription", async () => {
             const countBefore = eventHandler.count
 
-            const subscription = eventHandler.subscribe(() => {})
+            const subscription = eventHandler.subscribe(() => null)
             assert.isDefined(subscription)
 
             subscription.unsubscribe()
@@ -52,7 +49,7 @@ describe("EventHandler", () => {
     describe("#unsubscribe()", () => {
         it("should unsubscribe from an event", async () => {
             const countBefore = eventHandler.count
-            const callback = () => {}
+            const callback = () => null
 
             eventHandler.subscribe(callback)
             eventHandler.unsubscribe(callback)
@@ -71,19 +68,16 @@ describe("EventHandler", () => {
 
             const subscription = eventHandler.subscribe(callbackSpy)
 
-            await new Promise(_ => setTimeout(_, 300))
+            await new Promise((_) => setTimeout(_, 300))
 
             expect(callbackSpy).not.to.has.been.called()
             blockNumber++
 
-            await new Promise(_ => setTimeout(_, 300))
+            await new Promise((_) => setTimeout(_, 300))
 
             expect(callbackSpy).to.has.been.called.with(blockNumber)
 
-            try {
-                // Not important in this test
-                subscription.unsubscribe()
-            } catch(e) { }
+            subscription.unsubscribe()
         })
     })
 })

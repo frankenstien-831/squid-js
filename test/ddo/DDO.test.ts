@@ -7,6 +7,7 @@ import { Service } from "../../src/ddo/Service"
 import * as signatureHelpers from "../../src/utils/SignatureHelpers"
 import { Ocean } from "../../src/ocean/Ocean"
 import config from "../config"
+import TestContractHandler from "../keeper/TestContractHandler"
 
 import * as jsonDDO from "../testdata/ddo.json"
 
@@ -166,6 +167,7 @@ describe("DDO", () => {
     let web3: Web3
 
     beforeEach(async () => {
+        await TestContractHandler.prepareContracts()
         web3 = (await Ocean.getInstance(config) as any).web3
     })
 

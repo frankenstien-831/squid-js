@@ -26,7 +26,7 @@ describe("Consume Asset", () => {
         })
 
         // Accounts
-        const instanceConfig = (<any>ocean).instanceConfig
+        const instanceConfig = (ocean as any).instanceConfig
         publisher = new Account("0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e", instanceConfig)
         publisher.setPassword("node0")
         consumer = new Account("0x068Ed00cF0441e4829D9784fCBe7b9e26D4BD8d0", instanceConfig)

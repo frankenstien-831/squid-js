@@ -102,6 +102,13 @@ export default abstract class ContractBase extends Instantiable {
         }
     }
 
+    protected getEvent(eventName: string, filter: {[key: string]: any}) {
+        if (!this.contract.events[eventName]) {
+            throw new Error(`Event ${eventName} is not part of contract ${this.contractName}`)
+        }
+        return this.ocean.keeper.utils.eventHandler.getEvent(this, eventName, filter)
+    }
+
     private searchMethod(methodName: string, args: any[] = []) {
         const methods = this.contract.options.jsonInterface
             .map((method) => ({...method, signature: (method as any).signature}))
@@ -111,12 +118,5 @@ export default abstract class ContractBase extends Instantiable {
             throw new Error(`Method "${methodName}" is not part of contract "${this.contractName}"`)
         }
         return foundMethod
-    }
-
-    protected getEvent(eventName: string, filter: {[key: string]: any}) {
-        if (!this.contract.events[eventName]) {
-            throw new Error(`Event ${eventName} is not part of contract ${this.contractName}`)
-        }
-        return this.ocean.keeper.utils.eventHandler.getEvent(this, eventName, filter)
     }
 }

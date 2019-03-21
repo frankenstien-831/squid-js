@@ -15,7 +15,7 @@ describe("ContractEvent", () => {
     beforeEach(async () => {
         await TestContractHandler.prepareContracts()
         ocean = await Ocean.getInstance(config)
-        eventHandler = new EventHandler((<any>ocean).instanceConfig)
+        eventHandler = new EventHandler((ocean as any).instanceConfig)
         account = (await ocean.accounts.list())[0].getId()
 
         executeTransaction = () => ocean.keeper.dispenser.requestTokens(10, account)
@@ -27,8 +27,8 @@ describe("ContractEvent", () => {
             let validResolve = false
             let subscription: ContractEventSubscription
 
-            const waitUntilEvent = new Promise(resolve => {
-                subscription = event.subscribe(events => {
+            const waitUntilEvent = new Promise((resolve) => {
+                subscription = event.subscribe((events) => {
                     assert.isDefined(events)
                     assert.lengthOf(events, 2)
                     if (validResolve) {
@@ -42,7 +42,7 @@ describe("ContractEvent", () => {
                 executeTransaction(),
             ])
 
-            await new Promise(_ => setTimeout(_, 2000))
+            await new Promise((_) => setTimeout(_, 2000))
             validResolve = true
 
             await Promise.all([
@@ -63,7 +63,7 @@ describe("ContractEvent", () => {
             let canBeRejected = false
 
             const waitUntilEvent = new Promise((resolve, reject) => {
-                event.once(events => {
+                event.once((events) => {
                     if (canBeRejected) {
                         reject()
                     }
@@ -73,7 +73,7 @@ describe("ContractEvent", () => {
 
             await executeTransaction()
 
-            await new Promise(_ => setTimeout(_, 2000))
+            await new Promise((_) => setTimeout(_, 2000))
             canBeRejected = true
 
             await executeTransaction()
@@ -87,7 +87,7 @@ describe("ContractEvent", () => {
 
             const waitUntilEvent = event.once()
 
-            await new Promise(_ => setTimeout(_, 400))
+            await new Promise((_) => setTimeout(_, 400))
 
             await executeTransaction()
 

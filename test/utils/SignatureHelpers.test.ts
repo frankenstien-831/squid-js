@@ -42,7 +42,6 @@ describe("SignatureHelpers", () => {
 
     describe("#verifyText", () => {
         it("should recover the privateKey of a signed message", async () => {
-            const web3 = Web3Provider.getWeb3()
             const personalRecoverSpy = spy.on(web3.eth.personal, "ecRecover", () => publicKey)
 
             const verifiedPublicKey = await verifyText(web3, text, signature)

@@ -14,7 +14,7 @@ describe("ContractWrapperBase", () => {
         await TestContractHandler.prepareContracts()
         const ocean: Ocean = await Ocean.getInstance(config)
         accounts = await ocean.accounts.list()
-        await wrappedContract.initMock((<any>ocean).instanceConfig)
+        await wrappedContract.initMock((ocean as any).instanceConfig)
     })
 
     describe("#call()", () => {

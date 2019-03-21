@@ -2,7 +2,6 @@ import ContractBase from "../ContractBase"
 import { zeroX } from "../../../utils"
 import { InstantiableConfig } from "../../../Instantiable.abstract"
 
-
 export enum TemplateState {
     Uninitialized = 0,
     Proposed = 1,

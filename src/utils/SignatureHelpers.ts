@@ -1,7 +1,6 @@
 import * as Web3 from "web3"
 import LoggerInstance from "./Logger"
 
-
 export async function signText(web3: Web3, text: string, publicKey: string, password?: string): Promise<string> {
     try {
         return await web3.eth.personal.sign(text, publicKey, password)

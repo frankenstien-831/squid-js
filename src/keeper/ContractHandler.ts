@@ -3,17 +3,6 @@ import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 export default class ContractHandler extends Instantiable {
 
-    constructor(config: InstantiableConfig) {
-        super()
-        this.setInstanceConfig(config)
-    }
-
-    private static contracts: Map<string, Contract> = new Map<string, Contract>()
-
-    private static getHash(what: string, networkId: number): string {
-        return `${what}/#${networkId}`
-    }
-
     protected static getContract(what: string, networkId: number) {
         return ContractHandler.contracts.get(this.getHash(what, networkId))
     }
@@ -26,6 +15,16 @@ export default class ContractHandler extends Instantiable {
         return ContractHandler.contracts.has(this.getHash(what, networkId))
     }
 
+    private static contracts: Map<string, Contract> = new Map<string, Contract>()
+
+    private static getHash(what: string, networkId: number): string {
+        return `${what}/#${networkId}`
+    }
+
+    constructor(config: InstantiableConfig) {
+        super()
+        this.setInstanceConfig(config)
+    }
 
     public async get(what: string): Promise<Contract> {
         const where = (await this.ocean.keeper.getNetworkName()).toLowerCase()

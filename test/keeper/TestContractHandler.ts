@@ -6,8 +6,6 @@ import config from "../config"
 
 export default class TestContractHandler extends ContractHandler {
 
-    private static networkId: number
-
     public static async prepareContracts() {
         const web3 = Web3Provider.getWeb3(config)
         const deployerAddress = (await web3.eth.getAccounts())[0]
@@ -16,6 +14,8 @@ export default class TestContractHandler extends ContractHandler {
         // deploy contracts
         await TestContractHandler.deployContracts(deployerAddress)
     }
+
+    private static networkId: number
 
     private static async deployContracts(deployerAddress: string) {
         Logger.log("Trying to deploy contracts")

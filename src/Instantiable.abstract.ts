@@ -23,10 +23,6 @@ export function generateIntantiableConfigFromConfig(config: Config): Partial<Ins
 }
 
 export abstract class Instantiable {
-    private _ocean: Ocean
-    private _web3: Web3
-    private _config: Config
-    private _logger: Logger
 
     protected get ocean() {
         if (!this._ocean) {
@@ -65,6 +61,11 @@ export abstract class Instantiable {
         return {ocean, web3, config, logger}
     }
 
+    public static async getInstance(...args: any[]): Promise<any>
+    public static async getInstance(config: InstantiableConfig): Promise<any> {
+        LoggerInstance.warn("getInstance() methods has needs to be added to child class.")
+    }
+
     protected static setInstanceConfig<T extends Instantiable>(instance: T, {ocean, config, web3, logger}: InstantiableConfig) {
         instance._ocean = ocean
         instance._config = config
@@ -72,10 +73,16 @@ export abstract class Instantiable {
         instance._logger = logger
     }
 
+    // tslint:disable-next-line
+    private _ocean: Ocean
+    // tslint:disable-next-line
+    private _web3: Web3
+    // tslint:disable-next-line
+    private _config: Config
+    // tslint:disable-next-line
+    private _logger: Logger
+
     protected setInstanceConfig(config: InstantiableConfig) {
         Instantiable.setInstanceConfig(this, config)
     }
-
-    public static async getInstance(...args: any[]): Promise<any>
-    public static async getInstance(config: InstantiableConfig): Promise<any> { }
 }

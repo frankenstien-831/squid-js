@@ -252,7 +252,7 @@ export class OceanAssets extends Instantiable {
 
         try {
             await paymentFlow
-        } catch(e) {
+        } catch (e) {
             throw new Error("Error paying the asset.")
         }
 

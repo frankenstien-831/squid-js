@@ -3,12 +3,11 @@ import ContractHandler from "../../src/keeper/ContractHandler"
 import { Ocean } from "../../src/ocean/Ocean"
 import config from "../config"
 
-
 describe("ContractHandler", () => {
     let contractHandler: ContractHandler
 
     before(async () => {
-        const instanceConfig = (<any>await Ocean.getInstance(config)).instanceConfig
+        const instanceConfig = (await Ocean.getInstance(config) as any).instanceConfig
 
         contractHandler = new ContractHandler(instanceConfig)
     })

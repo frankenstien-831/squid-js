@@ -115,7 +115,7 @@ export class Keeper extends Instantiable {
      * Helpers for contracts.
      */
     public utils: {
-        eventHandler: EventHandler
+        eventHandler: EventHandler,
     }
 
     /**

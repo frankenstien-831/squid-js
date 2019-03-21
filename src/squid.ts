@@ -5,7 +5,6 @@ import { Ocean } from "./ocean/Ocean"
 import { LoggerInstance as Logger} from "./utils/Logger"
 import WebServiceConnectorProvider from "./utils/WebServiceConnectorProvider"
 import Keeper from "./keeper/Keeper"
-import EventListener from "./keeper/EventListener"
 
 import * as templates from "./keeper/contracts/templates"
 import * as conditions from "./keeper/contracts/conditions"

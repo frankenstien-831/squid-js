@@ -22,7 +22,7 @@
     "build:watch": "tsc -w",
     "doc": "typedoc --mode modules --exclude \"**/examples/**\" --out ./doc/ ./src/",
     "merge-coverages": "npx lcov-result-merger \"coverage/*/lcov.info\" coverage/lcov.info",
-    "report-coverage": "cat ./coverage/unit/lcov.info | codacy-coverage --token 71ef0d15f6f04ac29b31d704b28f866a",
+    "report-coverage": "cat ./coverage/lcov.info | codacy-coverage --token 71ef0d15f6f04ac29b31d704b28f866a",
     "run": "ts-node",
     "release": "./node_modules/release-it/bin/release-it.js --src.tagName='v%s' --github.release --npm.publish --non-interactive",
     "release-minor": "./node_modules/release-it/bin/release-it.js minor --src.tagName='v%s' --github.release --npm.publish --non-interactive",

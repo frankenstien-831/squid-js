@@ -7,7 +7,11 @@ import { InstantiableConfig } from "../../../Instantiable.abstract"
 
 export abstract class AgreementTemplate extends ContractBase {
 
-    public static async getInstance(config: InstantiableConfig, conditionName: string, templateClass: any): Promise<AgreementTemplate & any> {
+    public static async getInstance(
+        config: InstantiableConfig,
+        conditionName: string,
+        templateClass: any,
+    ): Promise<AgreementTemplate & any> {
         const condition: AgreementTemplate = new (templateClass as any)(conditionName)
         await condition.init(config)
         return condition
