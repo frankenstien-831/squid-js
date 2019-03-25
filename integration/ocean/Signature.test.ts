@@ -82,14 +82,14 @@ describe("Signature", () => {
             ddo,
             serviceDefinitionId,
             agreementId,
-            agreementConditionIds,
+            [`0x${"1".repeat(64)}`, `0x${"2".repeat(64)}`, `0x${"3".repeat(64)}`],
             consumer,
         )
 
         assert.equal(
             signature,
             // tslint:disable-next-line
-            "0x2164dd54b1df9908b3aa31a2d195c3e3a244ff62b51b0403958234f50cb313615ac5ca6660f7a76957612deeca84e6953f2ce74f56def351d9eb0f155a4eddff1c",
+            "0xc12b8773a330fd01c7fc057e31475e5fc849eba1896cffb102881a6a45aac5fd7342069e578bbe0e1c8c95aa33a53451ac03ae1433f96928cd614c986742578e1b",
             "The signatuere is not correct.",
         )
     })

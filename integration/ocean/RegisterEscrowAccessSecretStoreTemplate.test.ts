@@ -64,7 +64,7 @@ describe("Register Escrow Access Secret Store Template", () => {
         let conditionIdEscrow: string
 
         it("should register a DID", async () => {
-            await keeper.didRegistry.registerAttribute(did, checksum, url, publisher.getId())
+            await keeper.didRegistry.registerAttribute(did, checksum, [], url, publisher.getId())
         })
 
         it("should generate the condition IDs", async () => {
@@ -169,7 +169,7 @@ describe("Register Escrow Access Secret Store Template", () => {
 
         it("should register a DID", async () => {
             // This part is executed inside Ocean.assets.create()
-            await keeper.didRegistry.registerAttribute(did, checksum, url, publisher.getId())
+            await keeper.didRegistry.registerAttribute(did, checksum, [], url, publisher.getId())
         })
 
         it("should create a new agreement (short way)", async () => {

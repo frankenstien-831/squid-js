@@ -59,7 +59,7 @@
   },
   "homepage": "https://github.com/oceanprotocol/squid-js#readme",
   "dependencies": {
-    "@oceanprotocol/keeper-contracts": "^0.8.6",
+    "@oceanprotocol/keeper-contracts": "^0.8.7",
     "@oceanprotocol/secret-store-client": "~0.0.14",
     "bignumber.js": "^8.0.1",
     "deprecated-decorator": "^0.1.6",

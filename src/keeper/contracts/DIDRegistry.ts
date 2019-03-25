@@ -11,8 +11,8 @@ export default class DIDRegistry extends ContractBase {
         return didRegistry
     }
 
-    public async registerAttribute(did: string, checksum: string, value: string, ownerAddress: string) {
-        return this.send("registerAttribute", ownerAddress, [zeroX(did), Web3Provider.getWeb3().utils.fromAscii(checksum), value])
+    public async registerAttribute(did: string, checksum: string, providers: string[], value: string, ownerAddress: string) {
+        return this.send("registerAttribute", ownerAddress, [zeroX(did), Web3Provider.getWeb3().utils.fromAscii(checksum), providers.map(zeroX), value])
     }
 
     public async getDIDOwner(did: string): Promise<string> {
