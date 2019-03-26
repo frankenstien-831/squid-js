@@ -270,7 +270,7 @@ export class OceanAssets extends Instantiable {
      * @return {Promise<DDO[]>}
      */
     public async query(query: SearchQuery): Promise<DDO[]> {
-        return this.ocean.aquarius.queryMetadataByText(query)
+        return this.ocean.aquarius.queryMetadata(query)
     }
 
     /**
