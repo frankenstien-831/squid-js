@@ -1,5 +1,5 @@
 export interface SearchQuery {
-    text: string
+    text?: string
     offset: number
     page: number
     query: {[property: string]: string | number | string[] | number[]}

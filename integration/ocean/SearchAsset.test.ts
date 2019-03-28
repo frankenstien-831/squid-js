@@ -57,14 +57,13 @@ describe("Search Asset", () => {
 
     it("should be able to do a query to get a list of DDOs", async () => {
         const ddos: DDO[] = await ocean.assets.query({
-            text: `Test2${testHash}`,
             page: 0,
             offset: 1,
             query: {
-                value: 1,
+                text: `Test2${testHash}`,
             },
             sort: {
-                value: 1,
+                text: 1,
             },
         })
 
