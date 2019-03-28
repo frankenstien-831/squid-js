@@ -97,7 +97,7 @@ export class Brizo  extends Instantiable {
         const response = await WebServiceConnectorProvider
             .getConnector()
             .get(url)
-        await save(await response.blob(), path)
+        await save(await response.arrayBuffer(), path)
         return path
     }
 }
