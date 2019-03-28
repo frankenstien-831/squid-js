@@ -4,7 +4,6 @@ import * as Web3 from "web3"
 
 import { DDO } from "../../src/ddo/DDO"
 import { Service } from "../../src/ddo/Service"
-import * as signatureHelpers from "../../src/utils/SignatureHelpers"
 import { Ocean } from "../../src/ocean/Ocean"
 import config from "../config"
 import TestContractHandler from "../keeper/TestContractHandler"
@@ -165,10 +164,12 @@ describe("DDO", () => {
     })
 
     let web3: Web3
+    let ocean: Ocean
 
     beforeEach(async () => {
         await TestContractHandler.prepareContracts()
-        web3 = (await Ocean.getInstance(config) as any).web3
+        ocean = await Ocean.getInstance(config)
+        web3 = (ocean as any).web3
     })
 
     afterEach(() => {
@@ -256,10 +257,10 @@ describe("DDO", () => {
         const signature = `0x${"a".repeat(130)}`
 
         it("should properly generate the proof", async () => {
-            const signTextSpy = spy.on(signatureHelpers, "signText", () => signature)
+            const signTextSpy = spy.on(ocean.utils.signature, "signText", () => signature)
             const ddo = new DDO(testDDO)
             const checksum = ddo.getChecksum()
-            const proof = await ddo.generateProof(web3, publicKey)
+            const proof = await ddo.generateProof(ocean, publicKey)
 
             assert.include(proof as any, {
                 creator: publicKey,

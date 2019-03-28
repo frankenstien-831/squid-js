@@ -5,14 +5,11 @@ import { config } from "../config"
 
 import { Ocean, Account, DDO } from "../../src" // @oceanprotocol/squid
 
-import ServiceAgreement from "../../src/ocean/ServiceAgreements/ServiceAgreement"
-
 // WARN: not integration test. It has been done here because constant values
 // depends on the first account on spree (only accessible from integration test)
 describe("Signature", () => {
 
     let ocean: Ocean
-    let web3: Web3
     let consumer: Account
 
     before(async () => {
@@ -21,7 +18,6 @@ describe("Signature", () => {
             web3Provider: new (Web3 as any).providers
                 .HttpProvider("http://localhost:8545", 0, "0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e", "node0"),
         })
-        web3 = (ocean as any).web3
 
         // Accounts
         consumer = new Account("0x00bd138abd70e2f00903268f3db08f2d25677c9e")
@@ -36,7 +32,7 @@ describe("Signature", () => {
         const lockId = `0x${"b".repeat(64)}`
         const escrowId = `0x${"c".repeat(64)}`
 
-        const hash = await ServiceAgreement.hashServiceAgreement(
+        const hash = await ocean.utils.agreements.hashServiceAgreement(
             templateId,
             agreementId,
             [accessId, lockId, escrowId],
@@ -82,8 +78,7 @@ describe("Signature", () => {
         const agreementConditionIds = await templates.escrowAccessSecretStoreTemplate
             .getAgreementIdsFromDDO(agreementId, ddo, consumer.getId(), consumer.getId())
 
-        const signature = await ServiceAgreement.signServiceAgreement(
-            web3,
+        const signature = await ocean.utils.agreements.signServiceAgreement(
             ddo,
             serviceDefinitionId,
             agreementId,

@@ -1,7 +1,7 @@
 import * as Web3 from "web3"
 import Web3Provider from "../keeper/Web3Provider"
 import LoggerInstance from "../utils/Logger"
-import * as signatureHelpers from "../utils/SignatureHelpers"
+import { Ocean } from "../ocean/Ocean"
 import { Authentication } from "./Authentication"
 import { Proof } from "./Proof"
 import { PublicKey } from "./PublicKey"
@@ -112,10 +112,10 @@ export class DDO {
      * @param  {string}         password  Password if it's requirted.
      * @return {Promise<Proof>}           Proof object.
      */
-    public async generateProof(web3: Web3, publicKey: string, password?: string): Promise<Proof> {
+    public async generateProof(ocean: Ocean, publicKey: string, password?: string): Promise<Proof> {
         const checksum = this.getChecksum()
 
-        const signature = await signatureHelpers.signText(web3, checksum, publicKey, password)
+        const signature = await ocean.utils.signature.signText(checksum, publicKey, password)
 
         return {
             created: (new Date()).toISOString(),

@@ -1,7 +1,6 @@
 import { generateId } from "../utils/GeneratorHelpers"
 import Account from "./Account"
 import DID from "./DID"
-import ServiceAgreement from "./ServiceAgreements/ServiceAgreement"
 import { zeroX, didPrefixed } from "../utils"
 import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
@@ -57,8 +56,7 @@ export class OceanAgreements extends Instantiable {
             .getTemplateByName(templateName)
             .getAgreementIdsFromDDO(agreementId, ddo, consumer.getId(), consumer.getId())
 
-        const signature = await ServiceAgreement.signServiceAgreement(
-            this.web3,
+        const signature = await this.ocean.utils.agreements.signServiceAgreement(
             ddo,
             serviceDefinitionId,
             agreementId,

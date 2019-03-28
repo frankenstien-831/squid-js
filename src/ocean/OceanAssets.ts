@@ -135,7 +135,7 @@ export class OceanAssets extends Instantiable {
         serviceAgreementTemplate.conditions = conditions
 
         ddo.addChecksum()
-        await ddo.addProof(this.web3, publisher.getId(), publisher.getPassword())
+        await ddo.addProof(this.ocean, publisher.getId(), publisher.getPassword())
 
         const storedDdo = await this.ocean.aquarius.storeDDO(ddo)
         await didRegistry.registerAttribute(

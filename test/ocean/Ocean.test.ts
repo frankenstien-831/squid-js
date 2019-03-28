@@ -2,37 +2,27 @@ import { assert, spy, use } from "chai"
 import * as spies from "chai-spies"
 
 import { SearchQuery } from "../../src/aquarius/query/SearchQuery"
-import { DDO } from "../../src/ddo/DDO"
 import Account from "../../src/ocean/Account"
 import { Ocean } from "../../src/ocean/Ocean"
-import * as signatureHelpers from "../../src/utils/SignatureHelpers"
 import config from "../config"
 import TestContractHandler from "../keeper/TestContractHandler"
-import { metadataMock } from "../testdata/MetaData"
 
 use(spies)
 
 let ocean: Ocean
-let accounts: Account[]
-let testPublisher: Account
 
 describe("Ocean", () => {
-
-    const metadata = metadataMock
-
-    beforeEach(async () => {
-        spy.on(signatureHelpers, "signText", () => `0x${"a".repeat(130)}`)
-    })
-    afterEach(() => {
-        spy.restore()
-    })
 
     before(async () => {
         await TestContractHandler.prepareContracts()
         ocean = await Ocean.getInstance(config)
-        accounts = await ocean.accounts.list()
+    })
 
-        testPublisher = accounts[0]
+    beforeEach(async () => {
+        spy.on(ocean.utils.signature, "signText", () => `0x${"a".repeat(130)}`)
+    })
+    afterEach(() => {
+        spy.restore()
     })
 
     describe("#getInstance()", () => {
