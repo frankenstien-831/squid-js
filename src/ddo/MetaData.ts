@@ -1,23 +1,74 @@
 export interface File {
+    /**
+     * File URL.
+     * @type {string}
+     */
     url: string
+
+    /**
+     * File index.
+     * @type {number}
+     */
+    index?: number
+
+    /**
+     * File checksum.
+     * @type {[type]}
+     */
     checksum?: string
+
+    /**
+     * Checksum hash algorithm.
+     * @type {[type]}
+     */
     checksumType?: string
+
+    /**
+     * File content length.
+     * @type {[type]}
+     */
     contentLength?: string
+
+    /**
+     * Resource ID (depending on the source).
+     * @type {[type]}
+     */
     resourceId?: string
+
+    /**
+     * File encoding.
+     * @type {string}
+     * @example "UTF-8"
+     */
+    encoding?: string
+
+    /**
+     * File compression (e.g. no, gzip, bzip2, etc).
+     * @type {string}
+     * @example "zip"
+     */
+    compression?: string
+
+    /**
+     * File format, if applicable.
+     * @type {string}
+     * @example "text/csv"
+     */
+    contentType?: string
 }
 
 /**
  * Base attributes of Assets Metadata.
  * @see https://github.com/oceanprotocol/OEPs/tree/master/8#base-attributes
  */
-export class MetaDataBase {
+export interface MetaDataBase {
 
     /**
      * Descriptive name of the Asset.
      * @type {string}
      * @example "UK Weather information 2011"
      */
-    public name: string
+    name: string
 
     /**
      * Type of the Asset. Helps to filter by the type of asset,
@@ -25,7 +76,7 @@ export class MetaDataBase {
      * @type {string}
      * @example "dataset"
      */
-    public type: "dataset" | "algorithm" | "container" | "workflow" | "other"
+    type: "dataset" | "algorithm" | "container" | "workflow" | "other"
 
     /**
      * Details of what the resource is. For a dataset, this attribute
@@ -33,28 +84,21 @@ export class MetaDataBase {
      * @type {string}
      * @example "Weather information of UK including temperature and humidity"
      */
-    public description?: string
+    description?: string
 
     /**
      * The date on which the asset was created or was added.
      * @type {string}
      * @example "2012-10-10T17:00:000Z"
      */
-    public dateCreated: string
-
-    /**
-     * Size of the asset (e.g. 18MB). In the absence of a unit (MB, kB etc.), kB will be assumed.
-     * @type {string}
-     * @example "3.1gb"
-     */
-    public size: string
+    dateCreated: string
 
     /**
      * Name of the entity generating this data (e.g. Tfl, Disney Corp, etc.).
      * @type {string}
      * @example "Met Office"
      */
-    public author: string
+    author: string
 
     /**
      * Short name referencing the license of the asset (e.g. Public Domain, CC-0, CC-BY, No License Specified, etc. ).
@@ -62,35 +106,14 @@ export class MetaDataBase {
      * @type {string}
      * @example "CC-BY"
      */
-    public license: string
+    license: string
 
     /**
      * The party holding the legal copyright. Empty by default.
      * @type {string}
      * @example "Met Office"
      */
-    public copyrightHolder?: string
-
-    /**
-     * File encoding.
-     * @type {string}
-     * @example "UTF-8"
-     */
-    public encoding?: string
-
-    /**
-     * File compression (e.g. no, gzip, bzip2, etc).
-     * @type {string}
-     * @example "zip"
-     */
-    public compression?: string
-
-    /**
-     * File format, if applicable.
-     * @type {string}
-     * @example "text/csv"
-     */
-    public contentType: string
+    copyrightHolder?: string
 
     /**
      * Example of the concept of this asset. This example is part
@@ -98,7 +121,7 @@ export class MetaDataBase {
      * @type {string}
      * @example "423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68"
      */
-    public workExample?: string
+    workExample?: string
 
     /**
      * Mapping of links for data samples, or links to find out more information.
@@ -117,7 +140,7 @@ export class MetaDataBase {
      *    },
      *  ]
      */
-    public links?: Array<{[name: string]: string}>
+    links?: Array<{[name: string]: string}>
 
     /**
      * The language of the content. Please use one of the language
@@ -125,7 +148,7 @@ export class MetaDataBase {
      * @type {String}
      * @example "en"
      */
-    public inLanguage?: string
+    inLanguage?: string
 
     /**
      * Keywords or tags used to describe this content. Multiple entries in a keyword
@@ -133,28 +156,28 @@ export class MetaDataBase {
      * @type {String}
      * @example "weather, uk, 2011, temperature, humidity"
      */
-    public tags?: string
+    tags?: string
 
     /**
      * Price of the asset.
      * @type {String}
      * @example 10
      */
-    public price: number
+    price: number
 
     /**
      * Array of File objects including the encrypted file urls and some additional information.
      * @type {File[]}
      */
-    public files: File[]
+    files: File[]
 
     /**
      * SHA3 hash of concatenated values: [list of all file checksums] + name + author + license + did
      * @type {string}
      */
-    public checksum?: string
+    checksum?: string
 
-    public encryptedFiles?: any
+    encryptedFiles?: any
 }
 
 /**

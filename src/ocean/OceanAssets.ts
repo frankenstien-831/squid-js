@@ -111,7 +111,12 @@ export class OceanAssets extends Instantiable {
                             ...metadata.base,
                             contentUrls: [],
                             encryptedFiles,
-                            files: undefined,
+                            files: metadata.base.files
+                                .map((file, index) => ({
+                                    ...file,
+                                    index,
+                                    url: undefined,
+                                })),
                         } as any,
                     },
                 },

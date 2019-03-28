@@ -5,14 +5,10 @@ const metadata: Partial<MetaData> = {
         name: undefined,
         type: "dataset",
         description: "Weather information of UK including temperature and humidity",
-        size: "3.1gb",
         dateCreated: "2012-02-01T10:55:11+00:00",
         author: "Met Office",
         license: "CC-BY",
         copyrightHolder: "Met Office",
-        encoding: "UTF-8",
-        compression: "zip",
-        contentType: "text/csv",
         // tslint:disable-next-line
         workExample: "stationId,latitude,longitude,datetime,temperature,humidity423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68",
         files: [
