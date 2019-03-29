@@ -1,6 +1,13 @@
 History
 =======
 
+0.4.1 (March 29, 2019)
+-------------------------
+
+* Refactor that allows having multiple Ocean instances with different configuration
+* Fixed errors when consuming on browsers
+* Fixed errors on searching assets using queries
+
 0.4.0 (March 18, 2019)
 -------------------------
 
