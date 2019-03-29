@@ -7,6 +7,7 @@ History
 * Refactor that allows having multiple Ocean instances with different configuration
 * Fixed errors when consuming on browsers
 * Fixed errors on searching assets using queries
+* Update to new `files` metadata structure
 
 0.4.0 (March 18, 2019)
 -------------------------
