@@ -60,7 +60,7 @@ describe("Search Asset", () => {
             page: 0,
             offset: 1,
             query: {
-                text: `Test2${testHash}`,
+                text: [`Test2${testHash}`],
             },
             sort: {
                 text: 1,
