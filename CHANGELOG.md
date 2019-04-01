@@ -1,6 +1,12 @@
 History
 =======
 
+0.5.0 (April 1, 2019)
+-------------------------
+
+* Integration with Keeper Contracts v0.9.0
+* Using Secret Store through Brizo
+
 0.4.1 (March 29, 2019)
 -------------------------
 
