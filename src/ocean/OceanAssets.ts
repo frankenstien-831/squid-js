@@ -45,7 +45,6 @@ export class OceanAssets extends Instantiable {
 
         const did: DID = DID.generate()
 
-
         const encryptedFiles = await this.ocean.secretStore.encrypt(did.getId(), metadata.base.files, publisher)
 
         const serviceAgreementTemplate = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplate()

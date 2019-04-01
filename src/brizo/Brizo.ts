@@ -98,15 +98,6 @@ export class Brizo  extends Instantiable {
         return destination
     }
 
-    private async downloadFile(url: string, filename: string, destination?: string): Promise<string> {
-        const path = `${destination}${filename}`
-        const response = await WebServiceConnectorProvider
-            .getConnector()
-            .get(url)
-        await save(await response.arrayBuffer(), path)
-        return path
-    }
-
     public async encrypt(
         did: string,
         signedDid: string,
@@ -136,5 +127,14 @@ export class Brizo  extends Instantiable {
             this.logger.error(e)
             throw new Error("HTTP request failed")
         }
+    }
+
+    private async downloadFile(url: string, filename: string, destination?: string): Promise<string> {
+        const path = `${destination}${filename}`
+        const response = await WebServiceConnectorProvider
+            .getConnector()
+            .get(url)
+        await save(await response.arrayBuffer(), path)
+        return path
     }
 }
