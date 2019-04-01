@@ -59,13 +59,13 @@
   },
   "homepage": "https://github.com/oceanprotocol/squid-js#readme",
   "dependencies": {
-    "@oceanprotocol/keeper-contracts": "^0.8.7",
-    "@oceanprotocol/secret-store-client": "~0.0.14",
+    "@oceanprotocol/keeper-contracts": "^0.9.0",
     "bignumber.js": "^8.0.1",
     "deprecated-decorator": "^0.1.6",
     "ethereumjs-util": "^6.0.0",
     "node-fetch": "^2.3.0",
     "save-file": "^2.3.1",
+    "secretstore": "^0.1.0",
     "uuid": "^3.3.2",
     "web3": "1.0.0-beta.37",
     "whatwg-url": "^7.0.0"

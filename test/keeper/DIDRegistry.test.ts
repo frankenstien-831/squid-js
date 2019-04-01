@@ -40,47 +40,28 @@ describe("DIDRegistry", () => {
                 // register the second attribute with the same did
                 const data = "asdsad"
                 const receipt = await didRegistry.registerAttribute(did, "0123456789abcdef", [], data, ownerAccount.getId())
-                assert(receipt.status)
-                assert(receipt.events.DIDAttributeRegistered)
+                assert.isTrue(receipt.status)
+                assert.isDefined(receipt.events.DIDAttributeRegistered)
             }
         })
 
     })
 
-    // describe("#getOwner()", () => {
+    describe("#getDIDOwner()", () => {
+        it("should get the owner of a did properly", async () => {
+            const ownerAccount: Account = (await ocean.accounts.list())[0]
+            const did = generateId()
+            const data = "my nice provider, is nice"
+            await didRegistry.registerAttribute(did, "0123456789abcdef", [], data, ownerAccount.getId())
 
-    //     it("should get the owner of a did properly", async () => {
-    //         const ownerAccount: Account = (await ocean.accounts.list())[0]
-    //         const did = generateId()
-    //         const data = "my nice provider, is nice"
-    //         await didRegistry.registerAttribute(did, "0123456789abcdef", data, ownerAccount.getId())
+            const owner = await didRegistry.getDIDOwner(did)
 
-    //         const owner = await didRegistry.getOwner(did)
+            assert.equal(owner, ownerAccount.getId(), `Got ${owner} but expected ${ownerAccount.getId()}`)
+        })
 
-    //         assert(owner === ownerAccount.getId(), `Got ${owner} but expected ${ownerAccount.getId()}`)
-    //     })
-
-    //     it("should get 0x00.. for a not registered did", async () => {
-    //         const owner = await didRegistry.getOwner("1234")
-    //         assert(owner === "0x0000000000000000000000000000000000000000")
-    //     })
-
-    // })
-
-    // describe("#getUpdateAt()", () => {
-
-    //     it("should the block number of the last update of the did attribute", async () => {
-    //         const ownerAccount: Account = (await ocean.accounts.list())[0]
-    //         const did = generateId()
-    //         const data = "my nice provider, is nice"
-    //         await didRegistry.registerAttribute(did, "0123456789abcdef", data, ownerAccount.getId())
-
-    //         const updatedAt: number = await didRegistry.getUpdateAt(did)
-
-    //         assert(updatedAt > 0)
-    //         Logger.log(typeof updatedAt)
-    //     })
-
-    // })
-
+        it("should get 0x0 for a not registered did", async () => {
+            const owner = await didRegistry.getDIDOwner("1234")
+            assert.equal(owner, `0x${"0".repeat(40)}`)
+        })
+    })
 })

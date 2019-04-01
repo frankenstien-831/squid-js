@@ -1,6 +1,6 @@
-import SecretStoreProvider from "../secretstore/SecretStoreProvider"
 import Account from "./Account"
 import { noDidPrefixed } from "../utils"
+import { File } from "../ddo/MetaData"
 import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 /**
@@ -27,35 +27,9 @@ export class OceanSecretStore extends Instantiable {
      * @param  {string}          publisher Publisher account.
      * @return {Promise<string>}           Encrypted text.
      */
-    public async encrypt(did: string, content: any, publisher?: Account, secretStoreUrl?: string): Promise<string> {
-        return await this.getSecretStoreByAccount(publisher, secretStoreUrl)
-            .encryptDocument(noDidPrefixed(did), content)
-    }
+    public async encrypt(did: string, document: any, publisher: Account): Promise<string> {
+        const signedDid = await this.ocean.utils.signature.signText(noDidPrefixed(did), publisher.getId(), publisher.getPassword())
 
-    /**
-     * Decrypt an encrypted text using the stored encryption keys associated with the `did`.
-     * Decryption requires that the account owner has access permissions for this `did`
-     * @param  {string}          did      Decentralized ID.
-     * @param  {string}          content  Content to be encrypted.
-     * @param  {string}          consumer cONSUMER account.
-     * @return {Promise<string>}          Encrypted text.
-     */
-    public async decrypt(did: string, content: string, consumer?: Account, secretStoreUrl?: string): Promise<any> {
-        return await this.getSecretStoreByAccount(consumer, secretStoreUrl)
-            .decryptDocument(noDidPrefixed(did), content)
-    }
-
-    private getSecretStoreByAccount(account: Account, secretStoreUrl?: string) {
-        const config: any = {...this.config}
-        if (account) {
-            config.address = account.getId()
-        }
-        if (account && account.getPassword()) {
-            config.password = account.getPassword()
-        }
-        if (secretStoreUrl) {
-            config.secretStoreUri = secretStoreUrl
-        }
-        return SecretStoreProvider.getSecretStore(config)
+        return await this.ocean.brizo.encrypt(noDidPrefixed(did), signedDid, document, publisher.getId())
     }
 }

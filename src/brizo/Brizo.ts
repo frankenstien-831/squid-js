@@ -28,6 +28,10 @@ export class Brizo  extends Instantiable {
         return `${this.url}${apiPath}/consume`
     }
 
+    public getEncryptEndpoint() {
+        return `${this.url}${apiPath}/publish`
+    }
+
     public getComputeEndpoint(pubKey: string, serviceId: string, algo: string, container: string) {
         // tslint:disable-next-line
         return `${this.url}${apiPath}/compute`
@@ -69,17 +73,19 @@ export class Brizo  extends Instantiable {
         files: File[],
         destination: string,
     ): Promise<string> {
+        const agreementIdSignature = await this.ocean.utils.signature.signText(agreementId, account.getId())
         const filesPromises = files
-            .map(async ({url}, i) => {
+            .map(async ({}, i) => {
                 let consumeUrl = serviceEndpoint
-                consumeUrl += `?url=${url}`
+                consumeUrl += `?index=${i}`
                 consumeUrl += `&serviceAgreementId=${agreementId}`
                 consumeUrl += `&consumerAddress=${account.getId()}`
+                consumeUrl += `&signature=${agreementIdSignature}`
 
                 try {
                     await this.downloadFile(
                         consumeUrl,
-                        url.split("/").pop() || `file-${i}`,
+                        `file-${i}`,
                         destination,
                     )
                 } catch (e) {
@@ -99,5 +105,36 @@ export class Brizo  extends Instantiable {
             .get(url)
         await save(await response.arrayBuffer(), path)
         return path
+    }
+
+    public async encrypt(
+        did: string,
+        signedDid: string,
+        document: any,
+        publisher: string,
+    ): Promise<string> {
+
+        const args = {
+            documentId: did,
+            signedDocumentId: signedDid,
+            document: JSON.stringify(document),
+            publisherAddress: publisher,
+        }
+
+        try {
+            const response = await WebServiceConnectorProvider
+                .getConnector()
+                .post(
+                    this.getEncryptEndpoint(),
+                    decodeURI(JSON.stringify(args)),
+                )
+            if (!response.ok) {
+                throw new Error("HTTP request failed")
+            }
+            return await response.text()
+        } catch (e) {
+            this.logger.error(e)
+            throw new Error("HTTP request failed")
+        }
     }
 }

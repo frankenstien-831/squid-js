@@ -17,21 +17,13 @@ describe("Secret Store", () => {
         ocean = await Ocean.getInstance(config)
 
         // Accounts
-        account = new Account("0x068Ed00cF0441e4829D9784fCBe7b9e26D4BD8d0")
-        account.setPassword("secret")
+        account = (await ocean.accounts.list())[0]
     })
 
     it("should encrypt a text", async () => {
         encryptedContent = await ocean.secretStore.encrypt(did.getId(), content, account)
 
         assert.isDefined(encryptedContent)
-        assert.match(encryptedContent, /^0x[a-f0-9]{86}$/i)
-    })
-
-    // Only works running Barge with `--no-acl-contract`
-    xit("should decrypt a text", async () => {
-        const decryptedContent = await ocean.secretStore.decrypt(did.getId(), encryptedContent, account)
-
-        assert.deepEqual(decryptedContent, content)
+        assert.match(encryptedContent, /^0x[a-f0-9]{76}$/i)
     })
 })

@@ -2,10 +2,17 @@ import { URL } from "whatwg-url"
 import { DDO } from "../ddo/DDO"
 import DID from "../ocean/DID"
 import WebServiceConnectorProvider from "../utils/WebServiceConnectorProvider"
-import { SearchQuery } from "./query/SearchQuery"
 import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 const apiPath = "/api/v1/aquarius/assets/ddo"
+
+export interface SearchQuery {
+    text?: string
+    offset: number
+    page: number
+    query: {[property: string]: string | number | string[] | number[]}
+    sort: {[jsonPath: string]: number}
+}
 
 /**
  * Provides a interface with Aquarius.

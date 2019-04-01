@@ -1,7 +1,7 @@
-import { SearchQuery } from "../aquarius/query/SearchQuery"
+import { SearchQuery } from "../aquarius/Aquarius"
 import { DDO } from "../ddo/DDO"
 import { MetaData } from "../ddo/MetaData"
-import { Service, ServiceAuthorization } from "../ddo/Service"
+import { Service } from "../ddo/Service"
 import Account from "./Account"
 import DID from "./DID"
 import { fillConditionsWithDDO } from "../utils"
@@ -45,10 +45,8 @@ export class OceanAssets extends Instantiable {
 
         const did: DID = DID.generate()
 
-        const authorizationService = (services.find(({type}) => type === "Authorization") || {}) as ServiceAuthorization
-        const secretStoreUrl = authorizationService.service === "SecretStore" && authorizationService.serviceEndpoint
 
-        const encryptedFiles = await this.ocean.secretStore.encrypt(did.getId(), metadata.base.files, null, secretStoreUrl)
+        const encryptedFiles = await this.ocean.secretStore.encrypt(did.getId(), metadata.base.files, publisher)
 
         const serviceAgreementTemplate = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplate()
 
@@ -163,23 +161,15 @@ export class OceanAssets extends Instantiable {
         const ddo = await this.resolve(did)
         const {metadata} = ddo.findServiceByType("Metadata")
 
-        const authorizationService = ddo.findServiceByType("Authorization")
         const accessService = ddo.findServiceById(serviceDefinitionId)
 
-        const files = metadata.base.encryptedFiles
+        const files = metadata.base.files
 
         const {serviceEndpoint} =  accessService
 
         if (!serviceEndpoint) {
             throw new Error("Consume asset failed, service definition is missing the `serviceEndpoint`.")
         }
-
-        const secretStoreUrl = authorizationService.service === "SecretStore" && authorizationService.serviceEndpoint
-
-        this.logger.log("Decrypting files")
-        const decryptedFiles = await this.ocean.secretStore
-            .decrypt(did, files, consumerAccount, secretStoreUrl)
-        this.logger.log("Files decrypted")
 
         this.logger.log("Consuming files")
 
@@ -188,7 +178,7 @@ export class OceanAssets extends Instantiable {
             agreementId,
             serviceEndpoint,
             consumerAccount,
-            decryptedFiles,
+            files,
             resultPath,
         )
         this.logger.log("Files consumed")

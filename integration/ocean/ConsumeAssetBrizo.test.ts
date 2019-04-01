@@ -19,18 +19,11 @@ describe("Consume Asset (Brizo)", () => {
     const metadata = getMetadata()
 
     before(async () => {
-        ocean = await Ocean.getInstance({
-            ...config,
-            web3Provider: new Web3.providers
-                .HttpProvider("http://localhost:8545", 0, "0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e", "node0"),
-        })
+        ocean = await Ocean.getInstance(config)
 
         // Accounts
-        const instanceConfig = (ocean as any).instanceConfig
-        publisher = new Account("0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e", instanceConfig)
-        publisher.setPassword("node0")
-        consumer = new Account("0x068Ed00cF0441e4829D9784fCBe7b9e26D4BD8d0", instanceConfig)
-        consumer.setPassword("secret")
+        publisher = (await ocean.accounts.list())[0]
+        consumer = (await ocean.accounts.list())[1]
     })
 
     it("should regiester an asset", async () => {
@@ -63,6 +56,7 @@ describe("Consume Asset (Brizo)", () => {
             })
         })
 
-        assert.deepEqual(files, ["README.md", "package.json"], "Stored files are not correct.")
+        assert.deepEqual(files, ["file-0", "file-1"], "Stored files are not correct.")
+        // assert.deepEqual(files, ["README.md", "package.json"], "Stored files are not correct.")
     })
 })
