@@ -1,3 +1,5 @@
+#!/bin/sh
+
 count=0
 echo "Starting..."
 while sleep 0.1;

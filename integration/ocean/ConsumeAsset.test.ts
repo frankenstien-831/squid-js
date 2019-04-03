@@ -1,5 +1,4 @@
 import { assert } from "chai"
-import * as Web3 from "web3"
 import * as fs from "fs"
 
 import { config } from "../config"
@@ -94,7 +93,7 @@ describe("Consume Asset", () => {
     it("should consume and store the assets", async () => {
         const accessService = ddo.findServiceByType("Access")
 
-        const folder = "/tmp/ocean/squid-js"
+        const folder = "/tmp/ocean/squid-js-1"
         const path = await ocean.assets.consume(
             serviceAgreementSignatureResult.agreementId,
             ddo.id,
@@ -113,5 +112,30 @@ describe("Consume Asset", () => {
 
         assert.deepEqual(files, ["file-0", "file-1"], "Stored files are not correct.")
         // assert.deepEqual(files, ["README.md", "package.json"], "Stored files are not correct.")
+    })
+
+    it("should consume and store one assets", async () => {
+        const accessService = ddo.findServiceByType("Access")
+
+        const folder = "/tmp/ocean/squid-js-2"
+        const path = await ocean.assets.consume(
+            serviceAgreementSignatureResult.agreementId,
+            ddo.id,
+            accessService.serviceDefinitionId,
+            consumer,
+            folder,
+            1,
+        )
+
+        assert.include(path, folder, "The storage path is not correct.")
+
+        const files = await new Promise<string[]>((resolve) => {
+            fs.readdir(path, (err, fileList) => {
+                resolve(fileList)
+            })
+        })
+
+        assert.deepEqual(files, ["file-1"], "Stored files are not correct.")
+        // assert.deepEqual(files, ["package.json"], "Stored files are not correct.")
     })
 })

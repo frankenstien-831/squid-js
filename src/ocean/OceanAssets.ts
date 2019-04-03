@@ -147,14 +147,16 @@ export class OceanAssets extends Instantiable {
     }
 
     // tslint:disable-next-line
-    public async consume(agreementId: string, did: string, serviceDefinitionId: string, consumerAccount: Account, resultPath: string): Promise<string>
-    public async consume(agreementId: string, did: string, serviceDefinitionId: string, consumerAccount: Account): Promise<true>
+    public async consume(agreementId: string, did: string, serviceDefinitionId: string, consumerAccount: Account, resultPath: string, index?: number): Promise<string>
+    // tslint:disable-next-line
+    public async consume(agreementId: string, did: string, serviceDefinitionId: string, consumerAccount: Account, resultPath?: undefined | null, index?: number): Promise<true>
     public async consume(
         agreementId: string,
         did: string,
         serviceDefinitionId: string,
         consumerAccount: Account,
         resultPath?: string,
+        index: number = -1,
     ): Promise<string | true> {
 
         const ddo = await this.resolve(did)
@@ -179,6 +181,7 @@ export class OceanAssets extends Instantiable {
             consumerAccount,
             files,
             resultPath,
+            index,
         )
         this.logger.log("Files consumed")
 
