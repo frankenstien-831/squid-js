@@ -1,6 +1,11 @@
 History
 =======
 
+0.5.1 (April 4, 2019)
+-------------------------
+
+* Added a way to consume files individually
+
 0.5.0 (April 1, 2019)
 -------------------------
 

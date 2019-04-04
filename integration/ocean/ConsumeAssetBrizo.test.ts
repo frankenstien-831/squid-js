@@ -1,5 +1,4 @@
 import { assert } from "chai"
-import * as Web3 from "web3"
 import * as fs from "fs"
 
 import { config } from "../config"
