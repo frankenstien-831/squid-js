@@ -262,7 +262,7 @@ export class OceanAssets extends Instantiable {
      * @param  {SearchQuery} query Query to filter the assets.
      * @return {Promise<DDO[]>}
      */
-    public async query(query: SearchQuery): Promise<DDO[]> {
+    public async query(query: SearchQuery) {
         return this.ocean.aquarius.queryMetadata(query)
     }
 
@@ -271,7 +271,7 @@ export class OceanAssets extends Instantiable {
      * @param  {SearchQuery} text Text to filter the assets.
      * @return {Promise<DDO[]>}
      */
-    public async search(text: string): Promise<DDO[]> {
+    public async search(text: string) {
         return this.ocean.aquarius.queryMetadataByText({
             text,
             page: 0,

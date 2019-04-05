@@ -59,7 +59,7 @@ describe("Ocean", () => {
                 text: "Office",
             } as SearchQuery
 
-            const assets: any[] = await ocean.assets.query(query)
+            const assets = await ocean.assets.query(query)
 
             assert(assets)
         })
@@ -68,7 +68,7 @@ describe("Ocean", () => {
     describe("#searchAssetsByText()", () => {
         it("should search for assets", async () => {
             const text = "office"
-            const assets: any[] = await ocean.assets.search(text)
+            const assets = await ocean.assets.search(text)
 
             assert(assets)
         })

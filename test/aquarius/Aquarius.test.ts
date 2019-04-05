@@ -1,4 +1,4 @@
-import * as assert from "assert"
+import { assert } from "chai"
 import { Aquarius } from "../../src/aquarius/Aquarius"
 import { SearchQuery } from "../../src/aquarius/Aquarius"
 import { DDO } from "../../src/ddo/DDO"
@@ -10,6 +10,9 @@ import WebServiceConnectorMock from "../mocks/WebServiceConnector.mock"
 describe("Aquarius", () => {
 
     const aquarius: Aquarius = new Aquarius({config} as any)
+    // tslint:disable-next-line
+    const getResults = (results: DDO[], page = 0, total_pages = 1, total_results = 1) =>
+        ({results, page, total_pages, total_results})
 
     describe("#queryMetadata()", () => {
 
@@ -26,24 +29,26 @@ describe("Aquarius", () => {
         } as SearchQuery
 
         it("should query metadata", async () => {
-
             // @ts-ignore
-            WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock([new DDO()]))
+            WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(getResults([new DDO()])))
 
-            const result: DDO[] = await aquarius.queryMetadata(query)
-            assert(result)
-            assert(result.length !== null)
+            const result = await aquarius.queryMetadata(query)
+            assert.typeOf(result.results, "array")
+            assert.lengthOf(result.results, 1)
+            assert.equal(result.page, 0)
+            assert.equal(result.totalPages, 1)
+            assert.equal(result.totalResults, 1)
         })
 
         it("should query metadata and return real ddo", async () => {
 
             // @ts-ignore
-            WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock([new DDO()]))
+            WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(getResults([new DDO()])))
 
-            const result: DDO[] = await aquarius.queryMetadata(query)
-
-            assert(result)
-            assert(result[0].findServiceById)
+            const result = await aquarius.queryMetadata(query)
+            assert.typeOf(result.results, "array")
+            assert.lengthOf(result.results, 1)
+            assert.isDefined(result.results[0].findServiceById)
         })
     })
 
@@ -64,21 +69,25 @@ describe("Aquarius", () => {
         it("should query metadata by text", async () => {
 
             // @ts-ignore
-            WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock([new DDO()]))
+            WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(getResults([new DDO()])))
 
-            const result: DDO[] = await aquarius.queryMetadataByText(query)
-            assert(result)
-            assert(result.length !== null)
+            const result = await aquarius.queryMetadataByText(query)
+            assert.typeOf(result.results, "array")
+            assert.lengthOf(result.results, 1)
+            assert.equal(result.page, 0)
+            assert.equal(result.totalPages, 1)
+            assert.equal(result.totalResults, 1)
         })
 
         it("should query metadata and return real ddo", async () => {
 
             // @ts-ignore
-            WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock([new DDO()]))
+            WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(getResults([new DDO()])))
 
-            const result: DDO[] = await aquarius.queryMetadataByText(query)
-            assert(result)
-            assert(result[0].findServiceById)
+            const result = await aquarius.queryMetadataByText(query)
+            assert.typeOf(result.results, "array")
+            assert.lengthOf(result.results, 1)
+            assert.isDefined(result.results[0].findServiceById)
         })
 
     })

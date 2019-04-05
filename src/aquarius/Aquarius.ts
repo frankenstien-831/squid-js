@@ -6,6 +6,13 @@ import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 const apiPath = "/api/v1/aquarius/assets/ddo"
 
+export interface QueryResult {
+    results: DDO[]
+    page: number
+    totalPages: number
+    totalResults: number
+}
+
 export interface SearchQuery {
     text?: string
     offset: number
@@ -53,26 +60,24 @@ export class Aquarius extends Instantiable {
     /**
      * Search over the DDOs using a query.
      * @param  {SearchQuery} query Query to filter the DDOs.
-     * @return {Promise<DDO[]>}
+     * @return {Promise<QueryResult>}
      */
-    public async queryMetadata(query: SearchQuery): Promise<DDO[]> {
-        const result: DDO[] = await WebServiceConnectorProvider.getConnector()
+    public async queryMetadata(query: SearchQuery): Promise<QueryResult> {
+        const result: QueryResult = await WebServiceConnectorProvider.getConnector()
             .post(`${this.url}${apiPath}/query`, JSON.stringify(query))
             .then((response: any) => {
                 if (response.ok) {
                     return response.json() as DDO[]
                 }
                 this.logger.error("queryMetadata failed:", response.status, response.statusText)
-                return [] as DDO[]
+                return this.transformResult()
             })
-            .then((ddos) => {
-                return ddos.map((ddo): DDO => {
-                    return new DDO(ddo as DDO)
-                })
+            .then((results) => {
+                return this.transformResult(results)
             })
             .catch((error) => {
                 this.logger.error("Error fetching querying metadata: ", error)
-                return [] as DDO[]
+                return this.transformResult()
             })
 
         return result
@@ -81,31 +86,29 @@ export class Aquarius extends Instantiable {
     /**
      * Search over the DDOs using a query.
      * @param  {SearchQuery} query Query to filter the DDOs.
-     * @return {Promise<DDO[]>}
+     * @return {Promise<QueryResult>}
      */
-    public async queryMetadataByText(query: SearchQuery): Promise<DDO[]> {
+    public async queryMetadataByText(query: SearchQuery): Promise<QueryResult> {
         const fullUrl = new URL(`${this.url}${apiPath}/query`)
         fullUrl.searchParams.append("text", query.text)
         fullUrl.searchParams.append("sort", decodeURIComponent(JSON.stringify(query.sort)))
         fullUrl.searchParams.append("offset", query.offset.toString())
         fullUrl.searchParams.append("page", query.page.toString())
-        const result: DDO[] = await WebServiceConnectorProvider.getConnector()
+        const result: QueryResult = await WebServiceConnectorProvider.getConnector()
             .get(fullUrl)
             .then((response: any) => {
                 if (response.ok) {
                     return response.json() as DDO[]
                 }
                 this.logger.log("queryMetadataByText failed:", response.status, response.statusText)
-                return [] as DDO[]
+                return this.transformResult()
             })
-            .then((ddos) => {
-                return ddos.map((ddo): DDO => {
-                    return new DDO(ddo as DDO)
-                })
+            .then((results) => {
+                return this.transformResult(results)
             })
             .catch((error) => {
                 this.logger.error("Error fetching querying metadata by text: ", error)
-                return [] as DDO[]
+                return this.transformResult()
             })
 
         return result
@@ -167,5 +170,17 @@ export class Aquarius extends Instantiable {
 
     public getServiceEndpoint(did: DID) {
         return `${this.url}/api/v1/aquarius/assets/metadata/${did.getId()}`
+    }
+
+    private transformResult(
+        {results, page, total_pages, total_results}: any = {result: [], page: 0, total_pages: 0, total_results: 0},
+    ): QueryResult {
+
+        return {
+            results: (results || []).map((ddo) => new DDO(ddo as DDO)),
+            page,
+            totalPages: total_pages,
+            totalResults: total_results,
+        }
     }
 }
