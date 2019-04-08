@@ -9,6 +9,9 @@ module.exports = {
         minimize: true,
         noEmitOnErrors: true
     },
+    node: {
+        fs: 'empty',
+    },
     resolve: {
         extensions: ['.js'],
         modules: ['node_modules'],

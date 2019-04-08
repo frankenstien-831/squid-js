@@ -5,7 +5,8 @@
     "lib": [
       "es2017",
       "es6",
-      "es7"
+      "es7",
+      "DOM"
     ],
     "declaration": true,
     "module": "commonjs",
