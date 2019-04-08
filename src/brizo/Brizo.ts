@@ -1,4 +1,4 @@
-import save = require("save-file")
+import * as fs from "fs"
 import { File } from "../ddo/MetaData"
 import Account from "../ocean/Account"
 import WebServiceConnectorProvider from "../utils/WebServiceConnectorProvider"
@@ -87,7 +87,6 @@ export class Brizo  extends Instantiable {
                 try {
                     await this.downloadFile(
                         consumeUrl,
-                        `file-${i}`,
                         destination,
                     )
                 } catch (e) {
@@ -131,12 +130,21 @@ export class Brizo  extends Instantiable {
         }
     }
 
-    private async downloadFile(url: string, filename: string, destination?: string): Promise<string> {
-        const path = `${destination}${filename}`
+    private async downloadFile(url: string, destination?: string): Promise<string> {
         const response = await WebServiceConnectorProvider
             .getConnector()
             .get(url)
-        await save(await response.arrayBuffer(), path)
-        return path
+
+        const filename = response.headers.get('content-disposition').match(/attachment;filename=(.+)/)[1]
+
+        await new Promise(async (resolve, reject) => {
+            fs.mkdirSync(destination, {recursive: true})
+            const fileStream = fs.createWriteStream(`${destination}${filename}`);
+            response.body.pipe(fileStream);
+            response.body.on("error", reject);
+            fileStream.on("finish", resolve);
+        });
+
+        return destination
     }
 }

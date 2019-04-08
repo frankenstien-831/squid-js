@@ -65,7 +65,6 @@
     "deprecated-decorator": "^0.1.6",
     "ethereumjs-util": "^6.0.0",
     "node-fetch": "^2.3.0",
-    "save-file": "^2.3.1",
     "uuid": "^3.3.2",
     "web3": "1.0.0-beta.37",
     "whatwg-url": "^7.0.0"
