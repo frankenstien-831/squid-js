@@ -55,7 +55,6 @@ describe("Consume Asset (Brizo)", () => {
             })
         })
 
-        assert.deepEqual(files, ["file-0", "file-1"], "Stored files are not correct.")
-        // assert.deepEqual(files, ["README.md", "package.json"], "Stored files are not correct.")
+        assert.deepEqual(files, ["README.md", "package.json"], "Stored files are not correct.")
     })
 })

@@ -65,7 +65,6 @@ xdescribe("Consume Asset (Large size)", () => {
             })
         })
 
-        assert.deepEqual(files, ["file-0"], "Stored files are not correct.")
-        // assert.deepEqual(files, ["1GB.bin"], "Stored files are not correct.")
+        assert.deepEqual(files, ["1GB.bin"], "Stored files are not correct.")
     })
 })

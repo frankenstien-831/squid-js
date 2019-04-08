@@ -110,8 +110,7 @@ describe("Consume Asset", () => {
             })
         })
 
-        assert.deepEqual(files, ["file-0", "file-1"], "Stored files are not correct.")
-        // assert.deepEqual(files, ["README.md", "package.json"], "Stored files are not correct.")
+        assert.deepEqual(files, ["README.md", "package.json"], "Stored files are not correct.")
     })
 
     it("should consume and store one assets", async () => {
@@ -135,7 +134,6 @@ describe("Consume Asset", () => {
             })
         })
 
-        assert.deepEqual(files, ["file-1"], "Stored files are not correct.")
-        // assert.deepEqual(files, ["package.json"], "Stored files are not correct.")
+        assert.deepEqual(files, ["package.json"], "Stored files are not correct.")
     })
 })
