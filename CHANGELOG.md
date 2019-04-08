@@ -1,6 +1,11 @@
 History
 =======
 
+0.5.2 (April 8, 2019)
+-------------------------
+
+* Support new Aquarius query response
+
 0.5.1 (April 4, 2019)
 -------------------------
 
