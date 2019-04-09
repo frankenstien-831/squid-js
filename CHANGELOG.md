@@ -1,6 +1,11 @@
 History
 =======
 
+0.5.3 (April 9, 2019)
+-------------------------
+
+* Improved how is consumed the assets
+
 0.5.2 (April 8, 2019)
 -------------------------
 
