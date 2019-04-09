@@ -136,19 +136,19 @@ export class Brizo  extends Instantiable {
                 .getConnector()
                 .get(url)
 
-            const filename = response.headers.get('content-disposition').match(/attachment;filename=(.+)/)[1]
+            const filename = response.headers.get("content-disposition").match(/attachment;filename=(.+)/)[1]
 
             await new Promise(async (resolve, reject) => {
                 fs.mkdirSync(destination, {recursive: true})
-                const fileStream = fs.createWriteStream(`${destination}${filename}`);
-                response.body.pipe(fileStream);
-                response.body.on("error", reject);
-                fileStream.on("finish", resolve);
-            });
+                const fileStream = fs.createWriteStream(`${destination}${filename}`)
+                response.body.pipe(fileStream)
+                response.body.on("error", reject)
+                fileStream.on("finish", resolve)
+            })
 
             return destination
         } else {
-            window.open(url, '_blank')
+            window.open(url, "_blank")
         }
     }
 }
