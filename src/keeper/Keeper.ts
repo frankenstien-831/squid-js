@@ -29,26 +29,40 @@ export class Keeper extends Instantiable {
         // Adding keeper inside Ocean to prevent `Keeper not defined yet` error
         config.ocean.keeper = keeper
 
+        const resolvedInstances = await Promise.all([
+            // Main contracts
+            Dispenser.getInstance(config),
+            OceanToken.getInstance(config),
+            DIDRegistry.getInstance(config),
+            // Managers
+            TemplateStoreManager.getInstance(config),
+            AgreementStoreManager.getInstance(config),
+            ConditionStoreManager.getInstance(config),
+            // Conditions
+            LockRewardCondition.getInstance(config),
+            EscrowReward.getInstance(config),
+            AccessSecretStoreCondition.getInstance(config),
+            // Conditions
+            EscrowAccessSecretStoreTemplate.getInstance(config),
+        ])
+
         // Main contracts
-        keeper.dispenser = await Dispenser.getInstance(config)
-        keeper.token = await OceanToken.getInstance(config)
-        keeper.didRegistry = await DIDRegistry.getInstance(config)
-
+        keeper.dispenser = resolvedInstances[0]
+        keeper.token = resolvedInstances[1]
+        keeper.didRegistry = resolvedInstances[2]
         // Managers
-        keeper.templateStoreManager = await TemplateStoreManager.getInstance(config)
-        keeper.agreementStoreManager = await AgreementStoreManager.getInstance(config)
-        keeper.conditionStoreManager = await ConditionStoreManager.getInstance(config)
-
+        keeper.templateStoreManager = resolvedInstances[3]
+        keeper.agreementStoreManager = resolvedInstances[4]
+        keeper.conditionStoreManager = resolvedInstances[5]
         // Conditions
         keeper.conditions = {
-            lockRewardCondition: await LockRewardCondition.getInstance(config),
-            escrowReward: await EscrowReward.getInstance(config),
-            accessSecretStoreCondition: await AccessSecretStoreCondition.getInstance(config),
+            lockRewardCondition: resolvedInstances[6],
+            escrowReward: resolvedInstances[7],
+            accessSecretStoreCondition: resolvedInstances[8],
         }
-
         // Conditions
         keeper.templates = {
-            escrowAccessSecretStoreTemplate: await EscrowAccessSecretStoreTemplate.getInstance(config),
+            escrowAccessSecretStoreTemplate: resolvedInstances[9],
         }
 
         // Utils
