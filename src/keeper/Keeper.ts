@@ -43,7 +43,7 @@ export class Keeper extends Instantiable {
             EscrowReward.getInstance(config),
             AccessSecretStoreCondition.getInstance(config),
             // Conditions
-            EscrowAccessSecretStoreTemplate.getInstance(config)
+            EscrowAccessSecretStoreTemplate.getInstance(config),
         ])
 
         // Main contracts
@@ -58,11 +58,11 @@ export class Keeper extends Instantiable {
         keeper.conditions = {
             lockRewardCondition: resolvedInstances[6],
             escrowReward: resolvedInstances[7],
-            accessSecretStoreCondition: resolvedInstances[8]
+            accessSecretStoreCondition: resolvedInstances[8],
         }
         // Conditions
         keeper.templates = {
-            escrowAccessSecretStoreTemplate: resolvedInstances[9]
+            escrowAccessSecretStoreTemplate: resolvedInstances[9],
         }
 
         // Utils
