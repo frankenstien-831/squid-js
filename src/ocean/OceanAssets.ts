@@ -227,6 +227,8 @@ export class OceanAssets extends Instantiable {
 
             this.logger.log("Locking payment")
 
+            const accessGranted = accessCondition.getConditionFulfilledEvent(agreementId).once()
+
             const paid = await oceanAgreements.conditions.lockReward(agreementId, metadata.base.price, consumer)
 
             if (paid) {
@@ -238,7 +240,7 @@ export class OceanAssets extends Instantiable {
                 reject("Error on payment")
             }
 
-            await accessCondition.getConditionFulfilledEvent(agreementId).once()
+            await accessGranted
 
             this.logger.log("Access granted")
             resolve()

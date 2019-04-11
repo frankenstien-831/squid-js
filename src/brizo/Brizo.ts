@@ -136,9 +136,17 @@ export class Brizo  extends Instantiable {
         const response = await WebServiceConnectorProvider
             .getConnector()
             .get(url)
-        const filename = response.headers.get("content-disposition").match(/attachment;filename=(.+)/)[1]
-        if (destination) {
+        if (!response.ok) {
+            throw new Error("Response error.")
+        }
+        let filename
+        try {
+            filename = response.headers.get("content-disposition").match(/attachment;filename=(.+)/)[1]
+        } catch {
+            throw new Error("Response is not containing file name.")
+        }
 
+        if (destination) {
             await new Promise(async (resolve, reject) => {
                 fs.mkdirSync(destination, {recursive: true})
                 const fileStream = fs.createWriteStream(`${destination}${filename}`)
