@@ -1,4 +1,6 @@
 import * as fs from "fs"
+import save = require("save-file")
+
 import { File } from "../ddo/MetaData"
 import Account from "../ocean/Account"
 import WebServiceConnectorProvider from "../utils/WebServiceConnectorProvider"
@@ -131,13 +133,20 @@ export class Brizo  extends Instantiable {
     }
 
     private async downloadFile(url: string, destination?: string): Promise<string> {
+        const response = await WebServiceConnectorProvider
+            .getConnector()
+            .get(url)
+        if (!response.ok) {
+            throw new Error("Response error.")
+        }
+        let filename
+        try {
+            filename = response.headers.get("content-disposition").match(/attachment;filename=(.+)/)[1]
+        } catch {
+            throw new Error("Response is not containing file name.")
+        }
+
         if (destination) {
-            const response = await WebServiceConnectorProvider
-                .getConnector()
-                .get(url)
-
-            const filename = response.headers.get("content-disposition").match(/attachment;filename=(.+)/)[1]
-
             await new Promise(async (resolve, reject) => {
                 fs.mkdirSync(destination, {recursive: true})
                 const fileStream = fs.createWriteStream(`${destination}${filename}`)
@@ -148,7 +157,7 @@ export class Brizo  extends Instantiable {
 
             return destination
         } else {
-            window.open(url, "_blank")
+            save(await response.arrayBuffer(), filename)
         }
     }
 }
