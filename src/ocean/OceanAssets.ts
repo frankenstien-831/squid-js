@@ -4,7 +4,7 @@ import { MetaData } from "../ddo/MetaData"
 import { Service } from "../ddo/Service"
 import Account from "./Account"
 import DID from "./DID"
-import { fillConditionsWithDDO } from "../utils"
+import { fillConditionsWithDDO, noZeroX } from "../utils"
 import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 /**
@@ -174,7 +174,7 @@ export class OceanAssets extends Instantiable {
 
         this.logger.log("Consuming files")
 
-        resultPath = resultPath ? `${resultPath}/datafile.${ddo.shortId()}.${agreementId}/` : undefined
+        resultPath = resultPath ? `${resultPath}/datafile.${ddo.shortId()}.${noZeroX(agreementId)}/` : undefined
         await this.ocean.brizo.consumeService(
             agreementId,
             serviceEndpoint,

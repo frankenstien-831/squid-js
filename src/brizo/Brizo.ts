@@ -3,6 +3,7 @@ import save = require("save-file")
 
 import { File } from "../ddo/MetaData"
 import Account from "../ocean/Account"
+import { noZeroX } from "../utils"
 import WebServiceConnectorProvider from "../utils/WebServiceConnectorProvider"
 import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
@@ -76,13 +77,13 @@ export class Brizo  extends Instantiable {
         destination: string,
         index: number = -1,
     ): Promise<string> {
-        const agreementIdSignature = await this.ocean.utils.signature.signText(agreementId, account.getId())
+        const agreementIdSignature = await this.ocean.utils.signature.signText(noZeroX(agreementId), account.getId())
         const filesPromises = files
             .filter(({}, i) => index === -1 || i === index)
             .map(async ({index: i}) => {
                 let consumeUrl = serviceEndpoint
                 consumeUrl += `?index=${i}`
-                consumeUrl += `&serviceAgreementId=${agreementId}`
+                consumeUrl += `&serviceAgreementId=${noZeroX(agreementId)}`
                 consumeUrl += `&consumerAddress=${account.getId()}`
                 consumeUrl += `&signature=${agreementIdSignature}`
 

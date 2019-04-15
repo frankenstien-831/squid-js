@@ -47,7 +47,7 @@ describe("Consume Asset", () => {
         serviceAgreementSignatureResult = await ocean.agreements.prepare(ddo.id, accessService.serviceDefinitionId, consumer)
 
         const {agreementId, signature} = serviceAgreementSignatureResult
-        assert.match(agreementId, /^[a-f0-9]{64}$/, "Service agreement ID seems not valid")
+        assert.match(agreementId, /^0x[a-f0-9]{64}$/, "Service agreement ID seems not valid")
         assert.match(signature, /^0x[a-f0-9]{130}$/, "Service agreement signature seems not valid")
     })
 
