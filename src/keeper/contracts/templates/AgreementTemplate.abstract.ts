@@ -5,6 +5,16 @@ import { ServiceAgreementTemplate } from "../../../ddo/ServiceAgreementTemplate"
 import { zeroX } from "../../../utils"
 import { InstantiableConfig } from "../../../Instantiable.abstract"
 
+export interface AgreementConditionsStatus {
+    [condition: string]: {
+        condition: string,
+        contractName: string,
+        state: ConditionState,
+        blocked: boolean,
+        blockedBy: string[],
+    },
+}
+
 export abstract class AgreementTemplate extends ContractBase {
 
     public static async getInstance(
@@ -108,15 +118,7 @@ export abstract class AgreementTemplate extends ContractBase {
      */
     public async getAgreementStatus(
         agreementId: string,
-    ): Promise<{
-        [condition: string]: {
-            condition: string,
-            contractName: string,
-            state: ConditionState,
-            blocked: boolean,
-            blockedBy: string[],
-        },
-    } | false> {
+    ): Promise<AgreementConditionsStatus | false> {
         const agreementStore = this.ocean.keeper.agreementStoreManager
         const conditionStore = this.ocean.keeper.conditionStoreManager
 

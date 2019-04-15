@@ -15,7 +15,7 @@ export * from "./ddo/DDO"
 export * from "./ddo/MetaData"
 
 export { AgreementTemplate } from "./keeper/contracts/templates"
-export { Condition } from "./keeper/contracts/conditions"
+export { Condition, ConditionState } from "./keeper/contracts/conditions"
 
 export {
     Ocean,

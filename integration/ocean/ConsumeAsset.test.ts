@@ -4,7 +4,7 @@ import * as fs from "fs"
 import { config } from "../config"
 import { getMetadata } from "../utils"
 
-import { Ocean, DDO, Account } from "../../src" // @oceanprotocol/squid
+import { Ocean, DDO, Account, ConditionState } from "../../src" // @oceanprotocol/squid
 
 describe("Consume Asset", () => {
     let ocean: Ocean
@@ -66,6 +66,22 @@ describe("Consume Asset", () => {
         assert.isTrue(success)
     })
 
+    it("should get the agreement conditions status not fulfilled", async () => {
+        const accessService = ddo.findServiceByType("Access")
+
+        const status = await ocean.agreements.status(
+            ddo.id,
+            serviceAgreementSignatureResult.agreementId,
+            accessService.serviceDefinitionId,
+        )
+
+        assert.deepEqual(status, {
+            lockReward: ConditionState.Unfulfilled,
+            accessSecretStore: ConditionState.Unfulfilled,
+            escrowReward: ConditionState.Unfulfilled,
+        })
+    })
+
     it("should lock the payment by the consumer", async () => {
         const paid = await ocean.agreements.conditions
             .lockReward(
@@ -88,6 +104,22 @@ describe("Consume Asset", () => {
             .checkPermissions(consumer.getId(), ddo.id)
 
         assert.isTrue(accessGranted, "Consumer has been granted.")
+    })
+
+    it("should get the agreement conditions status fulfilled", async () => {
+        const accessService = ddo.findServiceByType("Access")
+
+        const status = await ocean.agreements.status(
+            ddo.id,
+            serviceAgreementSignatureResult.agreementId,
+            accessService.serviceDefinitionId,
+        )
+
+        assert.deepEqual(status, {
+            lockReward: ConditionState.Fulfilled,
+            accessSecretStore: ConditionState.Fulfilled,
+            escrowReward: ConditionState.Unfulfilled,
+        })
     })
 
     it("should consume and store the assets", async () => {

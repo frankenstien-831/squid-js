@@ -3,6 +3,8 @@ import Account from "./Account"
 import DID from "./DID"
 import { zeroX, didPrefixed } from "../utils"
 import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
+import { AgreementConditionsStatus } from "../keeper/contracts/templates/AgreementTemplate.abstract"
+import { ConditionState } from "../keeper/contracts/conditions/Condition.abstract"
 
 import { OceanAgreementsConditions } from "./OceanAgreementsConditions"
 
@@ -125,5 +127,45 @@ export class OceanAgreements extends Instantiable {
             .createAgreementFromDDO(agreementId, ddo, consumer.getId(), publisher.getId())
 
         return true
+    }
+
+    /**
+     * Get the status of a service agreement.
+     * @param  {string} did Decentralized ID.
+     * @param  {string} agreementId Service agreement ID.
+     * @param  {string} serviceDefinitionId Service definition ID.
+     * @param  {boolean} extended Returns a complete status with dependencies.
+     * @return {Promise<any>}
+     */
+    // tslint:disable-next-line
+    public async status(did: string, agreementId: string, serviceDefinitionId: string, extended?: false): Promise<{[condition: string]: ConditionState}>
+    // tslint:disable-next-line
+    public async status(did: string, agreementId: string, serviceDefinitionId: string, extended: true): Promise<AgreementConditionsStatus>
+    public async status(
+        did: string,
+        agreementId: string,
+        serviceDefinitionId: string,
+        extended: boolean = false,
+    ) {
+        const d: DID = DID.parse(did)
+        const ddo = await this.ocean.aquarius.retrieveDDO(d)
+
+        const templateName = ddo.findServiceById<"Access">(serviceDefinitionId).serviceAgreementTemplate.contractName
+        const fullStatus = await this.ocean.keeper
+            .getTemplateByName(templateName)
+            .getAgreementStatus(agreementId)
+
+        if (!fullStatus) {
+            return
+        }
+        if (extended) {
+            return fullStatus
+        }
+        const simpleStatus = {}
+        Object.entries(fullStatus)
+            .forEach(([condition, {state}]) => {
+                simpleStatus[condition] = state
+            })
+        return simpleStatus as any
     }
 }
