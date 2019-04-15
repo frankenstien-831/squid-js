@@ -260,6 +260,24 @@ export class OceanAssets extends Instantiable {
     }
 
     /**
+     * Returns the owner of a asset.
+     * @param  {string} did Decentralized ID.
+     * @return {Promise<string>} Returns Agreement ID
+     */
+    public async owner(did: string): Promise<string> {
+        const ddo = await this.resolve(did)
+        const checksum = ddo.getChecksum()
+        const {creator, signatureValue} = ddo.proof
+        const signer = await this.ocean.utils.signature.verifyText(checksum, signatureValue)
+
+        if (signer.toLowerCase() !== creator.toLowerCase()) {
+            this.logger.warn(`Owner of ${ddo.id} doesn't match. Expected ${creator} instead of ${signer}.`)
+        }
+
+        return creator
+    }
+
+    /**
      * Search over the assets using a query.
      * @param  {SearchQuery} query Query to filter the assets.
      * @return {Promise<DDO[]>}
