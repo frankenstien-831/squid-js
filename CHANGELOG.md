@@ -1,6 +1,11 @@
 History
 =======
 
+0.5.4 (April 15, 2019)
+-------------------------
+
+* Improved error detection on consume
+
 0.5.3 (April 9, 2019)
 -------------------------
 
