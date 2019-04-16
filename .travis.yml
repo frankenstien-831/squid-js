@@ -35,7 +35,6 @@ script:
   - npm run doc
   - ./scripts/wait_for_migration_and_extract_keeper_artifacts.sh
   - npm run integration:cover
-  - npm run merge-coverages
   - npm run report-coverage
 
 after_script:
