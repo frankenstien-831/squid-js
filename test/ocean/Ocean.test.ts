@@ -49,7 +49,7 @@ describe("Ocean", () => {
         it("should search for assets", async () => {
             const query = {
                 offset: 100,
-                page: 0,
+                page: 1,
                 query: {
                     value: 1,
                 },

@@ -18,7 +18,7 @@ describe("Aquarius", () => {
 
         const query = {
             offset: 100,
-            page: 0,
+            page: 1,
             query: {
                 value: 1,
             },
@@ -56,7 +56,7 @@ describe("Aquarius", () => {
 
         const query = {
             offset: 100,
-            page: 0,
+            page: 1,
             query: {
                 value: 1,
             },

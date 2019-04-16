@@ -276,7 +276,7 @@ export class OceanAssets extends Instantiable {
     public async search(text: string) {
         return this.ocean.aquarius.queryMetadataByText({
             text,
-            page: 0,
+            page: 1,
             offset: 100,
             query: {
                 value: 1,
