@@ -287,6 +287,15 @@ export class OceanAssets extends Instantiable {
     }
 
     /**
+     * Returns the assets of a consumer.
+     * @param  {string} consumer Consumer address.
+     * @return {Promise<string[]>} List of DIDs.
+     */
+    public async consumerAssets(consumer: string) {
+        return this.ocean.keeper.conditions.accessSecretStoreCondition.getGrantedDidByConsumer(consumer)
+    }
+
+    /**
      * Search over the assets using a query.
      * @param  {SearchQuery} query Query to filter the assets.
      * @return {Promise<DDO[]>}

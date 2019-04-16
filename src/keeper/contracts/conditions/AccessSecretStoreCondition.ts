@@ -1,5 +1,5 @@
 import { Condition } from "./Condition.abstract"
-import { zeroX, didZeroX } from "../../../utils"
+import { zeroX, didZeroX, didPrefixed } from "../../../utils"
 import { InstantiableConfig } from "../../../Instantiable.abstract"
 
 export class AccessSecretStoreCondition extends Condition {
@@ -18,5 +18,11 @@ export class AccessSecretStoreCondition extends Condition {
 
     public checkPermissions(grantee: string, did: string, from?: string) {
         return this.call<boolean>("checkPermissions", [grantee, didZeroX(did)].map(zeroX), from)
+    }
+
+    public async getGrantedDidByConsumer(consumer: string): Promise<string[]> {
+        return (await this.getPastEvents("Fulfilled", {_grantee: zeroX(consumer)}))
+            .map(({returnValues}) => returnValues._documentId)
+            .map(didPrefixed)
     }
 }
