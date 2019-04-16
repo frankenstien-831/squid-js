@@ -137,22 +137,15 @@ export class OceanAgreements extends Instantiable {
      * @param  {boolean} extended Returns a complete status with dependencies.
      * @return {Promise<any>}
      */
-    // tslint:disable-next-line
-    public async status(did: string, agreementId: string, serviceDefinitionId: string, extended?: false): Promise<{[condition: string]: ConditionState}>
-    // tslint:disable-next-line
-    public async status(did: string, agreementId: string, serviceDefinitionId: string, extended: true): Promise<AgreementConditionsStatus>
+    public async status(agreementId: string, extended?: false): Promise<{[condition: string]: ConditionState}>
+    public async status(agreementId: string, extended: true): Promise<AgreementConditionsStatus>
     public async status(
-        did: string,
         agreementId: string,
-        serviceDefinitionId: string,
         extended: boolean = false,
     ) {
-        const d: DID = DID.parse(did)
-        const ddo = await this.ocean.aquarius.retrieveDDO(d)
-
-        const templateName = ddo.findServiceById<"Access">(serviceDefinitionId).serviceAgreementTemplate.contractName
+        const {templateId} = await this.ocean.keeper.agreementStoreManager.getAgreement(agreementId)
         const fullStatus = await this.ocean.keeper
-            .getTemplateByName(templateName)
+            .getTemplateByAddress(templateId)
             .getAgreementStatus(agreementId)
 
         if (!fullStatus) {

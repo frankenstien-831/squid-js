@@ -134,17 +134,32 @@ export class Keeper extends Instantiable {
 
     /**
      * Returns a condition by address.
-     * @param  {string}    address Address of deployed condition.
-     * @return {Condition}         Condition instance.
+     * @param  {string} address Address of deployed condition.
+     * @return {Condition} Condition instance.
      */
     public getConditionByAddress(address: string): Condition {
         return Object.values(this.conditions)
             .find((condition) => condition.getAddress() === address)
     }
 
+    /**
+     * Returns a template by name.
+     * @param  {string} name Template name.
+     * @return {AgreementTemplate} Agreement template instance.
+     */
     public getTemplateByName(name: string): AgreementTemplate {
         return Object.values(this.templates)
             .find((template) => template.contractName === name)
+    }
+
+    /**
+     * Returns a template by address.
+     * @param  {string} address Template address.
+     * @return {AgreementTemplate} Agreement template instance.
+     */
+    public getTemplateByAddress(address: string): AgreementTemplate {
+        return Object.values(this.templates)
+            .find((template) => template.getAddress() === address)
     }
 
     /**
