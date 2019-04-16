@@ -67,13 +67,7 @@ describe("Consume Asset", () => {
     })
 
     it("should get the agreement conditions status not fulfilled", async () => {
-        const accessService = ddo.findServiceByType("Access")
-
-        const status = await ocean.agreements.status(
-            ddo.id,
-            serviceAgreementSignatureResult.agreementId,
-            accessService.serviceDefinitionId,
-        )
+        const status = await ocean.agreements.status(serviceAgreementSignatureResult.agreementId)
 
         assert.deepEqual(status, {
             lockReward: ConditionState.Unfulfilled,
@@ -107,13 +101,7 @@ describe("Consume Asset", () => {
     })
 
     it("should get the agreement conditions status fulfilled", async () => {
-        const accessService = ddo.findServiceByType("Access")
-
-        const status = await ocean.agreements.status(
-            ddo.id,
-            serviceAgreementSignatureResult.agreementId,
-            accessService.serviceDefinitionId,
-        )
+        const status = await ocean.agreements.status(serviceAgreementSignatureResult.agreementId)
 
         assert.deepEqual(status, {
             lockReward: ConditionState.Fulfilled,
