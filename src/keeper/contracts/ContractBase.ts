@@ -16,11 +16,19 @@ export default abstract class ContractBase extends Instantiable {
         this.contractName = contractName
     }
 
-    public async getEventData(eventName: any, options: any) {
+    public async getEventData(eventName: string, options: any) {
         if (!this.contract.events[eventName]) {
             throw new Error(`Event "${eventName}" not found on contract "${this.contractName}"`)
         }
         return this.contract.getPastEvents(eventName, options)
+    }
+
+    public getPastEvents(eventName: string, filter: {[key: string]: any}) {
+        return this.getEventData(eventName, {
+            filter,
+            fromBlock: 0,
+            toBlock: "latest",
+        })
     }
 
     public getAddress(): string {

@@ -278,6 +278,15 @@ export class OceanAssets extends Instantiable {
     }
 
     /**
+     * Returns the assets of a owner.
+     * @param  {string} owner Owner address.
+     * @return {Promise<string[]>} List of DIDs.
+     */
+    public async ownerAssets(owner: string) {
+        return this.ocean.keeper.didRegistry.getAttributesByOwner(owner)
+    }
+
+    /**
      * Search over the assets using a query.
      * @param  {SearchQuery} query Query to filter the assets.
      * @return {Promise<DDO[]>}

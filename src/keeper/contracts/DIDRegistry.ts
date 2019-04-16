@@ -1,6 +1,6 @@
 import Web3Provider from "../Web3Provider"
 import ContractBase from "./ContractBase"
-import { zeroX } from "../../utils"
+import { zeroX, didPrefixed } from "../../utils"
 import { InstantiableConfig } from "../../Instantiable.abstract"
 
 export default class DIDRegistry extends ContractBase {
@@ -25,5 +25,11 @@ export default class DIDRegistry extends ContractBase {
 
     public async getBlockNumberUpdated(did: string): Promise<number> {
         return +await this.call("getBlockNumberUpdated", [zeroX(did)])
+    }
+
+    public async getAttributesByOwner(owner: string): Promise<string[]> {
+        return (await this.getPastEvents('DIDAttributeRegistered', {_owner: zeroX(owner)}))
+            .map(({returnValues}) => returnValues._did)
+            .map(didPrefixed)
     }
 }
