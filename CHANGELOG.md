@@ -1,6 +1,14 @@
 History
 =======
 
+0.5.5 (April 17, 2019)
+-------------------------
+
+* Added `agreement.status` method
+* Added `assets.owner`, `assets.ownerAssets` and `assets.consumerAssets` methods
+* Fixes on asset queries
+* Fixed coverage reporting
+
 0.5.5 (April 15, 2019)
 -------------------------
 
