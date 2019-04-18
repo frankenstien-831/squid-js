@@ -57,16 +57,12 @@ const ocean: Ocean = await Ocean.getInstance({
     aquariusUri: "http://localhost:5000",
     // the uri of brizo
     brizoUri: "http://localhost:8030",
+    // address that brizo uses
+    brizoAddress: "0x00bd138abd70e2f00903268f3db08f2d25677c9e"
     // the uri to the parity node you want to use for encryption and decryption
     parityUri: "http://localhost:9545",
     // the uri of the secret store that holds the keys
-    secretStoreUri: "http://localhost:12001",
-    // the threshold of nodes from the secre store that have to agree to the decrypt
-    threshold: 0,
-    // the password for the account (in the local parity node) used to sign messages for secret store
-    password: "you password",
-    // the address of the account (in the local parity node) used to sign messages for secret store
-    address: "0xed243adfb84a6626eba46178ccb567481c6e655d",
+    secretStoreUri: "http://localhost:12001"
 })
 ```
 
