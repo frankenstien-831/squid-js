@@ -5,6 +5,7 @@ import { Condition, LockRewardCondition, EscrowReward, AccessSecretStoreConditio
 import { AgreementTemplate, EscrowAccessSecretStoreTemplate } from "./contracts/templates"
 import { TemplateStoreManager, AgreementStoreManager, ConditionStoreManager } from "./contracts/managers"
 
+import { objectPromiseAll } from "../utils"
 import { EventHandler } from "./EventHandler"
 
 import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
@@ -29,40 +30,48 @@ export class Keeper extends Instantiable {
         // Adding keeper inside Ocean to prevent `Keeper not defined yet` error
         config.ocean.keeper = keeper
 
-        const resolvedInstances = await Promise.all([
-            // Main contracts
-            Dispenser.getInstance(config),
-            OceanToken.getInstance(config),
-            DIDRegistry.getInstance(config),
-            // Managers
-            TemplateStoreManager.getInstance(config),
-            AgreementStoreManager.getInstance(config),
-            ConditionStoreManager.getInstance(config),
-            // Conditions
-            LockRewardCondition.getInstance(config),
-            EscrowReward.getInstance(config),
-            AccessSecretStoreCondition.getInstance(config),
-            // Conditions
-            EscrowAccessSecretStoreTemplate.getInstance(config),
-        ])
+        let instances = {} as any
+        try {
+            instances = await objectPromiseAll({
+                // Main contracts
+                dispenser: Dispenser.getInstance(config),
+                token: OceanToken.getInstance(config),
+                didRegistry: DIDRegistry.getInstance(config),
+                // Managers
+                templateStoreManager: TemplateStoreManager.getInstance(config),
+                agreementStoreManager: AgreementStoreManager.getInstance(config),
+                conditionStoreManager: ConditionStoreManager.getInstance(config),
+                // Conditions
+                lockRewardCondition: LockRewardCondition.getInstance(config),
+                escrowReward: EscrowReward.getInstance(config),
+                accessSecretStoreCondition: AccessSecretStoreCondition.getInstance(config),
+                // Conditions
+                escrowAccessSecretStoreTemplate: EscrowAccessSecretStoreTemplate.getInstance(config),
+            })
+
+            keeper.connected = true
+        } catch {
+            keeper.connected = false
+            return
+        }
 
         // Main contracts
-        keeper.dispenser = resolvedInstances[0]
-        keeper.token = resolvedInstances[1]
-        keeper.didRegistry = resolvedInstances[2]
+        keeper.dispenser = instances.dispenser
+        keeper.token = instances.token
+        keeper.didRegistry = instances.didRegistry
         // Managers
-        keeper.templateStoreManager = resolvedInstances[3]
-        keeper.agreementStoreManager = resolvedInstances[4]
-        keeper.conditionStoreManager = resolvedInstances[5]
+        keeper.templateStoreManager = instances.templateStoreManager
+        keeper.agreementStoreManager = instances.agreementStoreManager
+        keeper.conditionStoreManager = instances.conditionStoreManager
         // Conditions
         keeper.conditions = {
-            lockRewardCondition: resolvedInstances[6],
-            escrowReward: resolvedInstances[7],
-            accessSecretStoreCondition: resolvedInstances[8],
+            lockRewardCondition: instances.lockRewardCondition,
+            escrowReward: instances.escrowReward,
+            accessSecretStoreCondition: instances.accessSecretStoreCondition,
         }
         // Conditions
         keeper.templates = {
-            escrowAccessSecretStoreTemplate: resolvedInstances[9],
+            escrowAccessSecretStoreTemplate: instances.escrowAccessSecretStoreTemplate,
         }
 
         // Utils
@@ -72,6 +81,12 @@ export class Keeper extends Instantiable {
 
         return keeper
     }
+
+    /**
+     * Is connected to the correct network or not.
+     * @type {boolean}
+     */
+    public connected: boolean = false
 
     /**
      * Ocean Token smart contract instance.
