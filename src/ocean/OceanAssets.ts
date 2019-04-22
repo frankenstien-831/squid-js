@@ -174,7 +174,7 @@ export class OceanAssets extends Instantiable {
 
         this.logger.log("Consuming files")
 
-        resultPath = resultPath ? `${resultPath}/datafile.${ddo.shortId()}.${noZeroX(agreementId)}/` : undefined
+        resultPath = resultPath ? `${resultPath}/datafile.${ddo.shortId()}.${serviceDefinitionId}/` : undefined
         await this.ocean.brizo.consumeService(
             agreementId,
             serviceEndpoint,
