@@ -1,7 +1,7 @@
 History
 =======
 
-0.5.5 (April 17, 2019)
+0.5.6 (April 17, 2019)
 -------------------------
 
 * Added `agreement.status` method
