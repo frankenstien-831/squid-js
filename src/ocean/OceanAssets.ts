@@ -134,7 +134,6 @@ export class OceanAssets extends Instantiable {
         ddo.addChecksum()
         await ddo.addProof(this.ocean, publisher.getId(), publisher.getPassword())
 
-        const storedDdo = await this.ocean.aquarius.storeDDO(ddo)
         await didRegistry.registerAttribute(
             did.getId(),
             ddo.getChecksum(),
@@ -142,6 +141,7 @@ export class OceanAssets extends Instantiable {
             serviceEndpoint,
             publisher.getId(),
         )
+        const storedDdo = await this.ocean.aquarius.storeDDO(ddo)
 
         return storedDdo
     }
