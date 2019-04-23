@@ -1,6 +1,14 @@
 History
 =======
 
+0.5.7 (April 23, 2019)
+-------------------------
+
+* Fixed Web3 beta 37 as peer dependency
+* Fixed a difference in the download folder name when consume
+* The DDOs are sent to Aquarius before confirming the DID registry transaction
+* Fixed error getting Ocean instance in wrong network
+
 0.5.6 (April 17, 2019)
 -------------------------
 
