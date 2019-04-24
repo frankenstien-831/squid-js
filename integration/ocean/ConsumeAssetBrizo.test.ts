@@ -36,9 +36,12 @@ describe("Consume Asset (Brizo)", () => {
 
         await consumer.requestTokens(metadata.base.price)
 
+        const steps = []
         agreementId = await ocean.assets.order(ddo.id, accessService.serviceDefinitionId, consumer)
+            .next(step => steps.push(step))
 
         assert.isDefined(agreementId)
+        assert.deepEqual(steps, [0, 1, 2, 3])
     })
 
     it("should consume and store the assets", async () => {

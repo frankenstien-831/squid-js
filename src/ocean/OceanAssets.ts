@@ -4,8 +4,15 @@ import { MetaData } from "../ddo/MetaData"
 import { Service } from "../ddo/Service"
 import Account from "./Account"
 import DID from "./DID"
-import { fillConditionsWithDDO, noZeroX } from "../utils"
+import { fillConditionsWithDDO, noZeroX, SubscribablePromise } from "../utils"
 import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
+
+export enum OrderProgressStep {
+    Prepared,
+    AgreementSent,
+    AgreementInitialized,
+    LockedPayment,
+}
 
 /**
  * Assets submodule of Ocean Protocol.
@@ -199,64 +206,70 @@ export class OceanAssets extends Instantiable {
      * @param  {Account} consumer Consumer account.
      * @return {Promise<string>} Returns Agreement ID
      */
-    public async order(
+    public order(
         did: string,
         serviceDefinitionId: string,
         consumer: Account,
-    ): Promise<string> {
+    ): SubscribablePromise<OrderProgressStep, string> {
 
-        const oceanAgreements = this.ocean.agreements
+        return new SubscribablePromise(async observer => {
+            const oceanAgreements = this.ocean.agreements
 
-        this.logger.log("Asking for agreement signature")
-        const {agreementId, signature} = await oceanAgreements.prepare(did, serviceDefinitionId, consumer)
-        this.logger.log(`Agreement ${agreementId} signed`)
+            this.logger.log("Asking for agreement signature")
+            const {agreementId, signature} = await oceanAgreements.prepare(did, serviceDefinitionId, consumer)
+            this.logger.log(`Agreement ${agreementId} signed`)
+            observer.next(OrderProgressStep.Prepared)
 
-        const ddo = await this.resolve(did)
+            const ddo = await this.resolve(did)
 
-        const keeper = this.ocean.keeper
-        const templateName = ddo.findServiceByType("Access").serviceAgreementTemplate.contractName
-        const template = keeper.getTemplateByName(templateName)
-        const accessCondition = keeper.conditions.accessSecretStoreCondition
+            const keeper = this.ocean.keeper
+            const templateName = ddo.findServiceByType("Access").serviceAgreementTemplate.contractName
+            const template = keeper.getTemplateByName(templateName)
+            const accessCondition = keeper.conditions.accessSecretStoreCondition
 
-        const paymentFlow = new Promise(async (resolve, reject) => {
-            await template.getAgreementCreatedEvent(agreementId).once()
+            const paymentFlow = new Promise(async (resolve, reject) => {
+                await template.getAgreementCreatedEvent(agreementId).once()
 
-            this.logger.log("Agreement initialized")
+                this.logger.log("Agreement initialized")
+                observer.next(OrderProgressStep.AgreementInitialized)
 
-            const {metadata} = ddo.findServiceByType("Metadata")
+                const {metadata} = ddo.findServiceByType("Metadata")
 
-            this.logger.log("Locking payment")
+                this.logger.log("Locking payment")
 
-            const accessGranted = accessCondition.getConditionFulfilledEvent(agreementId).once()
+                const accessGranted = accessCondition.getConditionFulfilledEvent(agreementId).once()
 
-            const paid = await oceanAgreements.conditions.lockReward(agreementId, metadata.base.price, consumer)
+                const paid = await oceanAgreements.conditions.lockReward(agreementId, metadata.base.price, consumer)
+                observer.next(OrderProgressStep.LockedPayment)
 
-            if (paid) {
-                this.logger.log("Payment was OK")
-            } else {
-                this.logger.error("Payment was KO")
-                this.logger.error("Agreement ID: ", agreementId)
-                this.logger.error("DID: ", ddo.id)
-                reject("Error on payment")
+                if (paid) {
+                    this.logger.log("Payment was OK")
+                } else {
+                    this.logger.error("Payment was KO")
+                    this.logger.error("Agreement ID: ", agreementId)
+                    this.logger.error("DID: ", ddo.id)
+                    reject("Error on payment")
+                }
+
+                await accessGranted
+
+                this.logger.log("Access granted")
+                resolve()
+            })
+
+            observer.next(OrderProgressStep.AgreementSent)
+            this.logger.log("Sending agreement request")
+            await oceanAgreements.send(did, agreementId, serviceDefinitionId, signature, consumer)
+            this.logger.log("Agreement request sent")
+
+            try {
+                await paymentFlow
+            } catch (e) {
+                throw new Error("Error paying the asset.")
             }
 
-            await accessGranted
-
-            this.logger.log("Access granted")
-            resolve()
+            return agreementId
         })
-
-        this.logger.log("Sending agreement request")
-        await oceanAgreements.send(did, agreementId, serviceDefinitionId, signature, consumer)
-        this.logger.log("Agreement request sent")
-
-        try {
-            await paymentFlow
-        } catch (e) {
-            throw new Error("Error paying the asset.")
-        }
-
-        return agreementId
     }
 
     /**
