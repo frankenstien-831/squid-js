@@ -212,7 +212,7 @@ export class OceanAssets extends Instantiable {
         consumer: Account,
     ): SubscribablePromise<OrderProgressStep, string> {
 
-        return new SubscribablePromise(async observer => {
+        return new SubscribablePromise(async (observer) => {
             const oceanAgreements = this.ocean.agreements
 
             this.logger.log("Asking for agreement signature")

@@ -38,7 +38,7 @@ describe("Consume Asset (Brizo)", () => {
 
         const steps = []
         agreementId = await ocean.assets.order(ddo.id, accessService.serviceDefinitionId, consumer)
-            .next(step => steps.push(step))
+            .next((step) => steps.push(step))
 
         assert.isDefined(agreementId)
         assert.deepEqual(steps, [0, 1, 2, 3])

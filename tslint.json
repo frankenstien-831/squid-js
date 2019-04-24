@@ -12,6 +12,7 @@
       true,
       "never"
     ],
+    "no-empty": [true, "allow-empty-catch", "allow-empty-functions"],
     "ordered-imports": false
   },
   "rulesDirectory": []
