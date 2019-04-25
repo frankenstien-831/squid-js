@@ -21,6 +21,12 @@ export class SubscribablePromise<T extends any, P extends any> {
                     this.observer.complete(result)
                 }
             })
+            .catch((result) => {
+                if (Promise.resolve(execution as any) === execution) {
+                    this.observer.error(result)
+                }
+            })
+
     }
 
     public subscribe(onNext: (next: T) => void) {
