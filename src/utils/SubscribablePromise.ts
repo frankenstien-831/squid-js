@@ -13,20 +13,8 @@ export class SubscribablePromise<T extends any, P extends any> {
     )
 
     constructor(executor: (observer: SubscribableObserver<T, P>) => void | Promise<P>) {
-        const execution = executor(this.observer)
-
-        Promise.resolve(execution as any)
-            .then((result) => {
-                if (Promise.resolve(execution as any) === execution) {
-                    this.observer.complete(result)
-                }
-            })
-            .catch((result) => {
-                if (Promise.resolve(execution as any) === execution) {
-                    this.observer.error(result)
-                }
-            })
-
+        // Defear
+        setTimeout(() => this.init(executor), 1)
     }
 
     public subscribe(onNext: (next: T) => void) {
@@ -48,5 +36,21 @@ export class SubscribablePromise<T extends any, P extends any> {
 
     public finally(onfinally?: () => any) {
         return Object.assign(this.promise.finally(onfinally), this)
+    }
+
+    private init(executor: (observer: SubscribableObserver<T, P>) => void | Promise<P>) {
+        const execution = executor(this.observer)
+
+        Promise.resolve(execution as any)
+            .then((result) => {
+                if (Promise.resolve(execution as any) === execution) {
+                    this.observer.complete(result)
+                }
+            })
+            .catch((result) => {
+                if (Promise.resolve(execution as any) === execution) {
+                    this.observer.error(result)
+                }
+            })
     }
 }
