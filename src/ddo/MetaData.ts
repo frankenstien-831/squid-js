@@ -87,14 +87,17 @@ export interface MetaDataBase {
     description?: string
 
     /**
-     * The date on which the asset was created by the originator in ISO 8601 format, Coordinated Universal Time.
+     * The date on which the asset was created by the originator in
+     * ISO 8601 format, Coordinated Universal Time.
      * @type {string}
      * @example "2019-01-31T08:38:32Z"
      */
     dateCreated: string
 
     /**
-     * The date on which the asset DDO was registered into the metadata store. This value is created automatically by Aquarius upon registering, so this value can't be set.
+     * The date on which the asset DDO was registered into the metadata store.
+     * This value is created automatically by Aquarius upon registering,
+     * so this value can't be set.
      * @type {string}
      * @example "2019-01-31T08:38:32Z"
      */

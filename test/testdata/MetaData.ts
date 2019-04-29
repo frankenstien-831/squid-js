@@ -6,15 +6,17 @@ export const metadataMock: MetaData = {
         type: "dataset",
         description: "Weather information of UK including temperature and humidity",
         dateCreated: "2012-10-10T17:00:000Z",
+        datePublished: "2012-10-10T17:00:000Z",
         author: "Met Office",
         license: "CC-BY",
         copyrightHolder: "Met Office",
         workExample: "423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68",
         files: [
             {
+                index: 0,
                 url: "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip",
                 checksum: "085340abffh21495345af97c6b0e761",
-                contentLength: "12324",
+                contentLength: 12324,
             },
             {
                 url: "https://testocnfiles.blob.core.windows.net/testfiles/testzkp2.zip",
@@ -34,17 +36,18 @@ export const metadataMock: MetaData = {
             },
         ],
         inLanguage: "en",
-        tags: "weather, uk, 2011, temperature, humidity",
+        categories: ["Economy", "Data Science"],
+        tags: ["weather", "uk", "2011", "temperature", "humidity"],
         price: 10,
         checksum: "",
     },
     curation: {
         rating: 0.93,
         numVotes: 123,
-        schema: "Binary Votting",
+        schema: "Binary Voting",
     },
     additionalInformation: {
-        updateFrecuency: "yearly",
+        updateFrequency: "yearly",
         structuredMarkup: [
             {
                 uri: "http://skos.um.es/unescothes/C01194/jsonld",
