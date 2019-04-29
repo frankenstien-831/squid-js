@@ -77,7 +77,6 @@ describe("DDO", () => {
             },
             {
                 type: "Consume",
-                // tslint:disable-next-line
                 serviceEndpoint: "http://mybrizo.org/api/v1/brizo/services/consume?pubKey=${pubKey}&serviceId={serviceId}&url={url}",
             },
             {
@@ -101,12 +100,10 @@ describe("DDO", () => {
                         workExample: "423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68",
                         links: [
                             {
-                                // tslint:disable-next-line
-                                sample1: "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-daily/"
+                                sample1: "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-daily/",
                             },
                             {
-                                // tslint:disable-next-line
-                                sample2: "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-averages-25km/"
+                                sample2: "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-averages-25km/",
                             },
                             {
                                 fieldsDescription: "http://data.ceda.ac.uk/badc/ukcp09/",
@@ -118,18 +115,18 @@ describe("DDO", () => {
                         price: 10,
                         files: [
                             {
-                                url: "234ab87234acbd09543085340abffh21983ddhiiee982143827423421",
+                                index: 0,
                                 checksum: "efb2c764274b745f5fc37f97c6b0e761",
                                 contentLength: 4535431,
                                 resourceId: "access-log2018-02-13-15-17-29-18386C502CAEA932",
                             },
                             {
-                                url: "234ab87234acbd6894237582309543085340abffh21983ddhiiee982143827423421",
+                                index: 1,
                                 checksum: "085340abffh21495345af97c6b0e761",
                                 contentLength: 12324,
                             },
                             {
-                                url: "80684089027358963495379879a543085340abffh21983ddhiiee982143827abcc2",
+                                index: 2,
                             },
                         ],
                         checksum: "",

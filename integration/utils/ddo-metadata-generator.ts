@@ -28,19 +28,13 @@ const metadata: Partial<MetaData> = {
         price: 10,
         files: [
             {
-                url: "234ab87234acbd09543085340abffh21983ddhiiee982143827423421",
-                checksum: "efb2c764274b745f5fc37f97c6b0e761",
-                contentLength: 4535431,
-                resourceId: "access-log2018-02-13-15-17-29-18386C502CAEA932",
+                index: 0,
+                url: 'https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip'
             },
             {
-                url: "234ab87234acbd6894237582309543085340abffh21983ddhiiee982143827423421",
-                checksum: "085340abffh21495345af97c6b0e761",
-                contentLength: 12324,
-            },
-            {
-                url: "80684089027358963495379879a543085340abffh21983ddhiiee982143827abcc2",
-            },
+                index: 1,
+                url: 'https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip'
+            }
         ],
     },
 }
