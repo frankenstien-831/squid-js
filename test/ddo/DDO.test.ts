@@ -247,7 +247,7 @@ describe("DDO", () => {
             const ddo = new DDO(testDDO)
             const checksum = ddo.getChecksum()
 
-            assert.equal(checksum, "15f27a7a3c7b15d2b06dec7347c6b8da")
+            assert.equal(checksum, "15f27a7a3c7b15d2b06dec7347c6b8da168adddd7df51a8ebbbe87b59b80049b")
         })
     })
 

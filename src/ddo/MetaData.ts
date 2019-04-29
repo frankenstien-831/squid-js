@@ -240,7 +240,7 @@ export interface AdditionalInformation {
 }
 
 export interface MetaData {
-    additionalInformation: AdditionalInformation
+    additionalInformation?: AdditionalInformation
     base: MetaDataBase
-    curation: Curation
+    curation?: Curation
 }

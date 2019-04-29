@@ -33,7 +33,7 @@ export class DDO {
         return new DDO(ddo)
     }
 
-    public "@context": string = "https://w3id.org/future-method/v1"
+    public "@context": string = "https://w3id.org/did/v1"
 
     /**
      * DID, descentralized ID.
@@ -102,7 +102,7 @@ export class DDO {
             this.id,
         ]
 
-        return Web3Provider.getWeb3().utils.sha3(values.join("")).replace(/^0x([a-f0-9]{32}).+$/i, "$1")
+        return Web3Provider.getWeb3().utils.sha3(values.join("")).replace(/^0x([a-f0-9]{64})(:!.+)?$/i, "$1")
     }
 
     /**
@@ -118,7 +118,7 @@ export class DDO {
         const signature = await ocean.utils.signature.signText(checksum, publicKey, password)
 
         return {
-            created: (new Date()).toISOString(),
+            created: new Date().toISOString().replace(/\.[0-9]{3}/, ""),
             creator: publicKey,
             type: "DDOIntegritySignature",
             signatureValue: signature,

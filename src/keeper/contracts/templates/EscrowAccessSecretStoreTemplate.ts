@@ -1,6 +1,4 @@
 import { AgreementTemplate } from "./AgreementTemplate.abstract"
-import { LockRewardCondition, EscrowReward, AccessSecretStoreCondition } from "../conditions"
-import DIDRegistry from "../DIDRegistry"
 import { DDO } from "../../../ddo/DDO"
 import { generateId, zeroX } from "../../../utils"
 import { InstantiableConfig } from "../../../Instantiable.abstract"

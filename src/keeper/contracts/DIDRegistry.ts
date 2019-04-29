@@ -15,7 +15,7 @@ export default class DIDRegistry extends ContractBase {
         return this.send(
             "registerAttribute",
             ownerAddress,
-            [zeroX(did), Web3Provider.getWeb3().utils.fromAscii(checksum), providers.map(zeroX), value],
+            [zeroX(did), zeroX(checksum), providers.map(zeroX), value],
         )
     }
 

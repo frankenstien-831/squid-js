@@ -66,56 +66,45 @@ export class OceanAssets extends Instantiable {
             id: did.getDid(),
             authentication: [{
                 type: "RsaSignatureAuthentication2018",
-                publicKey: did.getDid() + "#keys-1",
+                publicKey: did.getDid(),
             }],
             publicKey: [
                 {
-                    id: did.getDid() + "#keys-1",
-                    type: "Ed25519VerificationKey2018",
-                    owner: did.getDid(),
-                    publicKeyBase58: await publisher.getPublicKey(),
+                    id: did.getDid(),
+                    type: "EthereumECDSAKey",
+                    owner: publisher.getId(),
                 },
             ],
             service: [
                 {
                     type: "Access",
+                    creator: "",
                     purchaseEndpoint: this.ocean.brizo.getPurchaseEndpoint(),
                     serviceEndpoint: this.ocean.brizo.getConsumeEndpoint(),
-                    serviceDefinitionId: String(serviceDefinitionIdCount++),
+                    name: "dataAssetAccessServiceAgreement",
                     templateId: templates.escrowAccessSecretStoreTemplate.getAddress(),
                     serviceAgreementTemplate,
                 },
                 {
-                    type: "Compute",
-                    serviceEndpoint: this.ocean.brizo.getComputeEndpoint(publisher.getId(), String(serviceDefinitionIdCount), "xxx", "xxx"),
-                    serviceDefinitionId: String(serviceDefinitionIdCount++),
-                },
-                {
                     type: "Authorization",
-                    services: "SecretStore",
+                    service: "SecretStore",
                     serviceEndpoint: secretStoreUri,
-                    serviceDefinitionId: String(serviceDefinitionIdCount++),
                 },
                 {
                     type: "Metadata",
                     serviceEndpoint,
-                    serviceDefinitionId: String(serviceDefinitionIdCount++),
                     metadata: {
                         // Default values
                         curation: {
                             rating: 0,
                             numVotes: 0,
                         },
-                        additionalInformation: {
-                            updateFrecuency: "yearly",
-                            structuredMarkup: [],
-                        },
                         // Overwrites defaults
                         ...metadata,
                         // Cleaning not needed information
                         base: {
                             ...metadata.base,
-                            contentUrls: [],
+                            contentUrls: undefined,
                             encryptedFiles,
                             files: metadata.base.files
                                 .map((file, index) => ({
@@ -126,13 +115,14 @@ export class OceanAssets extends Instantiable {
                         } as any,
                     },
                 },
-                ...services
-                    .map((_) => ({..._, serviceDefinitionId: String(serviceDefinitionIdCount++)})),
+                ...services,
             ]
                 // Remove duplications
                 .reverse()
                 .filter(({type}, i, list) => list.findIndex(({type: t}) => t === type) === i)
-                .reverse() as Service[],
+                .reverse()
+                // Adding ID
+                .map((_) => ({..._, serviceDefinitionId: String(serviceDefinitionIdCount++)})) as Service[],
         })
 
         // Overwritte initial service agreement conditions

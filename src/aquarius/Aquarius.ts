@@ -169,7 +169,7 @@ export class Aquarius extends Instantiable {
     }
 
     public getServiceEndpoint(did: DID) {
-        return `${this.url}/api/v1/aquarius/assets/metadata/${did.getId()}`
+        return `${this.url}/api/v1/aquarius/assets/ddo/did:op:${did.getId()}`
     }
 
     private transformResult(

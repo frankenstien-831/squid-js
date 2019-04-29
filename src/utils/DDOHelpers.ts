@@ -11,6 +11,8 @@ function fillParameterWithDDO(parameter: ServiceAgreementTemplateParameter, ddo:
             case "documentId":
             case "documentKeyId":
                 return ddo.shortId()
+            case "rewardAddress":
+                return ddo.publicKey[0].owner
         }
 
         return ""
