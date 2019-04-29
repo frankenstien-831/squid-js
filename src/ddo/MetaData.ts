@@ -27,7 +27,7 @@ export interface File {
      * File content length.
      * @type {[type]}
      */
-    contentLength?: string
+    contentLength?: number
 
     /**
      * Resource ID (depending on the source).
@@ -87,11 +87,18 @@ export interface MetaDataBase {
     description?: string
 
     /**
-     * The date on which the asset was created or was added.
+     * The date on which the asset was created by the originator in ISO 8601 format, Coordinated Universal Time.
      * @type {string}
-     * @example "2012-10-10T17:00:000Z"
+     * @example "2019-01-31T08:38:32Z"
      */
     dateCreated: string
+
+    /**
+     * The date on which the asset DDO was registered into the metadata store. This value is created automatically by Aquarius upon registering, so this value can't be set.
+     * @type {string}
+     * @example "2019-01-31T08:38:32Z"
+     */
+    datePublished?: string
 
     /**
      * Name of the entity generating this data (e.g. Tfl, Disney Corp, etc.).
@@ -151,16 +158,22 @@ export interface MetaDataBase {
     inLanguage?: string
 
     /**
-     * Keywords or tags used to describe this content. Multiple entries in a keyword
-     * list are typically delimited by commas. Empty by default.
-     * @type {String}
-     * @example "weather, uk, 2011, temperature, humidity"
+     * Categories used to describe this content. Empty by default.
+     * @type {string[]}
+     * @example ["Economy", "Data Science"]
      */
-    tags?: string
+    categories?: string[]
+
+    /**
+     * Keywords or tags used to describe this content. Empty by default.
+     * @type {string[]}
+     * @example ["weather", "uk", "2011", "temperature", "humidity"]
+     */
+    tags?: string[]
 
     /**
      * Price of the asset.
-     * @type {String}
+     * @type {number}
      * @example 10
      */
     price: number
@@ -201,8 +214,8 @@ export interface Curation {
 
     /**
      * Schema applied to calculate the rating.
-     * @type {number}
-     * @example "Binary Votting"
+     * @type {string}
+     * @example "Binary Voting"
      */
     schema?: string
 }
@@ -219,7 +232,7 @@ export interface AdditionalInformation {
      * @type {string}
      * @example "yearly"
      */
-    updateFrecuency: string
+    updateFrequency: string
 
     /**
      * A link to machine-readable structured markup (such as ttl/json-ld/rdf)
