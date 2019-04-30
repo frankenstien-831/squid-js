@@ -1,6 +1,13 @@
 History
 =======
 
+0.5.8 (April 30, 2019)
+-------------------------
+
+* `ocean.assets.order` emits the progress of the process
+* Improved typing of DDO
+* Fixed some differences between implementations on DDO generation
+
 0.5.7 (April 23, 2019)
 -------------------------
 
