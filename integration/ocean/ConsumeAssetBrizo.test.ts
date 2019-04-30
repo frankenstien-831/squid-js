@@ -41,7 +41,7 @@ describe("Consume Asset (Brizo)", () => {
             .next((step) => steps.push(step))
 
         assert.isDefined(agreementId)
-        assert.deepEqual(steps, [0, 1, 2, 3, 4, 5])
+        assert.deepEqual(steps, [0, 1, 2, 3])
     })
 
     it("should consume and store the assets", async () => {
