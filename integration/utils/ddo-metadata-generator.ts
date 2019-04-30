@@ -29,12 +29,12 @@ const metadata: Partial<MetaData> = {
         files: [
             {
                 index: 0,
-                url: 'https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip'
+                url: "https://raw.githubusercontent.com/oceanprotocol/squid-js/develop/package.json",
             },
             {
                 index: 1,
-                url: 'https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip'
-            }
+                url: "https://raw.githubusercontent.com/oceanprotocol/squid-js/develop/README.md",
+            },
         ],
     },
 }
