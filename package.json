@@ -86,7 +86,7 @@
     "cross-env": "^5.2.0",
     "lcov-result-merger": "^3.1.0",
     "mocha": "^6.1.2",
-    "nyc": "^13.3.0",
+    "nyc": "^14.1.0",
     "source-map-support": "^0.5.12",
     "truffle-hdwallet-provider": "^1.0.6",
     "ts-node": "^8.0.3",
