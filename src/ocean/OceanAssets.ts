@@ -4,13 +4,11 @@ import { MetaData } from "../ddo/MetaData"
 import { Service } from "../ddo/Service"
 import Account from "./Account"
 import DID from "./DID"
-import { fillConditionsWithDDO, noZeroX, SubscribablePromise } from "../utils"
+import { fillConditionsWithDDO, SubscribablePromise, generateId, zeroX } from "../utils"
 import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 export enum OrderProgressStep {
-    Preparing,
-    Prepared,
-    SendingAgreement,
+    CreatingAgreement,
     AgreementInitialized,
     LockingPayment,
     LockedPayment,
@@ -207,12 +205,7 @@ export class OceanAssets extends Instantiable {
         return new SubscribablePromise(async (observer) => {
             const oceanAgreements = this.ocean.agreements
 
-            observer.next(OrderProgressStep.Preparing)
-            this.logger.log("Asking for agreement signature")
-            const {agreementId, signature} = await oceanAgreements.prepare(did, serviceDefinitionId, consumer)
-            this.logger.log(`Agreement ${agreementId} signed`)
-            observer.next(OrderProgressStep.Prepared)
-
+            const agreementId = zeroX(generateId())
             const ddo = await this.resolve(did)
 
             const keeper = this.ocean.keeper
@@ -251,10 +244,10 @@ export class OceanAssets extends Instantiable {
                 resolve()
             })
 
-            observer.next(OrderProgressStep.SendingAgreement)
-            this.logger.log("Sending agreement request")
-            await oceanAgreements.send(did, agreementId, serviceDefinitionId, signature, consumer)
-            this.logger.log("Agreement request sent")
+            observer.next(OrderProgressStep.CreatingAgreement)
+            this.logger.log("Creating agreement")
+            await oceanAgreements.create(did, agreementId, serviceDefinitionId, undefined, consumer, consumer)
+            this.logger.log("Agreement created")
 
             try {
                 await paymentFlow
