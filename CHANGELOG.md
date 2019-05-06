@@ -1,6 +1,11 @@
 History
 =======
 
+0.5.9 (May 6, 2019)
+-------------------------
+
+* Simplified `ocean.assets.order` process (less Web3 provider interactions)
+
 0.5.8 (April 30, 2019)
 -------------------------
 
