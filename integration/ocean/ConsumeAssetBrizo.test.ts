@@ -26,9 +26,12 @@ describe("Consume Asset (Brizo)", () => {
     })
 
     it("should regiester an asset", async () => {
+        const steps = []
         ddo = await ocean.assets.create(metadata as any, publisher)
+            .next((step) => steps.push(step))
 
         assert.instanceOf(ddo, DDO)
+        assert.deepEqual(steps, [0, 1, 2, 3, 4, 5, 6, 7])
     })
 
     it("should order the asset", async () => {
@@ -44,7 +47,7 @@ describe("Consume Asset (Brizo)", () => {
         assert.deepEqual(steps, [0, 1, 2, 3])
     })
 
-    it("should consume and store the assets", async () => {
+    xit("should consume and store the assets", async () => {
         const accessService = ddo.findServiceByType("Access")
 
         const folder = "/tmp/ocean/squid-js"

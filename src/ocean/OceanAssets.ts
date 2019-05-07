@@ -7,6 +7,17 @@ import DID from "./DID"
 import { fillConditionsWithDDO, SubscribablePromise, generateId, zeroX } from "../utils"
 import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
+export enum CreateProgressStep {
+    EncryptingFiles,
+    FilesEncrypted,
+    GeneratingProof,
+    ProofGenerated,
+    RegisteringDid,
+    DidRegistred,
+    StoringDdo,
+    DdoStored,
+}
+
 export enum OrderProgressStep {
     CreatingAgreement,
     AgreementInitialized,
@@ -46,101 +57,121 @@ export class OceanAssets extends Instantiable {
      * @param  {Account} publisher Publisher account.
      * @return {Promise<DDO>}
      */
-    public async create(metadata: MetaData, publisher: Account, services: Service[] = []): Promise<DDO> {
-        const {secretStoreUri} = this.config
-        const {didRegistry, templates} = this.ocean.keeper
+    public create(metadata: MetaData, publisher: Account, services: Service[] = []): SubscribablePromise<CreateProgressStep, DDO> {
+        this.logger.log("Creating asset")
+        return new SubscribablePromise(async (observer) => {
+            const {secretStoreUri} = this.config
+            const {didRegistry, templates} = this.ocean.keeper
 
-        const did: DID = DID.generate()
+            const did: DID = DID.generate()
 
-        const encryptedFiles = await this.ocean.secretStore.encrypt(did.getId(), metadata.base.files, publisher)
+            this.logger.log("Encrypting files")
+            observer.next(CreateProgressStep.EncryptingFiles)
+            const encryptedFiles = await this.ocean.secretStore.encrypt(did.getId(), metadata.base.files, publisher)
+            this.logger.log("Files encrypted")
+            observer.next(CreateProgressStep.FilesEncrypted)
 
-        const serviceAgreementTemplate = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplate()
+            const serviceAgreementTemplate = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplate()
 
-        const serviceEndpoint = this.ocean.aquarius.getServiceEndpoint(did)
+            const serviceEndpoint = this.ocean.aquarius.getServiceEndpoint(did)
 
-        let serviceDefinitionIdCount = 0
-        // create ddo itself
-        const ddo: DDO = new DDO({
-            id: did.getDid(),
-            authentication: [{
-                type: "RsaSignatureAuthentication2018",
-                publicKey: did.getDid(),
-            }],
-            publicKey: [
-                {
-                    id: did.getDid(),
-                    type: "EthereumECDSAKey",
-                    owner: publisher.getId(),
-                },
-            ],
-            service: [
-                {
-                    type: "Access",
-                    creator: "",
-                    purchaseEndpoint: this.ocean.brizo.getPurchaseEndpoint(),
-                    serviceEndpoint: this.ocean.brizo.getConsumeEndpoint(),
-                    name: "dataAssetAccessServiceAgreement",
-                    templateId: templates.escrowAccessSecretStoreTemplate.getAddress(),
-                    serviceAgreementTemplate,
-                },
-                {
-                    type: "Authorization",
-                    service: "SecretStore",
-                    serviceEndpoint: secretStoreUri,
-                },
-                {
-                    type: "Metadata",
-                    serviceEndpoint,
-                    metadata: {
-                        // Default values
-                        curation: {
-                            rating: 0,
-                            numVotes: 0,
-                        },
-                        // Overwrites defaults
-                        ...metadata,
-                        // Cleaning not needed information
-                        base: {
-                            ...metadata.base,
-                            contentUrls: undefined,
-                            encryptedFiles,
-                            files: metadata.base.files
-                                .map((file, index) => ({
-                                    ...file,
-                                    index,
-                                    url: undefined,
-                                })),
-                        } as any,
+            let serviceDefinitionIdCount = 0
+            // create ddo itself
+            const ddo: DDO = new DDO({
+                id: did.getDid(),
+                authentication: [{
+                    type: "RsaSignatureAuthentication2018",
+                    publicKey: did.getDid(),
+                }],
+                publicKey: [
+                    {
+                        id: did.getDid(),
+                        type: "EthereumECDSAKey",
+                        owner: publisher.getId(),
                     },
-                },
-                ...services,
-            ]
-                // Remove duplications
-                .reverse()
-                .filter(({type}, i, list) => list.findIndex(({type: t}) => t === type) === i)
-                .reverse()
-                // Adding ID
-                .map((_) => ({..._, serviceDefinitionId: String(serviceDefinitionIdCount++)})) as Service[],
+                ],
+                service: [
+                    {
+                        type: "Access",
+                        creator: "",
+                        purchaseEndpoint: this.ocean.brizo.getPurchaseEndpoint(),
+                        serviceEndpoint: this.ocean.brizo.getConsumeEndpoint(),
+                        name: "dataAssetAccessServiceAgreement",
+                        templateId: templates.escrowAccessSecretStoreTemplate.getAddress(),
+                        serviceAgreementTemplate,
+                    },
+                    {
+                        type: "Authorization",
+                        service: "SecretStore",
+                        serviceEndpoint: secretStoreUri,
+                    },
+                    {
+                        type: "Metadata",
+                        serviceEndpoint,
+                        metadata: {
+                            // Default values
+                            curation: {
+                                rating: 0,
+                                numVotes: 0,
+                            },
+                            // Overwrites defaults
+                            ...metadata,
+                            // Cleaning not needed information
+                            base: {
+                                ...metadata.base,
+                                contentUrls: undefined,
+                                encryptedFiles,
+                                files: metadata.base.files
+                                    .map((file, index) => ({
+                                        ...file,
+                                        index,
+                                        url: undefined,
+                                    })),
+                            } as any,
+                        },
+                    },
+                    ...services,
+                ]
+                    // Remove duplications
+                    .reverse()
+                    .filter(({type}, i, list) => list.findIndex(({type: t}) => t === type) === i)
+                    .reverse()
+                    // Adding ID
+                    .map((_) => ({..._, serviceDefinitionId: String(serviceDefinitionIdCount++)})) as Service[],
+            })
+
+            // Overwritte initial service agreement conditions
+            const rawConditions = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplateConditions()
+            const conditions = fillConditionsWithDDO(rawConditions, ddo)
+            serviceAgreementTemplate.conditions = conditions
+
+            ddo.addChecksum()
+            this.logger.log("Generating proof")
+            observer.next(CreateProgressStep.GeneratingProof)
+            await ddo.addProof(this.ocean, publisher.getId(), publisher.getPassword())
+            this.logger.log("Proof generated")
+            observer.next(CreateProgressStep.ProofGenerated)
+
+            this.logger.log("Registering DID")
+            observer.next(CreateProgressStep.RegisteringDid)
+            await didRegistry.registerAttribute(
+                did.getId(),
+                ddo.getChecksum(),
+                [this.config.brizoAddress],
+                serviceEndpoint,
+                publisher.getId(),
+            )
+            this.logger.log("DID registred")
+            observer.next(CreateProgressStep.DidRegistred)
+
+            this.logger.log("Storing DDO")
+            observer.next(CreateProgressStep.StoringDdo)
+            const storedDdo = await this.ocean.aquarius.storeDDO(ddo)
+            this.logger.log("DDO stored")
+            observer.next(CreateProgressStep.DdoStored)
+
+            return storedDdo
         })
-
-        // Overwritte initial service agreement conditions
-        const rawConditions = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplateConditions()
-        const conditions = fillConditionsWithDDO(rawConditions, ddo)
-        serviceAgreementTemplate.conditions = conditions
-
-        ddo.addChecksum()
-        await ddo.addProof(this.ocean, publisher.getId(), publisher.getPassword())
-
-        await didRegistry.registerAttribute(
-            did.getId(),
-            ddo.getChecksum(),
-            [this.config.brizoAddress],
-            serviceEndpoint,
-            publisher.getId(),
-        )
-        const storedDdo = await this.ocean.aquarius.storeDDO(ddo)
-
-        return storedDdo
     }
 
     // tslint:disable-next-line

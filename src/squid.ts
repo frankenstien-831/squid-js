@@ -13,6 +13,8 @@ import * as utils from "./utils"
 export * from "./ddo/DDO"
 export * from "./ddo/MetaData"
 
+export { OrderProgressStep, CreateProgressStep } from "./ocean/OceanAssets"
+
 export { AgreementTemplate } from "./keeper/contracts/templates"
 export { Condition, ConditionState } from "./keeper/contracts/conditions"
 
