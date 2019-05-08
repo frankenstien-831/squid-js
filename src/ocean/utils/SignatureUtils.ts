@@ -1,5 +1,3 @@
-import * as Web3 from "web3"
-
 import { Instantiable, InstantiableConfig } from "../../Instantiable.abstract"
 
 export class SignatureUtils extends Instantiable {
