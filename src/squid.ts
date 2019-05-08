@@ -3,7 +3,6 @@ import Account from "./ocean/Account"
 import DID from "./ocean/DID"
 import { Ocean } from "./ocean/Ocean"
 import { LoggerInstance as Logger} from "./utils/Logger"
-import WebServiceConnectorProvider from "./utils/WebServiceConnectorProvider"
 import Keeper from "./keeper/Keeper"
 
 import * as templates from "./keeper/contracts/templates"
@@ -25,7 +24,6 @@ export {
     DID,
     Logger,
     Keeper,
-    WebServiceConnectorProvider,
 
     conditions,
     templates,

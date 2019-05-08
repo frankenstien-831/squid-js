@@ -4,7 +4,6 @@ import save = require("save-file")
 import { File } from "../ddo/MetaData"
 import Account from "../ocean/Account"
 import { noZeroX } from "../utils"
-import WebServiceConnectorProvider from "../utils/WebServiceConnectorProvider"
 import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
 const apiPath = "/api/v1/brizo/services"
@@ -57,8 +56,7 @@ export class Brizo  extends Instantiable {
         }
 
         try {
-            return await WebServiceConnectorProvider
-                .getConnector()
+            return await this.ocean.utils.fetch
                 .post(
                     this.getPurchaseEndpoint(),
                     decodeURI(JSON.stringify(args)),
@@ -117,8 +115,7 @@ export class Brizo  extends Instantiable {
         }
 
         try {
-            const response = await WebServiceConnectorProvider
-                .getConnector()
+            const response = await this.ocean.utils.fetch
                 .post(
                     this.getEncryptEndpoint(),
                     decodeURI(JSON.stringify(args)),
@@ -134,8 +131,7 @@ export class Brizo  extends Instantiable {
     }
 
     private async downloadFile(url: string, destination?: string): Promise<string> {
-        const response = await WebServiceConnectorProvider
-            .getConnector()
+        const response = await this.ocean.utils.fetch
             .get(url)
         if (!response.ok) {
             throw new Error("Response error.")

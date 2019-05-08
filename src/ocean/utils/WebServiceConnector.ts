@@ -1,10 +1,15 @@
 import fetch, { BodyInit, RequestInit, Response } from "node-fetch"
-import LoggerInstance from "./Logger"
+import { Instantiable, InstantiableConfig } from "../../Instantiable.abstract"
 
 /**
  * Provides a common interface to web services.
  */
-export default class WebServiceConnector {
+export class WebServiceConnector extends Instantiable {
+
+    constructor(config: InstantiableConfig) {
+        super()
+        this.setInstanceConfig(config)
+    }
 
     public post(url: string, payload: BodyInit): Promise<Response> {
         return this.fetch(url, {
@@ -38,8 +43,8 @@ export default class WebServiceConnector {
     private async fetch(url: string, opts: RequestInit): Promise<Response> {
         const result = await fetch(url, opts)
         if (!result.ok) {
-            LoggerInstance.error(`Error requesting [${opts.method}] ${url}`)
-            LoggerInstance.error(`Response message: \n${await result.text()}`)
+            this.logger.error(`Error requesting [${opts.method}] ${url}`)
+            this.logger.error(`Response message: \n${await result.text()}`)
             throw result
         }
         return result

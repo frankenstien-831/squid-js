@@ -2,6 +2,7 @@ import { Instantiable, InstantiableConfig } from "../../Instantiable.abstract"
 
 import { ServiceAgreement } from "./ServiceAgreement"
 import { SignatureUtils } from "./SignatureUtils"
+import { WebServiceConnector } from "./WebServiceConnector"
 
 /**
  * Utils internal submodule of Ocean Protocol.
@@ -18,6 +19,7 @@ export class OceanUtils extends Instantiable {
 
         instance.agreements = new ServiceAgreement(config)
         instance.signature = new SignatureUtils(config)
+        instance.fetch = new WebServiceConnector(config)
 
         return instance
     }
@@ -33,4 +35,10 @@ export class OceanUtils extends Instantiable {
      * @type {SignatureUtils}
      */
     public signature: SignatureUtils
+
+    /**
+     * Fetch utils.
+     * @type {WebServiceConnector}
+     */
+    public fetch: WebServiceConnector
 }
