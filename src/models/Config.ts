@@ -2,27 +2,45 @@ import { LogLevel } from "../utils/Logger"
 export { LogLevel } from "../utils/Logger"
 
 export class Config {
-    /* Aquarius Config */
-    // the url to the aquarius
+    /**
+     * Aquarius URL.
+     * @type {string}
+     */
     public aquariusUri: string
 
-    /* Brizo Config */
-    // the url to the brizo
+    /**
+     * Brizo URL.
+     * @type {string}
+     */
     public brizoUri: string
-    // the address of brizo
+    /**
+     * Address of Brizo.
+     * @type {string}
+     */
     public brizoAddress?: string
 
-    /* Keeper Config */
-    // the uri to the node we want to connect to, not need if web3Provider is set
+    /**
+     * Ethereum node URL.
+     * @type {string}
+     */
     public nodeUri?: string
-    // from outside eg. metamask
+    /**
+     * Web3 Provider.
+     * @type {any}
+     */
     public web3Provider?: any
 
-    // the uri of the secret store to connect to
+    /**
+     * Secret Store URL.
+     * @type {string}
+     */
     public secretStoreUri: string
 
-    /* Squid config */
-    public verbose: boolean | LogLevel
+    /**
+     * Log level.
+     * @type {boolean | LogLevel}
+     */
+    public verbose?: boolean | LogLevel
 }
 
 export default Config
