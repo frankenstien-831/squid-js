@@ -10,7 +10,7 @@ import config from "../config"
 
 use(spies)
 
-const reponsify = async data => ({ok: true, json: () => Promise.resolve(data)})
+const reponsify = async (data) => ({ok: true, json: () => Promise.resolve(data)})
 
 describe("Aquarius", () => {
 
@@ -44,7 +44,7 @@ describe("Aquarius", () => {
         } as SearchQuery
 
         it("should query metadata", async () => {
-            spy.on(ocean.utils.fetch, 'post', () => reponsify(getResults([new DDO()])))
+            spy.on(ocean.utils.fetch, "post", () => reponsify(getResults([new DDO()])))
 
             const result = await aquarius.queryMetadata(query)
             assert.typeOf(result.results, "array")
@@ -56,7 +56,7 @@ describe("Aquarius", () => {
 
         it("should query metadata and return real ddo", async () => {
 
-            spy.on(ocean.utils.fetch, 'post', () => reponsify(getResults([new DDO()])))
+            spy.on(ocean.utils.fetch, "post", () => reponsify(getResults([new DDO()])))
 
             const result = await aquarius.queryMetadata(query)
             assert.typeOf(result.results, "array")
@@ -81,7 +81,7 @@ describe("Aquarius", () => {
 
         it("should query metadata by text", async () => {
 
-            spy.on(ocean.utils.fetch, 'get', () => reponsify(getResults([new DDO()])))
+            spy.on(ocean.utils.fetch, "get", () => reponsify(getResults([new DDO()])))
 
             const result = await aquarius.queryMetadataByText(query)
             assert.typeOf(result.results, "array")
@@ -93,7 +93,7 @@ describe("Aquarius", () => {
 
         it("should query metadata and return real ddo", async () => {
 
-            spy.on(ocean.utils.fetch, 'get', () => reponsify(getResults([new DDO()])))
+            spy.on(ocean.utils.fetch, "get", () => reponsify(getResults([new DDO()])))
 
             const result = await aquarius.queryMetadataByText(query)
             assert.typeOf(result.results, "array")
@@ -112,7 +112,7 @@ describe("Aquarius", () => {
                 id: did.getId(),
             })
 
-            spy.on(ocean.utils.fetch, 'post', () => reponsify(ddo))
+            spy.on(ocean.utils.fetch, "post", () => reponsify(ddo))
 
             const result: DDO = await aquarius.storeDDO(ddo)
             assert(result)
@@ -129,8 +129,8 @@ describe("Aquarius", () => {
                 id: did.getId(),
             })
 
-            spy.on(ocean.utils.fetch, 'post', () => reponsify(ddo))
-            spy.on(ocean.utils.fetch, 'get', () => reponsify(ddo))
+            spy.on(ocean.utils.fetch, "post", () => reponsify(ddo))
+            spy.on(ocean.utils.fetch, "get", () => reponsify(ddo))
 
             const storageResult: DDO = await aquarius.storeDDO(ddo)
             assert(storageResult)

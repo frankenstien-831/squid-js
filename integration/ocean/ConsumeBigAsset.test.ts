@@ -21,7 +21,7 @@ xdescribe("Consume Asset (Large size)", () => {
         ...baseMetadata,
         base: {
             ...baseMetadata.base,
-            files: [ {
+            files: [{
                 url: "https://speed.hetzner.de/1GB.bin",
             }],
         },
