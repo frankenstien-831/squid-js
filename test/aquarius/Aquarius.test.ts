@@ -1,18 +1,33 @@
-import { assert } from "chai"
+import { assert, spy, use } from "chai"
+import * as spies from "chai-spies"
+
+import { Ocean } from "../../src/ocean/Ocean"
 import { Aquarius } from "../../src/aquarius/Aquarius"
 import { SearchQuery } from "../../src/aquarius/Aquarius"
 import { DDO } from "../../src/ddo/DDO"
 import DID from "../../src/ocean/DID"
-import WebServiceConnectorProvider from "../../src/utils/WebServiceConnectorProvider"
 import config from "../config"
-import WebServiceConnectorMock from "../mocks/WebServiceConnector.mock"
+
+use(spies)
+
+const reponsify = async data => ({ok: true, json: () => Promise.resolve(data)})
 
 describe("Aquarius", () => {
 
-    const aquarius: Aquarius = new Aquarius({config} as any)
+    let ocean: Ocean
+    let aquarius: Aquarius
     // tslint:disable-next-line
     const getResults = (results: DDO[], page = 0, total_pages = 1, total_results = 1) =>
         ({results, page, total_pages, total_results})
+
+    beforeEach(async () => {
+        ocean = await Ocean.getInstance(config)
+        aquarius = ocean.aquarius
+    })
+
+    afterEach(() => {
+        spy.restore()
+    })
 
     describe("#queryMetadata()", () => {
 
@@ -29,8 +44,7 @@ describe("Aquarius", () => {
         } as SearchQuery
 
         it("should query metadata", async () => {
-            // @ts-ignore
-            WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(getResults([new DDO()])))
+            spy.on(ocean.utils.fetch, 'post', () => reponsify(getResults([new DDO()])))
 
             const result = await aquarius.queryMetadata(query)
             assert.typeOf(result.results, "array")
@@ -42,8 +56,7 @@ describe("Aquarius", () => {
 
         it("should query metadata and return real ddo", async () => {
 
-            // @ts-ignore
-            WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(getResults([new DDO()])))
+            spy.on(ocean.utils.fetch, 'post', () => reponsify(getResults([new DDO()])))
 
             const result = await aquarius.queryMetadata(query)
             assert.typeOf(result.results, "array")
@@ -68,8 +81,7 @@ describe("Aquarius", () => {
 
         it("should query metadata by text", async () => {
 
-            // @ts-ignore
-            WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(getResults([new DDO()])))
+            spy.on(ocean.utils.fetch, 'get', () => reponsify(getResults([new DDO()])))
 
             const result = await aquarius.queryMetadataByText(query)
             assert.typeOf(result.results, "array")
@@ -81,8 +93,7 @@ describe("Aquarius", () => {
 
         it("should query metadata and return real ddo", async () => {
 
-            // @ts-ignore
-            WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(getResults([new DDO()])))
+            spy.on(ocean.utils.fetch, 'get', () => reponsify(getResults([new DDO()])))
 
             const result = await aquarius.queryMetadataByText(query)
             assert.typeOf(result.results, "array")
@@ -101,8 +112,7 @@ describe("Aquarius", () => {
                 id: did.getId(),
             })
 
-            // @ts-ignore
-            WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(ddo))
+            spy.on(ocean.utils.fetch, 'post', () => reponsify(ddo))
 
             const result: DDO = await aquarius.storeDDO(ddo)
             assert(result)
@@ -119,8 +129,8 @@ describe("Aquarius", () => {
                 id: did.getId(),
             })
 
-            // @ts-ignore
-            WebServiceConnectorProvider.setConnector(new WebServiceConnectorMock(ddo))
+            spy.on(ocean.utils.fetch, 'post', () => reponsify(ddo))
+            spy.on(ocean.utils.fetch, 'get', () => reponsify(ddo))
 
             const storageResult: DDO = await aquarius.storeDDO(ddo)
             assert(storageResult)
