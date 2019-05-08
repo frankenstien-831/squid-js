@@ -41,6 +41,18 @@ export class Config {
      * @type {boolean | LogLevel}
      */
     public verbose?: boolean | LogLevel
+
+    /**
+     * Message shown when the user creates its own token.
+     * @type {string}
+     */
+    public authMessage?: string
+
+    /**
+     * Token expiration time in ms.
+     * @type {number}
+     */
+    public authTokenExpiration?: number
 }
 
 export default Config

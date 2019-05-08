@@ -1,9 +1,8 @@
 import Account from "./Account"
 import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
-// TODO: be able to read it from config
 const defaultAuthMessage = "Ocean Protocol Authentication"
-
+const defaultExpirationTime = 30 * 24 * 60 * 60 * 1000 // 30 days
 const localStorageKey = "SquidTokens"
 
 /**
@@ -29,7 +28,7 @@ export class OceanAuth extends Instantiable {
      */
     public async get(account: Account): Promise<string> {
         const time = Date.now()
-        const message = `${defaultAuthMessage}\n${time}`
+        const message = `${this.getMessage()}\n${time}`
 
         try {
             const signature = await this.ocean.utils.signature
@@ -51,10 +50,10 @@ export class OceanAuth extends Instantiable {
      * @return {Promise<string>}       Signer address.
      */
     public async check(token: string): Promise<string> {
-        const expiration = 30 * 24 * 60 * 60 * 1000 // 30 days
+        const expiration = this.getExpiration()
         const [signature, timestamp] = token.split('-')
 
-        const message = `${defaultAuthMessage}\n${timestamp}`
+        const message = `${this.getMessage()}\n${timestamp}`
 
         if ((+timestamp + expiration) < Date.now()) {
             return `0x${"0".repeat(40)}`
@@ -130,5 +129,13 @@ export class OceanAuth extends Instantiable {
             throw new Error("LocalStorage is not supported. This feature is only available on browsers.")
         }
         return localStorage
+    }
+
+    private getMessage() {
+        return this.config.authMessage || defaultAuthMessage
+    }
+
+    private getExpiration() {
+        return this.config.authTokenExpiration || defaultExpirationTime
     }
 }
