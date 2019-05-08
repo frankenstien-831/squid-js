@@ -25,9 +25,18 @@ export class OceanAccounts extends Instantiable {
     public async list(): Promise<Account[]> {
 
         // retrieve eth accounts
-        const ethAccounts = await this.web3.eth.getAccounts()
+        const ethAccounts: string[] = await this.web3.eth.getAccounts()
 
-        return ethAccounts.map((address: string) => new Account(address, this.instanceConfig))
+        const accountPromises = ethAccounts
+            .map(address => new Account(address, this.instanceConfig))
+            .map(async account => {
+                const token = await this.ocean.auth.restore(account)
+                if (token) {
+                    account.setToken(token)
+                }
+                return account
+            })
+        return Promise.all(accountPromises)
     }
 
     /**

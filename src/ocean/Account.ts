@@ -8,6 +8,7 @@ import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
  */
 export default class Account extends Instantiable {
     private password?: string
+    private token?: string
 
     constructor(private id: string = "0x0", config?: InstantiableConfig) {
         super()
@@ -38,6 +39,22 @@ export default class Account extends Instantiable {
      */
     public getPassword(): string {
         return this.password
+    }
+
+    /**
+     * Set account token.
+     * @param {string} token Token for account.
+     */
+    public setToken(token: string): void {
+        this.token = token
+    }
+
+    /**
+     * Returns account token.
+     * @return {string} Account token.
+     */
+    public getToken(): string {
+        return this.token
     }
 
     /**
