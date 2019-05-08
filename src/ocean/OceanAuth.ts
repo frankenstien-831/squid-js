@@ -96,7 +96,7 @@ export class OceanAuth extends Instantiable {
      * @return {Promise<boolean>}         Is stored and valid.
      */
     public async isStored(account: Account): Promise<boolean> {
-        return !!this.restore(account)
+        return !!await this.restore(account)
     }
 
     private writeToken(address: string, token: string) {
