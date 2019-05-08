@@ -79,7 +79,12 @@ export class OceanAuth extends Instantiable {
      * @param {Account} account Signer account.
      */
     public async restore(account: Account): Promise<string> {
-        const token = this.readToken(account.getId())
+        let token
+        try {
+            token = this.readToken(account.getId())
+        } catch {
+            return
+        }
         if (!token) {
             return
         }
@@ -100,6 +105,7 @@ export class OceanAuth extends Instantiable {
     }
 
     private writeToken(address: string, token: string) {
+        const localStorage = this.getLocalStorage()
         const storedTokens = localStorage.getItem(localStorageKey)
         const tokens = storedTokens ? JSON.parse(storedTokens) : {}
 
@@ -110,9 +116,19 @@ export class OceanAuth extends Instantiable {
     }
 
     private readToken(address: string) {
+        const localStorage = this.getLocalStorage()
         const storedTokens = localStorage.getItem(localStorageKey)
         const tokens = storedTokens ? JSON.parse(storedTokens) : {}
 
         return tokens[address]
+    }
+
+    private getLocalStorage() {
+        try {
+            localStorage.getItem("")
+        } catch {
+            throw new Error("LocalStorage is not supported. This feature is only available on browsers.")
+        }
+        return localStorage
     }
 }

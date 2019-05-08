@@ -11,7 +11,9 @@ describe("Authentication Token", () => {
     let account2: Account
 
     before(async () => {
-        localStorage.clear()
+        try {
+            localStorage.clear()
+        } catch { }
 
         ocean = await Ocean.getInstance(config)
 
