@@ -75,7 +75,7 @@ export class Brizo  extends Instantiable {
         destination: string,
         index: number = -1,
     ): Promise<string> {
-        const agreementIdSignature = await this.ocean.utils.signature.signText(noZeroX(agreementId), account.getId())
+        const signature = await account.getToken() || await this.ocean.utils.signature.signText(noZeroX(agreementId), account.getId())
         const filesPromises = files
             .filter(({}, i) => index === -1 || i === index)
             .map(async ({index: i}) => {
@@ -83,7 +83,7 @@ export class Brizo  extends Instantiable {
                 consumeUrl += `?index=${i}`
                 consumeUrl += `&serviceAgreementId=${noZeroX(agreementId)}`
                 consumeUrl += `&consumerAddress=${account.getId()}`
-                consumeUrl += `&signature=${agreementIdSignature}`
+                consumeUrl += `&signature=${signature}`
 
                 try {
                     await this.downloadFile(
@@ -102,14 +102,14 @@ export class Brizo  extends Instantiable {
 
     public async encrypt(
         did: string,
-        signedDid: string,
+        signature: string,
         document: any,
         publisher: string,
     ): Promise<string> {
 
         const args = {
             documentId: did,
-            signedDocumentId: signedDid,
+            signature,
             document: JSON.stringify(document),
             publisherAddress: publisher,
         }

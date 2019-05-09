@@ -28,8 +28,10 @@ export class OceanSecretStore extends Instantiable {
      * @return {Promise<string>}           Encrypted text.
      */
     public async encrypt(did: string, document: any, publisher: Account): Promise<string> {
-        const signedDid = await this.ocean.utils.signature.signText(noDidPrefixed(did), publisher.getId(), publisher.getPassword())
+        const signature =
+            await publisher.getToken()
+            || await this.ocean.utils.signature.signText(noDidPrefixed(did), publisher.getId(), publisher.getPassword())
 
-        return await this.ocean.brizo.encrypt(noDidPrefixed(did), signedDid, document, publisher.getId())
+        return await this.ocean.brizo.encrypt(noDidPrefixed(did), signature, document, publisher.getId())
     }
 }
