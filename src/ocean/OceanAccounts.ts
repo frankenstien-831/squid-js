@@ -29,13 +29,6 @@ export class OceanAccounts extends Instantiable {
 
         const accountPromises = ethAccounts
             .map(address => new Account(address, this.instanceConfig))
-            .map(async account => {
-                const token = await this.ocean.auth.restore(account)
-                if (token) {
-                    account.setToken(token)
-                }
-                return account
-            })
         return Promise.all(accountPromises)
     }
 

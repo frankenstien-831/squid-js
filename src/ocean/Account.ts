@@ -51,10 +51,18 @@ export default class Account extends Instantiable {
 
     /**
      * Returns account token.
-     * @return {string} Account token.
+     * @return {Promise<string>} Account token.
      */
-    public getToken(): string {
-        return this.token
+    public async getToken(): Promise<string> {
+        return this.token || await this.ocean.auth.restore(this)
+    }
+
+    /**
+     * Returns if account token is stored.
+     * @return {Promise<boolean>} Is stored.
+     */
+    public isTokenStored(): Promise<boolean> {
+        return this.ocean.auth.isStored(this)
     }
 
     /**

@@ -38,7 +38,11 @@ describe("Authentication Token", () => {
     })
 
     it("should store the token for a user", async () => {
+        assert.isUndefined(await account1.getToken())
+
         await ocean.auth.store(account1)
+
+        assert.match(await account1.getToken(), /^0x[a-f0-9]{130}-[0-9]{0,14}/i)
     })
 
     it("should restore the token for a user", async () => {
@@ -60,11 +64,14 @@ describe("Authentication Token", () => {
         acc2Stored = await ocean.auth.isStored(account2)
 
         assert.isTrue(acc1Stored)
+        assert.isTrue(await account1.isTokenStored())
         assert.isFalse(acc2Stored)
+        assert.isFalse(await account2.isTokenStored())
 
         await ocean.auth.store(account2)
 
         acc2Stored = await ocean.auth.isStored(account2)
         assert.isTrue(acc2Stored)
+        assert.isTrue(await account2.isTokenStored())
     })
 })
