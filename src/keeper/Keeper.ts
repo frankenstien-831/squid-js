@@ -192,42 +192,19 @@ export class Keeper extends Instantiable {
     public getNetworkName(): Promise<string> {
         return this.web3.eth.net.getId()
             .then((networkId) => {
-                let network: string = "Unknown"
-
                 switch (networkId) {
-                    case 1:
-                        network = "Main"
-                        break
-                    case 2:
-                        network = "Morden"
-                        break
-                    case 3:
-                        network = "Ropsten"
-                        break
-                    case 4:
-                        network = "Rinkeby"
-                        break
-                    case 77:
-                        network = "POA_Sokol"
-                        break
-                    case 99:
-                        network = "POA_Core"
-                        break
-                    case 42:
-                        network = "Kovan"
-                        break
-                    case 8996:
-                        network = "Spree"
-                        // network = "ocean_poa_net_local"
-                        break
-                    case 8995:
-                        network = "Nile"
-                        break
-                    default:
-                        // Logger.log(`NetworkId ${networkId} not found defaulting`)
-                        network = "Development"
+                    case 1: return "Main"
+                    case 2: return "Morden"
+                    case 3: return "Ropsten"
+                    case 4: return "Rinkeby"
+                    case 77: return "POA_Sokol"
+                    case 99: return "POA_Core"
+                    case 42: return "Kovan"
+                    case 2199: return "Duero"
+                    case 8996: return "Spree"
+                    case 8995: return "Nile"
+                    default: return "Development"
                 }
-                return network
             })
     }
 }
