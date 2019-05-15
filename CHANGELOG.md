@@ -1,6 +1,12 @@
 History
 =======
 
+0.5.10 (May 15, 2019)
+-------------------------
+
+* Added _Duero_ network on Keeper network detection method
+* Small refactors
+
 0.5.9 (May 6, 2019)
 -------------------------
 
