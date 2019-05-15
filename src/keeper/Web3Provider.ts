@@ -9,8 +9,11 @@ export default class Web3Provider {
      */
     public static getWeb3(config: Partial<Config> = {}): Web3 {
         if (!this.instances.has(config.nodeUri)) {
-            const web3Provider = config.web3Provider || new Web3.providers.HttpProvider(config.nodeUri)
-            this.instances.set(config.nodeUri, new Web3(Web3.givenProvider || web3Provider))
+            this.instances.set(config.nodeUri, new Web3(
+                config.web3Provider
+                || Web3.givenProvider
+                || new Web3.providers.HttpProvider(config.nodeUri),
+            ))
         }
 
         return this.instances.get(config.nodeUri)
