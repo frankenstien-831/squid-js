@@ -68,7 +68,9 @@ const ocean: Ocean = await Ocean.getInstance({
 
 ### Examples
 
-* [Examples](/src/examples/)
+You can see how `squid-js` is used on:
+
+* [Integration test](/src/integration/ocean/)
 * [Tuna](https://github.com/oceanprotocol/tuna/tree/develop/node)
 
 ## Documentation
