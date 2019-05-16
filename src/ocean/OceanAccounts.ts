@@ -28,7 +28,7 @@ export class OceanAccounts extends Instantiable {
         const ethAccounts: string[] = await this.web3.eth.getAccounts()
 
         const accountPromises = ethAccounts
-            .map(address => new Account(address, this.instanceConfig))
+            .map((address) => new Account(address, this.instanceConfig))
         return Promise.all(accountPromises)
     }
 

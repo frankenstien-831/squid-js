@@ -55,7 +55,7 @@ describe("OceanAuth", () => {
 
     describe("#store()", () => {
         it("should sign and store the token", async () => {
-            const writeTokenSpy = spy.on(oceanAuth as any, 'writeToken', () => {})
+            const writeTokenSpy = spy.on(oceanAuth as any, "writeToken", () => {})
 
             await oceanAuth.store(account)
 
@@ -65,17 +65,17 @@ describe("OceanAuth", () => {
 
     describe("#restore()", () => {
         it("should return a stored token", async () => {
-            spy.on(oceanAuth as any, 'readToken', () => 'token')
-            spy.on(oceanAuth as any, 'check', () => account.getId())
+            spy.on(oceanAuth as any, "readToken", () => "token")
+            spy.on(oceanAuth as any, "check", () => account.getId())
 
             const token = await oceanAuth.restore(account)
 
-            assert.equal(token, 'token')
+            assert.equal(token, "token")
         })
 
         it("should not return values if there is any error", async () => {
-            spy.on(oceanAuth as any, 'readToken', () => 'token')
-            spy.on(oceanAuth as any, 'check', () => '0x...')
+            spy.on(oceanAuth as any, "readToken", () => "token")
+            spy.on(oceanAuth as any, "check", () => "0x...")
 
             const token = await oceanAuth.restore(account)
 
@@ -85,7 +85,7 @@ describe("OceanAuth", () => {
 
     describe("#isStored()", () => {
         it("should know if the token is stored", async () => {
-            spy.on(oceanAuth as any, 'restore', () => account.getId())
+            spy.on(oceanAuth as any, "restore", () => account.getId())
 
             const isStored = await oceanAuth.isStored(account)
 
@@ -93,7 +93,7 @@ describe("OceanAuth", () => {
         })
 
         it("should know if the token is not stored", async () => {
-            spy.on(oceanAuth as any, 'restore', () => undefined)
+            spy.on(oceanAuth as any, "restore", () => undefined)
 
             const isStored = await oceanAuth.isStored(account)
 
@@ -101,4 +101,3 @@ describe("OceanAuth", () => {
         })
     })
 })
-

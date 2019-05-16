@@ -27,7 +27,7 @@ export class OceanAuth extends Instantiable {
      * @return {Promise<string>} Token
      */
     public async get(account: Account): Promise<string> {
-        const time = Date.now()
+        const time = Math.floor(Date.now() / 1000)
         const message = `${this.getMessage()}\n${time}`
 
         try {
@@ -51,16 +51,16 @@ export class OceanAuth extends Instantiable {
      */
     public async check(token: string): Promise<string> {
         const expiration = this.getExpiration()
-        const [signature, timestamp] = token.split('-')
+        const [signature, timestamp] = token.split("-")
 
         const message = `${this.getMessage()}\n${timestamp}`
 
-        if ((+timestamp + expiration) < Date.now()) {
+        if (((+timestamp * 1000) + expiration) < Date.now()) {
             return `0x${"0".repeat(40)}`
         }
 
         return this.web3.utils.toChecksumAddress(
-            await this.ocean.utils.signature.verifyText(message, signature)
+            await this.ocean.utils.signature.verifyText(message, signature),
         )
     }
 
