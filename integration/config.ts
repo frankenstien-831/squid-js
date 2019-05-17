@@ -15,8 +15,18 @@ if (process.env.NETWORK_NAME === "nile") {
         nodeUri: "https://nile.dev-ocean.com",
         aquariusUri: "https://nginx-aquarius.dev-ocean.com",
         brizoUri: "https://nginx-brizo.dev-ocean.com",
-        secretStoreUri: "https://secret-store.dev-ocean.com/",
+        secretStoreUri: "https://secret-store.dev-ocean.com",
         brizoAddress: "0x413c9ba0a05b8a600899b41b0c62dd661e689354",
+    })
+}
+
+if (process.env.NETWORK_NAME === "duero") {
+    Object.assign(configJson, {
+        nodeUri: "https://duero.dev-ocean.com",
+        aquariusUri: "https://aquarius.duero.dev-ocean.com",
+        brizoUri: "https://brizo.duero.dev-ocean.com",
+        secretStoreUri: "https://secret-store.duero.dev-ocean.com",
+        brizoAddress: "0x9d4ed58293f71122ad6a733c1603927a150735d0",
     })
 }
 

@@ -11,6 +11,7 @@
     "test:cover": "nyc --report-dir coverage/unit mocha",
     "integration": "mocha --opts integration/mocha.opts",
     "integration:nile": "export NETWORK_NAME=nile; mocha --opts integration/mocha.opts",
+    "integration:duero": "export NETWORK_NAME=duero; mocha --opts integration/mocha.opts",
     "integration:watch": "mocha -w --watch-extensions js,ts,json  --opts integration/mocha.opts",
     "integration:cover": "nyc --report-dir coverage/integration mocha --opts integration/mocha.opts",
     "clean": "rm -rf ./dist/ ./doc/ ./.nyc_output",
@@ -64,7 +65,7 @@
     "web3": "1.0.0-beta.37"
   },
   "dependencies": {
-    "@oceanprotocol/keeper-contracts": "^0.9.1",
+    "@oceanprotocol/keeper-contracts": "^0.9.7",
     "bignumber.js": "^8.1.1",
     "deprecated-decorator": "^0.1.6",
     "ethereumjs-util": "^6.1.0",
