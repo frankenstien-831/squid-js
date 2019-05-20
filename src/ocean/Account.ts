@@ -66,6 +66,13 @@ export default class Account extends Instantiable {
     }
 
     /**
+     * Authenticate the account.
+     */
+    public authenticate() {
+        return this.ocean.auth.store(this)
+    }
+
+    /**
      * Balance of Ocean Token.
      * @return {Promise<number>}
      */

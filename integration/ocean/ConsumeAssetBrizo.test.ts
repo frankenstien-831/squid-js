@@ -25,6 +25,17 @@ describe("Consume Asset (Brizo)", () => {
         consumer = (await ocean.accounts.list())[1]
     })
 
+    after(() => {
+        try {
+            localStorage.clear()
+        } catch { }
+    })
+
+    it("should authenticate the accounts", async () => {
+        await publisher.authenticate()
+        await consumer.authenticate()
+    })
+
     it("should regiester an asset", async () => {
         const steps = []
         ddo = await ocean.assets.create(metadata as any, publisher)

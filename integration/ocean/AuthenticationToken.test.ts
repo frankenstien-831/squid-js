@@ -68,7 +68,7 @@ describe("Authentication Token", () => {
         assert.isFalse(acc2Stored)
         assert.isFalse(await account2.isTokenStored())
 
-        await ocean.auth.store(account2)
+        await account2.authenticate()
 
         acc2Stored = await ocean.auth.isStored(account2)
         assert.isTrue(acc2Stored)
