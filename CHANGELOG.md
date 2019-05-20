@@ -1,6 +1,13 @@
 History
 =======
 
+0.5.11 (May 20, 2019)
+-------------------------
+
+* Improved signatures
+* Allowing custom Web3 providers
+* Added config of _Duero_ to execute integration tests
+
 0.5.10 (May 15, 2019)
 -------------------------
 
