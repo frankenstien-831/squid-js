@@ -8,16 +8,10 @@ export default class Web3Provider {
      * @return {Web3}
      */
     public static getWeb3(config: Partial<Config> = {}): Web3 {
-        if (!this.instances.has(config.nodeUri)) {
-            this.instances.set(config.nodeUri, new Web3(
-                config.web3Provider
-                || Web3.givenProvider
-                || new Web3.providers.HttpProvider(config.nodeUri),
-            ))
-        }
-
-        return this.instances.get(config.nodeUri)
+        return new Web3(
+            config.web3Provider
+            || Web3.givenProvider
+            || new Web3.providers.HttpProvider(config.nodeUri),
+        )
     }
-
-    private static instances = new Map<string, Web3>()
 }
