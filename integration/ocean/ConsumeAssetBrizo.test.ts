@@ -58,7 +58,7 @@ describe("Consume Asset (Brizo)", () => {
         assert.deepEqual(steps, [0, 1, 2, 3])
     })
 
-    xit("should consume and store the assets", async () => {
+    it("should consume and store the assets", async () => {
         const accessService = ddo.findServiceByType("Access")
 
         const folder = "/tmp/ocean/squid-js"

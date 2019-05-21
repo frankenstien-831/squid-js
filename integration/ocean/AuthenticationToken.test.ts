@@ -57,7 +57,7 @@ describe("Authentication Token", () => {
         assert.isUndefined(token)
     })
 
-    it("should know if the is stored", async () => {
+    it("should know if the token is stored", async () => {
         let acc1Stored
         let acc2Stored
         acc1Stored = await ocean.auth.isStored(account1)

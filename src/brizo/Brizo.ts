@@ -93,7 +93,7 @@ export class Brizo  extends Instantiable {
                 } catch (e) {
                     this.logger.error("Error consuming assets")
                     this.logger.error(e)
-                    throw new Error("Error consuming assets")
+                    throw e
                 }
             })
         await Promise.all(filesPromises)
