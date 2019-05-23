@@ -38,7 +38,7 @@ describe("Consume Asset", () => {
         const initialBalance = (await consumer.getBalance()).ocn
         await consumer.requestTokens(metadata.base.price)
 
-        assert.equal((await consumer.getBalance()).ocn, initialBalance + metadata.base.price, "OCN Tokens not delivered")
+        assert.equal((await consumer.getBalance()).ocn, initialBalance + +metadata.base.price, "OCN Tokens not delivered")
     })
 
     it("should sign the service agreement", async () => {

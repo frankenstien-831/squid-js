@@ -25,7 +25,7 @@ const metadata: Partial<MetaData> = {
         inLanguage: "en",
         categories: ["Economy", "Data Science"],
         tags: ["weather", "uk", "2011", "temperature", "humidity"],
-        price: 10,
+        price: "10" + "0".repeat(18),
         files: [
             {
                 index: 0,
