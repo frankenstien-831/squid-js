@@ -98,7 +98,7 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
         const accessSecretStoreConditionId = await accessSecretStoreCondition.generateIdHash(agreementId, did, consumer)
         const escrowRewardId = await escrowReward.generateIdHash(
             agreementId,
-            amount,
+            String(amount),
             publisher,
             consumer,
             lockRewardConditionId,

@@ -36,9 +36,10 @@ describe("Consume Asset", () => {
 
     it("should be able to request tokens for consumer", async () => {
         const initialBalance = (await consumer.getBalance()).ocn
-        await consumer.requestTokens(metadata.base.price)
+        const claimedTokens = +metadata.base.price * (10 ** -await ocean.keeper.token.decimals())
+        await consumer.requestTokens(claimedTokens)
 
-        assert.equal((await consumer.getBalance()).ocn, initialBalance + +metadata.base.price, "OCN Tokens not delivered")
+        assert.equal((await consumer.getBalance()).ocn, initialBalance + claimedTokens, "OCN Tokens not delivered")
     })
 
     it("should sign the service agreement", async () => {
