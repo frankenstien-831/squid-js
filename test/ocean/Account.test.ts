@@ -67,21 +67,12 @@ describe("Account", () => {
 
         it("should return the amount of tokens granted", async () => {
 
-            const tokens = 500
+            const tokens = "500"
             const account: Account = accounts[0]
-            const tokensGranted: number = await account.requestTokens(tokens)
+            const tokensGranted: string = await account.requestTokens(tokens)
 
-            assert(tokensGranted === tokens)
+            assert.equal(tokensGranted, tokens)
         })
     })
 
-    describe("#getPublicKey()", () => {
-
-        it("should get the public key of an account", async () => {
-            const publicKey = await accounts[1].getPublicKey()
-            assert(publicKey)
-
-            assert(publicKey.length === 128)
-        })
-    })
 })

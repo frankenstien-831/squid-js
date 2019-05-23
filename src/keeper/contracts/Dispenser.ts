@@ -9,7 +9,7 @@ export default class Dispenser extends ContractBase {
         return dispenser
     }
 
-    public async requestTokens(amount: number, receiverAddress: string) {
-        return this.send("requestTokens", receiverAddress, [amount])
+    public async requestTokens(amount: number | string, receiverAddress: string) {
+        return this.send("requestTokens", receiverAddress, [String(amount)])
     }
 }

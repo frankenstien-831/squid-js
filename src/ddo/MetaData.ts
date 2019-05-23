@@ -176,10 +176,10 @@ export interface MetaDataBase {
 
     /**
      * Price of the asset.
-     * @type {number}
-     * @example 10
+     * @type {string}
+     * @example "1000000000000000000"
      */
-    price: number
+    price: string
 
     /**
      * Array of File objects including the encrypted file urls and some additional information.

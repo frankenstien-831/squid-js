@@ -24,7 +24,7 @@ export class OceanAgreementsConditions extends Instantiable {
      * @param {number}  amount      Asset amount.
      * @param {Account} from        Account of sender.
      */
-    public async lockReward(agreementId: string, amount: number, from?: Account) {
+    public async lockReward(agreementId: string, amount: number | string, from?: Account) {
         const {lockRewardCondition, escrowReward} = this.ocean.keeper.conditions
 
         await this.ocean.keeper.token.approve(lockRewardCondition.getAddress(), amount, from.getId())

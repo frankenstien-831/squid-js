@@ -1,5 +1,4 @@
 import BigNumber from "bignumber.js"
-import * as EthJsUtils from "ethereumjs-util"
 import Balance from "../models/Balance"
 
 import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
@@ -79,7 +78,8 @@ export default class Account extends Instantiable {
      * @param  {number} amount Tokens to be requested.
      * @return {Promise<number>}
      */
-    public async requestTokens(amount: number): Promise<number> {
+    public async requestTokens(amount: number | string): Promise<string> {
+        amount = String(amount)
         try {
             await this.ocean.keeper
                 .dispenser
@@ -90,17 +90,5 @@ export default class Account extends Instantiable {
 
         }
         return amount
-    }
-
-    /**
-     * Returns the account public key.
-     * @return {Promise<string>}
-     */
-    public async getPublicKey(): Promise<string> {
-        const msg = this.web3.utils.sha3(this.getId())
-        const sig = await this.web3.eth.sign(msg, this.getId())
-        const {v, r, s} = EthJsUtils.fromRpcSig(sig)
-
-        return EthJsUtils.ecrecover(EthJsUtils.toBuffer(msg), v, r, s).toString("hex")
     }
 }

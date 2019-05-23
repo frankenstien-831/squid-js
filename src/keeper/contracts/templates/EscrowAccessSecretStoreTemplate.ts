@@ -69,7 +69,7 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
      * @param  {string}          from   Consumer address.
      * @return {Promise<string>}        Agreement ID.
      */
-    public async createFullAgreement(did: string, amount: number, consumer: string, from?: string, agreementId?: string): Promise<string> {
+    public async createFullAgreement(did: string, amount: number | string, consumer: string, from?: string, agreementId?: string): Promise<string> {
         agreementId = agreementId || generateId()
         const {accessSecretStoreConditionId, lockRewardConditionId, escrowRewardId} =
             await this.createFullAgreementData(agreementId, did, amount, consumer)
@@ -87,7 +87,7 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
         return zeroX(agreementId)
     }
 
-    private async createFullAgreementData(agreementId: string, did: string, amount: number, consumer: string) {
+    private async createFullAgreementData(agreementId: string, did: string, amount: number | string, consumer: string) {
         const {didRegistry, conditions} = this.ocean.keeper
 
         const {accessSecretStoreCondition, lockRewardCondition, escrowReward} = conditions

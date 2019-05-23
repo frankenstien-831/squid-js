@@ -10,8 +10,8 @@ export default class OceanToken extends ContractBase {
         return token
     }
 
-    public async approve(to: string, price: number, from?: string) {
-        return this.sendFrom("approve", [to, price], from)
+    public async approve(to: string, price: number | string, from?: string) {
+        return this.sendFrom("approve", [to, String(price)], from)
     }
 
     public async decimals(): Promise<number> {
