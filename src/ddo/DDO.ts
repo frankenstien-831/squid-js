@@ -102,7 +102,7 @@ export class DDO {
             this.id,
         ]
 
-        return Web3Provider.getWeb3().utils.sha3(values.join("")).replace(/^0x([a-f0-9]{64})(:!.+)?$/i, "$1")
+        return Web3Provider.getWeb3().utils.sha3(values.join("")).replace(/^0x([a-f0-9]{64})(:!.+)?$/i, "0x$1")
     }
 
     /**
