@@ -20,9 +20,11 @@ export class AccessSecretStoreCondition extends Condition {
         return this.call<boolean>("checkPermissions", [grantee, didZeroX(did)].map(zeroX), from)
     }
 
-    public async getGrantedDidByConsumer(consumer: string): Promise<string[]> {
+    public async getGrantedDidByConsumer(consumer: string): Promise<{did: string, agreementId: string}[]> {
         return (await this.getPastEvents("Fulfilled", {_grantee: zeroX(consumer)}))
-            .map(({returnValues}) => returnValues._documentId)
-            .map(didPrefixed)
+            .map(({returnValues}) => ({
+                did: didPrefixed(returnValues._documentId),
+                agreementId: zeroX(returnValues._agreementId),
+            }))
     }
 }

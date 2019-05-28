@@ -292,7 +292,8 @@ export class OceanAssets extends Instantiable {
      * @return {Promise<string[]>} List of DIDs.
      */
     public async consumerAssets(consumer: string) {
-        return this.ocean.keeper.conditions.accessSecretStoreCondition.getGrantedDidByConsumer(consumer)
+        return (await this.ocean.keeper.conditions.accessSecretStoreCondition.getGrantedDidByConsumer(consumer))
+            .map(({did}) => did)
     }
 
     /**
