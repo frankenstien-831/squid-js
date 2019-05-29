@@ -13,13 +13,14 @@ const metadata: Partial<MetaData> = {
         workExample: "423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68",
         links: [
             {
-                sample1: "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-daily/",
+              name: "Sample of Asset Data",
+              type: "sample",
+              url: "https://foo.com/sample.csv",
             },
             {
-                sample2: "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-averages-25km/",
-            },
-            {
-                fieldsDescription: "http://data.ceda.ac.uk/badc/ukcp09/",
+              name: "Data Format Definition",
+              type: "format",
+              url: "https://foo.com/sample.csv",
             },
         ],
         inLanguage: "en",

@@ -34,7 +34,7 @@ describe("Consume Asset (Brizo)", () => {
     it("should order the asset", async () => {
         const accessService = ddo.findServiceByType("Access")
 
-        await consumer.requestTokens(metadata.base.price)
+        await consumer.requestTokens(+metadata.base.price * (10 ** -await ocean.keeper.token.decimals()))
 
         const steps = []
         agreementId = await ocean.assets.order(ddo.id, accessService.serviceDefinitionId, consumer)

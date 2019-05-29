@@ -53,7 +53,7 @@ describe("Asset Owners", () => {
         assert.equal(finalLength1 - initialLength, 0)
 
         // Granting access
-        await account2.requestTokens(metadata.base.price)
+        await account2.requestTokens(+metadata.base.price * (10 ** -await ocean.keeper.token.decimals()))
         await ocean.assets.order(ddo.id, ddo.findServiceByType("Access").serviceDefinitionId, account2)
         // Access granted
 

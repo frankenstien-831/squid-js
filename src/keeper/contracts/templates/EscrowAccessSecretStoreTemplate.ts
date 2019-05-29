@@ -69,8 +69,14 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
      * @param  {string}          from   Consumer address.
      * @return {Promise<string>}        Agreement ID.
      */
-    public async createFullAgreement(did: string, amount: number | string, consumer: string, from?: string, agreementId?: string): Promise<string> {
-        agreementId = agreementId || generateId()
+    public async createFullAgreement(
+        did: string,
+        amount: number | string,
+        consumer: string,
+        from?: string,
+        agreementId: string = generateId(),
+    ): Promise<string> {
+
         const {accessSecretStoreConditionId, lockRewardConditionId, escrowRewardId} =
             await this.createFullAgreementData(agreementId, did, amount, consumer)
 

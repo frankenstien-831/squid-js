@@ -6,7 +6,7 @@ function fillParameterWithDDO(parameter: ServiceAgreementTemplateParameter, ddo:
         switch (name) {
             case "amount":
             case "price":
-                return ddo.findServiceByType("Metadata").metadata.base.price.toString()
+                return String(ddo.findServiceByType("Metadata").metadata.base.price)
             case "assetId":
             case "documentId":
             case "documentKeyId":
@@ -19,7 +19,7 @@ function fillParameterWithDDO(parameter: ServiceAgreementTemplateParameter, ddo:
     }
     const value = getValue(parameter.name.replace(/^_/, ""))
 
-    return {...parameter, value: parameter.type.includes("int") ? Number(value) : value}
+    return {...parameter, value}
 }
 
 /**
