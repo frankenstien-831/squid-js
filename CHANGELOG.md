@@ -1,6 +1,13 @@
 History
 =======
 
+0.5.12 (May 29, 2019)
+-------------------------
+
+* Added the prefix of the checksum
+* Stop having a cache for Web3 instance
+* Improves on some contracts
+
 0.5.11 (May 20, 2019)
 -------------------------
 
