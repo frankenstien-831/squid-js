@@ -1,6 +1,11 @@
 History
 =======
 
+0.5.14 (May 31, 2019)
+-------------------------
+
+* `ocean.assets.create` emits the progress of the process
+
 0.5.13 (May 31, 2019)
 -------------------------
 
