@@ -1,6 +1,11 @@
 History
 =======
 
+0.5.13 (May 31, 2019)
+-------------------------
+
+* Changed the `metadata.base.price` type to string
+
 0.5.12 (May 29, 2019)
 -------------------------
 
