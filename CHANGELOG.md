@@ -1,6 +1,11 @@
 History
 =======
 
+0.5.15 (Jun 12, 2019)
+-------------------------
+
+* Created Auth module (`ocean.auth`) to reduce the Web3 provider interactions
+
 0.5.14 (May 31, 2019)
 -------------------------
 
