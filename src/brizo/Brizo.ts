@@ -22,6 +22,10 @@ export class Brizo  extends Instantiable {
         this.setInstanceConfig(config)
     }
 
+    async getVersionInfo() {
+        return await (await this.ocean.utils.fetch.get(this.url)).json()
+    }
+
     public getPurchaseEndpoint() {
         return `${this.url}${apiPath}/access/initialize`
     }

@@ -14,6 +14,7 @@ export * from "./ddo/DDO"
 export * from "./ddo/MetaData"
 
 export { OrderProgressStep, CreateProgressStep } from "./ocean/OceanAssets"
+export { OceanPlatformTechStatus } from "./ocean/OceanVersions"
 
 export { AgreementTemplate } from "./keeper/contracts/templates"
 export { Condition, ConditionState } from "./keeper/contracts/conditions"

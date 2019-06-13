@@ -4,6 +4,7 @@ import { OceanAssets } from "./OceanAssets"
 import { OceanAuth } from "./OceanAuth"
 import { OceanSecretStore } from "./OceanSecretStore"
 import { OceanTokens } from "./OceanTokens"
+import { OceanVersions } from "./OceanVersions"
 import { OceanUtils } from "./utils/OceanUtils"
 
 import { Aquarius } from "../aquarius/Aquarius"
@@ -45,6 +46,7 @@ export class Ocean extends Instantiable {
         instance.agreements = await OceanAgreements.getInstance(instanceConfig)
         instance.secretStore = await OceanSecretStore.getInstance(instanceConfig)
         instance.tokens = await OceanTokens.getInstance(instanceConfig)
+        instance.versions = await OceanVersions.getInstance(instanceConfig)
 
         instance.utils = await OceanUtils.getInstance(instanceConfig)
 
@@ -104,6 +106,12 @@ export class Ocean extends Instantiable {
      * @type {OceanTokens}
      */
     public tokens: OceanTokens
+
+    /**
+     * Ocean versions submodule
+     * @type {OceanVersions}
+     */
+    public versions: OceanVersions
 
     /**
      * Ocean utils submodule

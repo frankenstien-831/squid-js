@@ -34,6 +34,10 @@ export class Aquarius extends Instantiable {
         this.setInstanceConfig(config)
     }
 
+    async getVersionInfo() {
+        return await (await this.ocean.utils.fetch.get(this.url)).json()
+    }
+
     public async getAccessUrl(accessToken: any, payload: any): Promise<string> {
         const accessUrl: string = await this.ocean.utils.fetch
             .post(`${accessToken.service_endpoint}/${accessToken.resource_id}`, payload)

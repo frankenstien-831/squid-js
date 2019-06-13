@@ -1,3 +1,5 @@
+import { ContractBase } from "./contracts/ContractBase"
+
 import DIDRegistry from "./contracts/DIDRegistry"
 import Dispenser from "./contracts/Dispenser"
 import OceanToken from "./contracts/Token"
@@ -30,9 +32,9 @@ export class Keeper extends Instantiable {
         // Adding keeper inside Ocean to prevent `Keeper not defined yet` error
         config.ocean.keeper = keeper
 
-        let instances = {} as any
+        keeper.instances = {}
         try {
-            instances = await objectPromiseAll({
+            keeper.instances = await objectPromiseAll({
                 // Main contracts
                 dispenser: Dispenser.getInstance(config),
                 token: OceanToken.getInstance(config),
@@ -45,7 +47,7 @@ export class Keeper extends Instantiable {
                 lockRewardCondition: LockRewardCondition.getInstance(config),
                 escrowReward: EscrowReward.getInstance(config),
                 accessSecretStoreCondition: AccessSecretStoreCondition.getInstance(config),
-                // Conditions
+                // Templates
                 escrowAccessSecretStoreTemplate: EscrowAccessSecretStoreTemplate.getInstance(config),
             })
 
@@ -56,22 +58,22 @@ export class Keeper extends Instantiable {
         }
 
         // Main contracts
-        keeper.dispenser = instances.dispenser
-        keeper.token = instances.token
-        keeper.didRegistry = instances.didRegistry
+        keeper.dispenser = keeper.instances.dispenser
+        keeper.token = keeper.instances.token
+        keeper.didRegistry = keeper.instances.didRegistry
         // Managers
-        keeper.templateStoreManager = instances.templateStoreManager
-        keeper.agreementStoreManager = instances.agreementStoreManager
-        keeper.conditionStoreManager = instances.conditionStoreManager
+        keeper.templateStoreManager = keeper.instances.templateStoreManager
+        keeper.agreementStoreManager = keeper.instances.agreementStoreManager
+        keeper.conditionStoreManager = keeper.instances.conditionStoreManager
         // Conditions
         keeper.conditions = {
-            lockRewardCondition: instances.lockRewardCondition,
-            escrowReward: instances.escrowReward,
-            accessSecretStoreCondition: instances.accessSecretStoreCondition,
+            lockRewardCondition: keeper.instances.lockRewardCondition,
+            escrowReward: keeper.instances.escrowReward,
+            accessSecretStoreCondition: keeper.instances.accessSecretStoreCondition,
         }
         // Conditions
         keeper.templates = {
-            escrowAccessSecretStoreTemplate: instances.escrowAccessSecretStoreTemplate,
+            escrowAccessSecretStoreTemplate: keeper.instances.escrowAccessSecretStoreTemplate,
         }
 
         // Utils
@@ -81,6 +83,8 @@ export class Keeper extends Instantiable {
 
         return keeper
     }
+
+    private instances: {[contractRef: string]: ContractBase & any}
 
     /**
      * Is connected to the correct network or not.
@@ -206,6 +210,10 @@ export class Keeper extends Instantiable {
                     default: return "Development"
                 }
             })
+    }
+
+    getAllInstances() {
+        return this.instances
     }
 }
 

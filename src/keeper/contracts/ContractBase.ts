@@ -4,12 +4,16 @@ import ContractHandler from "../ContractHandler"
 
 import { Instantiable, InstantiableConfig } from "../../Instantiable.abstract"
 
-export default abstract class ContractBase extends Instantiable {
+export abstract class ContractBase extends Instantiable {
 
     protected static instance = null
     public contractName: string
 
     private contract: Contract = null
+
+    get address() {
+        return this.contract.options.address
+    }
 
     constructor(contractName) {
         super()
@@ -128,3 +132,5 @@ export default abstract class ContractBase extends Instantiable {
         return foundMethod
     }
 }
+
+export default ContractBase
