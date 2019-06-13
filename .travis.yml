@@ -5,9 +5,7 @@ node_js:
 services:
   - docker
 
-cache:
-  directories:
-    - node_modules
+cache: npm
 
 matrix:
   fast_finish: true
@@ -25,7 +23,7 @@ before_script:
   - export BRIZO_VERSION=v0.3.10
   - export KEEPER_VERSION=v0.9.7
   - export KEEPER_OWNER_ROLE_ADDRESS="0xe2DD09d719Da89e5a3D0F2549c7E24566e947260"
-  - bash -x start_ocean.sh --latest --no-pleuston --local-spree-node 2>&1 > start_ocean.log &
+  - bash -x start_ocean.sh --no-pleuston --local-spree-node 2>&1 > start_ocean.log &
   - cd ..
 
 script:

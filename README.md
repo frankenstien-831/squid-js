@@ -22,9 +22,11 @@
   - [Examples](#examples)
 - [Documentation](#documentation)
 - [Development](#development)
-  - [Testing](#testing)
-  - [Production build](#production-build)
-  - [npm releases](#npm-releases)
+- [Testing](#testing)
+  - [Unit Tests](#unit-tests)
+  - [Integration Tests](#integration-tests)
+- [Production build](#production-build)
+- [Releases](#releases)
 - [License](#license)
 
 ---
@@ -93,40 +95,75 @@ npm i
 npm start
 ```
 
-### Testing
+## Testing
 
-To start unit tests you need to:
+### Unit Tests
+
+For unit tests, running [`ganache-cli`](https://github.com/trufflesuite/ganache-cli) is required before starting the tests:
 
 ```bash
-ganache-cli &
-npm run test
+npm i -g ganache-cli
+ganache-cli
 ```
 
-or to watch for changes
+To start unit tests, run:
 
 ```bash
-ganache-cli &
+npm test
+```
+
+or to watch for changes:
+
+```bash
 npm run test:watch
 ```
 
-to create code coverage
+to create code coverage information:
 
 ```bash
-ganache-cli &
 npm run test:cover
 ```
 
-This will start a watcher for changes of the code.
+### Integration Tests
 
-`ganache-cli` can be installed following [this instructions](https://github.com/trufflesuite/ganache-cli#installation).
+Besides a running `ganache-cli` instance, a locally running Ocean network is required. To do so before running the tests, use [Barge](https://github.com/oceanprotocol/barge):
 
-### Production build
+```bash
+git clone https://github.com/oceanprotocol/barge
+cd barge
+
+./start_ocean.sh --latest --no-pleuston --local-spree-node
+```
+
+In another terminal window, run this script and export the seed phrase:
+
+```bash
+# copies the contract artifacts once the local Ocean network is up and running
+./scripts/wait_for_migration_and_extract_keeper_artifacts.sh
+
+# export Spree accounts seed phrase
+export SEED_WORDS="taxi music thumb unique chat sand crew more leg another off lamp"
+```
+
+Once everything is up, run the integration tests:
+
+```bash
+npm run integration
+```
+
+to generate code coverage information during test, run:
+
+```bash
+npm run integration:cover
+```
+
+## Production build
 
 ```bash
 npm run build
 ```
 
-### npm releases
+## Releases
 
 For a new **patch release**, execute on the machine where you're logged into your npm account:
 
@@ -138,8 +175,8 @@ git tag with the latest version and `git push`
 
 ## License
 
-```
-Copyright 2018 Ocean Protocol Foundation Ltd.
+```text
+Copyright 2019 Ocean Protocol Foundation Ltd.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

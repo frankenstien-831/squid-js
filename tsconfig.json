@@ -6,7 +6,7 @@
       "es2017",
       "es6",
       "es7",
-      "DOM"
+      "dom"
     ],
     "declaration": true,
     "module": "commonjs",
@@ -27,7 +27,6 @@
   ],
   "exclude": [
     "node_modules",
-    "**/*.test.ts",
-    "src/examples"
+    "**/*.test.ts"
   ]
 }
