@@ -22,7 +22,7 @@ interface OceanPlatformKeeperTech extends OceanPlatformTech {
     contracts?: {[contractName: string]: string}
 }
 
-export interface OceanPlatformVersions {
+export interface OceanPlatformVersions extends Array<OceanPlatformKeeperTech | OceanPlatformTech> {
     squid: OceanPlatformKeeperTech
     aquarius: OceanPlatformTech
     brizo: OceanPlatformKeeperTech
@@ -50,7 +50,7 @@ export class OceanVersions extends Instantiable {
     }
 
     public async get(): Promise<OceanPlatformVersions> {
-        const versions = {} as OceanPlatformVersions
+        const versions = ([] as any) as OceanPlatformVersions
 
         // Squid
         versions.squid = {
@@ -102,6 +102,7 @@ export class OceanVersions extends Instantiable {
 
         // Status
         const techs: OceanPlatformKeeperTech[] = Object.values(versions as any)
+        versions.push(...techs)
 
         const networks = techs
             .map(({network}) => network)
