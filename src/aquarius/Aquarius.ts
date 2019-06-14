@@ -34,7 +34,7 @@ export class Aquarius extends Instantiable {
         this.setInstanceConfig(config)
     }
 
-    async getVersionInfo() {
+    public async getVersionInfo() {
         return await (await this.ocean.utils.fetch.get(this.url)).json()
     }
 

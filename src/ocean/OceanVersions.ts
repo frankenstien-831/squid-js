@@ -1,13 +1,13 @@
 import * as keeperPackageJson from "@oceanprotocol/keeper-contracts/package.json"
+import * as packageJson from "pjson"
 
 import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
-import * as packageJson from "../../package.json"
 
 export enum OceanPlatformTechStatus {
-    Loading = 'Loading',
-    Unknown = 'Unknown',
-    Stopped = 'Stopped',
-    Working = 'Working',
+    Loading = "Loading",
+    Unknown = "Unknown",
+    Stopped = "Stopped",
+    Working = "Working",
 }
 
 interface OceanPlatformTech {
@@ -29,7 +29,7 @@ export interface OceanPlatformVersions extends Array<OceanPlatformKeeperTech | O
     status: {
         ok: boolean
         contracts: boolean
-        network: boolean
+        network: boolean,
     }
 }
 
@@ -54,7 +54,7 @@ export class OceanVersions extends Instantiable {
 
         // Squid
         versions.squid = {
-            name: 'Squid',
+            name: "Squid-js",
             version: packageJson.version,
             status: OceanPlatformTechStatus.Working,
             network: (await this.ocean.keeper.getNetworkName()).toLowerCase(),
@@ -63,12 +63,12 @@ export class OceanVersions extends Instantiable {
                 .reduce((acc, {contractName, address}) => ({
                     ...acc,
                     [contractName]: address,
-                }), {})
+                }), {}),
         }
 
         // Brizo
         try {
-            const {contracts, 'keeper-version': keeperVersion, network, software: name, version} =
+            const {contracts, "keeper-version": keeperVersion, network, software: name, version} =
                 await this.ocean.brizo.getVersionInfo()
             versions.brizo = {
                 name,
@@ -76,11 +76,11 @@ export class OceanVersions extends Instantiable {
                 version,
                 contracts,
                 network,
-                keeperVersion,
+                keeperVersion: keeperVersion.replace(/^v/, ""),
             }
         } catch {
             versions.brizo = {
-                name: 'Brizo',
+                name: "Brizo",
                 status: OceanPlatformTechStatus.Stopped,
             }
         }
@@ -95,7 +95,7 @@ export class OceanVersions extends Instantiable {
             }
         } catch {
             versions.aquarius = {
-                name: 'Aquarius',
+                name: "Aquarius",
                 status: OceanPlatformTechStatus.Stopped,
             }
         }
@@ -106,21 +106,21 @@ export class OceanVersions extends Instantiable {
 
         const networks = techs
             .map(({network}) => network)
-            .filter(_ => !!_)
+            .filter((_) => !!_)
             .reduce((acc, network) => ({...acc, [network]: true}), {})
 
         let contractStatus = true
-        const contracts = techs
+        const contractList = techs
             .map(({contracts}) => contracts)
-            .filter(_ => !!_)
-        Array.from(contracts.map(Object.keys))
+            .filter((_) => !!_)
+        Array.from(contractList.map(Object.keys))
             .reduce((acc, _) => [...acc, ..._], [])
             .filter((_, i, list) => list.indexOf(_) === i)
-            .forEach(name => {
+            .forEach((name) => {
                 let address
-                contracts
-                    .map(_ => _[name])
-                    .forEach(_ => {
+                contractList
+                    .map((_) => _[name])
+                    .forEach((_) => {
                         if (!address) {
                             address = _
                             return
@@ -131,7 +131,7 @@ export class OceanVersions extends Instantiable {
                     })
             })
 
-        versions.status = <any>{
+        versions.status = {
             ok: !techs.find(({status}) => status !== OceanPlatformTechStatus.Working),
             network: Object.keys(networks).length === 1,
             contracts: contractStatus,

@@ -84,8 +84,6 @@ export class Keeper extends Instantiable {
         return keeper
     }
 
-    private instances: {[contractRef: string]: ContractBase & any}
-
     /**
      * Is connected to the correct network or not.
      * @type {boolean}
@@ -151,6 +149,8 @@ export class Keeper extends Instantiable {
         eventHandler: EventHandler,
     }
 
+    private instances: {[contractRef: string]: ContractBase & any}
+
     /**
      * Returns a condition by address.
      * @param  {string} address Address of deployed condition.
@@ -212,7 +212,7 @@ export class Keeper extends Instantiable {
             })
     }
 
-    getAllInstances() {
+    public getAllInstances() {
         return this.instances
     }
 }
