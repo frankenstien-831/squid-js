@@ -19,6 +19,7 @@
     "start": "npm link @oceanprotocol/keeper-contracts @oceanprotocol/secret-store-client && npm run build:watch",
     "build": "npm run clean && npm run build:tsc && npm run build:dist",
     "build:tsc": "tsc --sourceMap",
+    "build:metadata": "./scripts/get-metadata.js > src/metadata.json",
     "build:dist": "cross-env NODE_ENV=production webpack",
     "build:watch": "tsc -w",
     "doc": "typedoc --mode modules --out ./doc/ ./src/",
@@ -30,7 +31,9 @@
     "release": "./node_modules/release-it/bin/release-it.js --src.tagName='v%s' --github.release --npm.publish --non-interactive",
     "release-minor": "./node_modules/release-it/bin/release-it.js minor --src.tagName='v%s' --github.release --npm.publish --non-interactive",
     "release-major": "./node_modules/release-it/bin/release-it.js major --src.tagName='v%s' --github.release --npm.publish --non-interactive",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "prebuild": "npm run build:metadata",
+    "postinstall": "npm run build:metadata"
   },
   "nyc": {
     "include": [
@@ -69,7 +72,6 @@
     "bignumber.js": "^8.1.1",
     "deprecated-decorator": "^0.1.6",
     "node-fetch": "^2.6.0",
-    "pjson": "^1.0.9",
     "save-file": "^2.3.1",
     "uuid": "^3.3.2",
     "web3": "1.0.0-beta.37",

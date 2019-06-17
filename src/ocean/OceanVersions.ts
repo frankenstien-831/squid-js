@@ -1,5 +1,5 @@
 import * as keeperPackageJson from "@oceanprotocol/keeper-contracts/package.json"
-import * as packageJson from "pjson"
+import * as metadata from "../metadata.json"
 
 import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
 
@@ -10,19 +10,20 @@ export enum OceanPlatformTechStatus {
     Working = "Working",
 }
 
-interface OceanPlatformTech {
+export interface OceanPlatformTech {
     name: string
     version?: string
+    commit?: string
     status: OceanPlatformTechStatus
 }
 
-interface OceanPlatformKeeperTech extends OceanPlatformTech {
+export interface OceanPlatformKeeperTech extends OceanPlatformTech {
     network?: string
     keeperVersion?: string
     contracts?: {[contractName: string]: string}
 }
 
-export interface OceanPlatformVersions extends Array<OceanPlatformKeeperTech | OceanPlatformTech> {
+export interface OceanPlatformVersions {
     squid: OceanPlatformKeeperTech
     aquarius: OceanPlatformTech
     brizo: OceanPlatformKeeperTech
@@ -50,12 +51,13 @@ export class OceanVersions extends Instantiable {
     }
 
     public async get(): Promise<OceanPlatformVersions> {
-        const versions = ([] as any) as OceanPlatformVersions
+        const versions = {} as OceanPlatformVersions
 
         // Squid
         versions.squid = {
             name: "Squid-js",
-            version: packageJson.version,
+            version: metadata.version,
+            commit: metadata.commit,
             status: OceanPlatformTechStatus.Working,
             network: (await this.ocean.keeper.getNetworkName()).toLowerCase(),
             keeperVersion: keeperPackageJson.version,
@@ -102,7 +104,6 @@ export class OceanVersions extends Instantiable {
 
         // Status
         const techs: OceanPlatformKeeperTech[] = Object.values(versions as any)
-        versions.push(...techs)
 
         const networks = techs
             .map(({network}) => network)
