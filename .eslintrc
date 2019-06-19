@@ -1,0 +1,38 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": false
+        },
+        "project": "./tsconfig.json"
+    },
+    "extends": [
+        "oceanprotocol",
+        "prettier/standard",
+        "plugin:prettier/recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier/@typescript-eslint"
+    ],
+    "plugins": ["@typescript-eslint", "prettier"],
+    "rules": {
+        "@typescript-eslint/member-delimiter-style": [
+            "error",
+            { "multiline": { "delimiter": "none" } }
+        ],
+        "@typescript-eslint/indent": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-member-accessibility": "off",
+        "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/no-use-before-define": "off",
+        "@typescript-eslint/no-object-literal-type-assertion": "off",
+        "@typescript-eslint/no-parameter-properties": "off"
+    },
+    "env": {
+        "es6": true,
+        "browser": true,
+        "mocha": true
+    }
+}
