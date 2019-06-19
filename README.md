@@ -25,6 +25,7 @@
 - [Testing](#Testing)
   - [Unit Tests](#Unit-Tests)
   - [Integration Tests](#Integration-Tests)
+- [Code Style](#Code-Style)
 - [Production build](#Production-build)
 - [Releases](#Releases)
 - [License](#License)
@@ -155,6 +156,18 @@ to generate code coverage information during test, run:
 
 ```bash
 npm run integration:cover
+```
+
+## Code Style
+
+Project follows [eslint-config-oceanprotocol](https://github.com/oceanprotocol/eslint-config-oceanprotocol). For linting and auto-formatting you can use:
+
+```bash
+# lint all ts with eslint
+npm run lint
+
+# auto format all ts with prettier, taking all configs into account
+npm run format
 ```
 
 ## Production build

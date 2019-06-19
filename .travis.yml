@@ -27,6 +27,7 @@ before_script:
   - cd ..
 
 script:
+  - npm run lint
   - export ETH_PORT=18545; npm run test:cover
   - npm run build
   - npm run doc
