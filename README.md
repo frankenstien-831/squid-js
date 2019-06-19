@@ -18,16 +18,16 @@
 
 ---
 
-- [Get started](#get-started)
-  - [Examples](#examples)
-- [Documentation](#documentation)
-- [Development](#development)
-- [Testing](#testing)
-  - [Unit Tests](#unit-tests)
-  - [Integration Tests](#integration-tests)
-- [Production build](#production-build)
-- [Releases](#releases)
-- [License](#license)
+- [Get started](#Get-started)
+  - [Examples](#Examples)
+- [Documentation](#Documentation)
+- [Development](#Development)
+- [Testing](#Testing)
+  - [Unit Tests](#Unit-Tests)
+  - [Integration Tests](#Integration-Tests)
+- [Production build](#Production-build)
+- [Releases](#Releases)
+- [License](#License)
 
 ---
 
@@ -72,8 +72,8 @@ const ocean: Ocean = await Ocean.getInstance({
 
 You can see how `squid-js` is used on:
 
-* [Integration test](/src/integration/ocean/)
-* [Tuna](https://github.com/oceanprotocol/tuna/tree/develop/node)
+- [Integration test](/src/integration/ocean/)
+- [Tuna](https://github.com/oceanprotocol/tuna/tree/develop/node)
 
 ## Documentation
 
@@ -159,19 +159,30 @@ npm run integration:cover
 
 ## Production build
 
+To create a production build:
+
 ```bash
 npm run build
 ```
 
 ## Releases
 
-For a new **patch release**, execute on the machine where you're logged into your npm account:
+From a clean `master` branch you can run any release task doing the following:
 
-```bash
-./bumpversion path
-```
+- bumps the project version in `package.json`, `package-lock.json`
+- auto-generates and updates the CHANGELOG.md file from commit messages
+- creates a Git tag
+- commits and pushes everything
+- creates a GitHub release with commit messages as description
+- Git tag push will trigger Travis to do a npm release
 
-git tag with the latest version and `git push`
+You can execute the script using arguments to bump the version accordingly:
+
+- To bump a patch version: `npm run release`
+- To bump a minor version: `npm run release minor`
+- To bump a major version: `npm run release major`
+
+For the GitHub releases steps a GitHub personal access token, exported as `GITHUB_TOKEN` is required. [Setup](https://github.com/release-it/release-it#github-releases)
 
 ## License
 
