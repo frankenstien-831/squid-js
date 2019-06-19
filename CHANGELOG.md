@@ -1,6 +1,12 @@
 History
 =======
 
+0.5.16 (Jun 19, 2019)
+-------------------------
+
+* Created Versions module (`ocean.versions`) to provide a overview of the components
+* Upgraded dependencies
+
 0.5.15 (Jun 12, 2019)
 -------------------------
 
