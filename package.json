@@ -33,7 +33,7 @@
     "release-major": "./node_modules/release-it/bin/release-it.js major --src.tagName='v%s' --github.release --npm.publish --non-interactive",
     "prepublishOnly": "npm run build",
     "prebuild": "npm run build:metadata",
-    "postinstall": "npm run build:metadata"
+    "prepare": "npm run build:metadata"
   },
   "nyc": {
     "include": [
