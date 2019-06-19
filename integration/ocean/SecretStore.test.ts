@@ -1,16 +1,16 @@
-import { assert } from "chai"
+import { assert } from 'chai'
 
-import { config } from "../config"
+import { config } from '../config'
 
-import { Ocean, Account, DID } from "../../src" // @oceanprotocol/squid
+import { Ocean, Account, DID } from '../../src' // @oceanprotocol/squid
 
-describe("Secret Store", () => {
+describe('Secret Store', () => {
     let ocean: Ocean
 
     let account: Account
 
     const did: DID = DID.generate()
-    const content = {content: "Test 123"}
+    const content = { content: 'Test 123' }
     let encryptedContent
 
     before(async () => {
@@ -20,8 +20,12 @@ describe("Secret Store", () => {
         account = (await ocean.accounts.list())[0]
     })
 
-    it("should encrypt a text", async () => {
-        encryptedContent = await ocean.secretStore.encrypt(did.getId(), content, account)
+    it('should encrypt a text', async () => {
+        encryptedContent = await ocean.secretStore.encrypt(
+            did.getId(),
+            content,
+            account
+        )
 
         assert.isDefined(encryptedContent)
         assert.match(encryptedContent, /^0x[a-f0-9]{76}$/i)

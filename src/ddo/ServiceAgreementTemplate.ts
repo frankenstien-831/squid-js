@@ -10,7 +10,7 @@ export interface ServiceAgreementTemplateEvent {
     handler: {
         moduleName: string
         functionName: string
-        version: string,
+        version: string
     }
 }
 
@@ -28,6 +28,6 @@ export interface ServiceAgreementTemplate {
     contractName: string
     events: ServiceAgreementTemplateEvent[]
     fulfillmentOrder: string[]
-    conditionDependency: {[condition: string]: string[]}
+    conditionDependency: { [condition: string]: string[] }
     conditions: ServiceAgreementTemplateCondition[]
 }

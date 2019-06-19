@@ -10,10 +10,10 @@ module.exports = {
         noEmitOnErrors: true
     },
     node: {
-        fs: 'empty',
+        fs: 'empty'
     },
     resolve: {
         extensions: ['.js'],
-        modules: ['node_modules'],
-    },
+        modules: ['node_modules']
+    }
 }

@@ -1,10 +1,9 @@
-import { ContractEvent } from "./ContractEvent"
-import ContractBase from "./contracts/ContractBase"
+import { ContractEvent } from './ContractEvent'
+import ContractBase from './contracts/ContractBase'
 
-import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
+import { Instantiable, InstantiableConfig } from '../Instantiable.abstract'
 
 export class EventHandler extends Instantiable {
-
     get count() {
         return this.events.size
     }
@@ -24,7 +23,7 @@ export class EventHandler extends Instantiable {
         this.checkBlock()
 
         return {
-            unsubscribe: () => this.unsubscribe(callback),
+            unsubscribe: () => this.unsubscribe(callback)
         }
     }
 
@@ -37,7 +36,11 @@ export class EventHandler extends Instantiable {
         }
     }
 
-    public getEvent(contract: ContractBase, eventName: string, filter: {[key: string]: any}) {
+    public getEvent(
+        contract: ContractBase,
+        eventName: string,
+        filter: { [key: string]: any }
+    ) {
         return new ContractEvent(this, contract, eventName, filter)
     }
 
@@ -54,9 +57,12 @@ export class EventHandler extends Instantiable {
         }
 
         if (this.lastBlock !== blockNumber) {
-            this.events.forEach((fn) => fn(this.lastBlock + 1))
+            this.events.forEach(fn => fn(this.lastBlock + 1))
             this.lastBlock = blockNumber
         }
-        this.lastTimeout = global.setTimeout(() => this.checkBlock(true, n++), this.interval)
+        this.lastTimeout = global.setTimeout(
+            () => this.checkBlock(true, n++),
+            this.interval
+        )
     }
 }

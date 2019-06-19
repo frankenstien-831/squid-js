@@ -1,118 +1,124 @@
-import { assert, spy, use } from "chai"
-import * as spies from "chai-spies"
+import { assert, spy, use } from 'chai'
+import * as spies from 'chai-spies'
 
-import { Ocean } from "../../src/ocean/Ocean"
-import { Aquarius } from "../../src/aquarius/Aquarius"
-import { SearchQuery } from "../../src/aquarius/Aquarius"
-import { DDO } from "../../src/ddo/DDO"
-import DID from "../../src/ocean/DID"
-import config from "../config"
+import { Ocean } from '../../src/ocean/Ocean'
+import { Aquarius, SearchQuery } from '../../src/aquarius/Aquarius'
+import { DDO } from '../../src/ddo/DDO'
+import DID from '../../src/ocean/DID'
+import config from '../config'
 
 use(spies)
 
-const reponsify = async (data) => ({ok: true, json: () => Promise.resolve(data)})
+const reponsify = async data => ({
+    ok: true,
+    json: () => Promise.resolve(data)
+})
 
-describe("Aquarius", () => {
-
+describe('Aquarius', () => {
     let ocean: Ocean
     let aquarius: Aquarius
-    // tslint:disable-next-line
-    const getResults = (results: DDO[], page = 0, total_pages = 1, total_results = 1) =>
-        ({results, page, total_pages, total_results})
+    /* eslint-disable @typescript-eslint/camelcase */
+    const getResults = (
+        results: DDO[],
+        page = 0,
+        total_pages = 1,
+        total_results = 1
+    ) => ({ results, page, total_pages, total_results })
+    /* eslint-enable @typescript-eslint/camelcase */
 
     beforeEach(async () => {
         ocean = await Ocean.getInstance(config)
-        aquarius = ocean.aquarius
+        aquarius = ocean.aquarius // eslint-disable-line prefer-destructuring
     })
 
     afterEach(() => {
         spy.restore()
     })
 
-    describe("#queryMetadata()", () => {
-
+    describe('#queryMetadata()', () => {
         const query = {
             offset: 100,
             page: 1,
             query: {
-                value: 1,
+                value: 1
             },
             sort: {
-                value: 1,
+                value: 1
             },
-            text: "Office",
+            text: 'Office'
         } as SearchQuery
 
-        it("should query metadata", async () => {
-            spy.on(ocean.utils.fetch, "post", () => reponsify(getResults([new DDO()])))
+        it('should query metadata', async () => {
+            spy.on(ocean.utils.fetch, 'post', () =>
+                reponsify(getResults([new DDO()]))
+            )
 
             const result = await aquarius.queryMetadata(query)
-            assert.typeOf(result.results, "array")
+            assert.typeOf(result.results, 'array')
             assert.lengthOf(result.results, 1)
             assert.equal(result.page, 0)
             assert.equal(result.totalPages, 1)
             assert.equal(result.totalResults, 1)
         })
 
-        it("should query metadata and return real ddo", async () => {
-
-            spy.on(ocean.utils.fetch, "post", () => reponsify(getResults([new DDO()])))
+        it('should query metadata and return real ddo', async () => {
+            spy.on(ocean.utils.fetch, 'post', () =>
+                reponsify(getResults([new DDO()]))
+            )
 
             const result = await aquarius.queryMetadata(query)
-            assert.typeOf(result.results, "array")
+            assert.typeOf(result.results, 'array')
             assert.lengthOf(result.results, 1)
             assert.isDefined(result.results[0].findServiceById)
         })
     })
 
-    describe("#queryMetadataByText()", () => {
-
+    describe('#queryMetadataByText()', () => {
         const query = {
             offset: 100,
             page: 1,
             query: {
-                value: 1,
+                value: 1
             },
             sort: {
-                value: 1,
+                value: 1
             },
-            text: "Office",
+            text: 'Office'
         } as SearchQuery
 
-        it("should query metadata by text", async () => {
-
-            spy.on(ocean.utils.fetch, "get", () => reponsify(getResults([new DDO()])))
+        it('should query metadata by text', async () => {
+            spy.on(ocean.utils.fetch, 'get', () =>
+                reponsify(getResults([new DDO()]))
+            )
 
             const result = await aquarius.queryMetadataByText(query)
-            assert.typeOf(result.results, "array")
+            assert.typeOf(result.results, 'array')
             assert.lengthOf(result.results, 1)
             assert.equal(result.page, 0)
             assert.equal(result.totalPages, 1)
             assert.equal(result.totalResults, 1)
         })
 
-        it("should query metadata and return real ddo", async () => {
-
-            spy.on(ocean.utils.fetch, "get", () => reponsify(getResults([new DDO()])))
+        it('should query metadata and return real ddo', async () => {
+            spy.on(ocean.utils.fetch, 'get', () =>
+                reponsify(getResults([new DDO()]))
+            )
 
             const result = await aquarius.queryMetadataByText(query)
-            assert.typeOf(result.results, "array")
+            assert.typeOf(result.results, 'array')
             assert.lengthOf(result.results, 1)
             assert.isDefined(result.results[0].findServiceById)
         })
-
     })
 
-    describe("#storeDDO()", () => {
-
-        it("should store a ddo", async () => {
-
+    describe('#storeDDO()', () => {
+        it('should store a ddo', async () => {
             const did: DID = DID.generate()
             const ddo: DDO = new DDO({
-                id: did.getId(),
+                id: did.getId()
             })
 
-            spy.on(ocean.utils.fetch, "post", () => reponsify(ddo))
+            spy.on(ocean.utils.fetch, 'post', () => reponsify(ddo))
 
             const result: DDO = await aquarius.storeDDO(ddo)
             assert(result)
@@ -120,17 +126,15 @@ describe("Aquarius", () => {
         })
     })
 
-    describe("#retrieveDDO()", () => {
-
-        it("should store a ddo", async () => {
-
+    describe('#retrieveDDO()', () => {
+        it('should store a ddo', async () => {
             const did: DID = DID.generate()
             const ddo: DDO = new DDO({
-                id: did.getId(),
+                id: did.getId()
             })
 
-            spy.on(ocean.utils.fetch, "post", () => reponsify(ddo))
-            spy.on(ocean.utils.fetch, "get", () => reponsify(ddo))
+            spy.on(ocean.utils.fetch, 'post', () => reponsify(ddo))
+            spy.on(ocean.utils.fetch, 'get', () => reponsify(ddo))
 
             const storageResult: DDO = await aquarius.storeDDO(ddo)
             assert(storageResult)

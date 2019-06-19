@@ -1,4 +1,4 @@
-import ContractBase from "./contracts/ContractBase"
+import ContractBase from './contracts/ContractBase'
 
 interface EventEmitter {
     // tslint:disable-next-line
@@ -16,15 +16,17 @@ export class ContractEvent {
         private eventEmitter: EventEmitter,
         private contract: ContractBase,
         private eventName: string,
-        private filter: {[key: string]: any},
-    ) { }
+        private filter: { [key: string]: any }
+    ) {}
 
-    public subscribe(callback: (events: any[]) => void): ContractEventSubscription {
-        const onEvent = async (blockNumber) => {
+    public subscribe(
+        callback: (events: any[]) => void
+    ): ContractEventSubscription {
+        const onEvent = async blockNumber => {
             const events = await this.contract.getEventData(this.eventName, {
                 filter: this.filter,
                 fromBlock: blockNumber,
-                toBlock: "latest",
+                toBlock: 'latest'
             })
             if (events.length) {
                 callback(events)
@@ -33,13 +35,13 @@ export class ContractEvent {
 
         this.eventEmitter.subscribe(onEvent)
         return {
-            unsubscribe: () => this.eventEmitter.unsubscribe(onEvent),
+            unsubscribe: () => this.eventEmitter.unsubscribe(onEvent)
         }
     }
 
     public once(callback?: (events: any[]) => void) {
-        return new Promise((resolve) => {
-            const subscription = this.subscribe((events) => {
+        return new Promise(resolve => {
+            const subscription = this.subscribe(events => {
                 subscription.unsubscribe()
                 if (callback) {
                     callback(events)

@@ -1,11 +1,9 @@
-import * as assert from "assert"
-import * as squid from "../src/squid"
+import * as assert from 'assert'
+import * as squid from '../src/squid'
 
-describe("Squid", () => {
-
-    describe("interface", () => {
-
-        it("should expose Ocean", async () => {
+describe('Squid', () => {
+    describe('interface', () => {
+        it('should expose Ocean', async () => {
             assert(squid.Ocean)
         })
     })

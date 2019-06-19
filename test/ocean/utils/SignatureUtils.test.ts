@@ -1,17 +1,16 @@
-import { assert, expect, spy, use } from "chai"
-import * as spies from "chai-spies"
+import { assert, expect, spy, use } from 'chai'
+import * as spies from 'chai-spies'
 
-import config from "../../config"
+import config from '../../config'
 
-import { Ocean } from "../../../src/ocean/Ocean"
+import { Ocean } from '../../../src/ocean/Ocean'
 
 use(spies)
 
-describe("SignatureUtils", () => {
-
-    const publicKey = `0x${"a".repeat(40)}`
-    const text = "0123456789abcde"
-    const signature = `0x${"a".repeat(130)}`
+describe('SignatureUtils', () => {
+    const publicKey = `0x${'a'.repeat(40)}`
+    const text = '0123456789abcde'
+    const signature = `0x${'a'.repeat(130)}`
     let web3
     let ocean: Ocean
 
@@ -24,33 +23,48 @@ describe("SignatureUtils", () => {
         spy.restore()
     })
 
-    describe("#signText", () => {
+    describe('#signText', () => {
         let personalSignSpy
 
         beforeEach(() => {
-            personalSignSpy = spy.on(web3.eth.personal, "sign", () => signature)
+            personalSignSpy = spy.on(web3.eth.personal, 'sign', () => signature)
         })
 
-        it("should sign a text as expected", async () => {
+        it('should sign a text as expected', async () => {
             const signed = await ocean.utils.signature.signText(text, publicKey)
 
             assert.equal(signed, signature)
             expect(personalSignSpy).to.have.been.called.with(text, publicKey)
         })
 
-        it("should sign a text as expected using password", async () => {
-            const signed = await ocean.utils.signature.signText(text, publicKey, "test")
+        it('should sign a text as expected using password', async () => {
+            const signed = await ocean.utils.signature.signText(
+                text,
+                publicKey,
+                'test'
+            )
 
             assert.equal(signed, signature)
-            expect(personalSignSpy).to.have.been.called.with(text, publicKey, "test")
+            expect(personalSignSpy).to.have.been.called.with(
+                text,
+                publicKey,
+                'test'
+            )
         })
     })
 
-    describe("#verifyText", () => {
-        it("should recover the privateKey of a signed message", async () => {
-            const personalRecoverSpy = spy.on(web3.eth.personal, "ecRecover", () => publicKey)
+    describe('#verifyText', () => {
+        it('should recover the privateKey of a signed message', async () => {
+            const personalRecoverSpy = spy.on(
+                web3.eth.personal,
+                'ecRecover',
+                () => publicKey
+            )
 
-            const verifiedPublicKey = await ocean.utils.signature.verifyText(text, signature)
+            const verifiedPublicKey = await ocean.utils.signature.verifyText(
+                text,
+                signature
+            )
 
             assert.equal(publicKey, verifiedPublicKey)
             expect(personalRecoverSpy).to.have.been.called.with(text, signature)

@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "10"
+  - '10'
 
 services:
   - docker
@@ -42,9 +42,8 @@ notifications:
 
 deploy:
   - provider: npm
-    email: "devops@oceanprotocol.com"
+    email: 'devops@oceanprotocol.com'
     api_key: ${NPM_TOKEN}
     skip_cleanup: true
     on:
       tags: true
-

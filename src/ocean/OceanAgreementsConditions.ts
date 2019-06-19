@@ -1,16 +1,17 @@
-import Account from "./Account"
-import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
+import Account from './Account'
+import { Instantiable, InstantiableConfig } from '../Instantiable.abstract'
 
 /**
  * Agreements Conditions submodule of Ocean Protocol.
  */
 export class OceanAgreementsConditions extends Instantiable {
-
     /**
      * Returns the instance of OceanAgreementsConditions.
      * @return {Promise<OceanAgreementsConditions>}
      */
-    public static async getInstance(config: InstantiableConfig): Promise<OceanAgreementsConditions> {
+    public static async getInstance(
+        config: InstantiableConfig
+    ): Promise<OceanAgreementsConditions> {
         const instance = new OceanAgreementsConditions()
         instance.setInstanceConfig(config)
 
@@ -24,12 +25,28 @@ export class OceanAgreementsConditions extends Instantiable {
      * @param {number}  amount      Asset amount.
      * @param {Account} from        Account of sender.
      */
-    public async lockReward(agreementId: string, amount: number | string, from?: Account) {
-        const {lockRewardCondition, escrowReward} = this.ocean.keeper.conditions
+    public async lockReward(
+        agreementId: string,
+        amount: number | string,
+        from?: Account
+    ) {
+        const {
+            lockRewardCondition,
+            escrowReward
+        } = this.ocean.keeper.conditions
 
-        await this.ocean.keeper.token.approve(lockRewardCondition.getAddress(), amount, from.getId())
+        await this.ocean.keeper.token.approve(
+            lockRewardCondition.getAddress(),
+            amount,
+            from.getId()
+        )
 
-        const receipt = await lockRewardCondition.fulfill(agreementId, escrowReward.getAddress(), amount, from && from.getId())
+        const receipt = await lockRewardCondition.fulfill(
+            agreementId,
+            escrowReward.getAddress(),
+            amount,
+            from && from.getId()
+        )
         return !!receipt.events.Fulfilled
     }
 
@@ -40,10 +57,20 @@ export class OceanAgreementsConditions extends Instantiable {
      * @param {string}  grantee     Consumer address.
      * @param {Account} from        Account of sender.
      */
-    public async grantAccess(agreementId: string, did: string, grantee: string, from?: Account) {
-        const {accessSecretStoreCondition} = this.ocean.keeper.conditions
+    public async grantAccess(
+        agreementId: string,
+        did: string,
+        grantee: string,
+        from?: Account
+    ) {
+        const { accessSecretStoreCondition } = this.ocean.keeper.conditions
 
-        const receipt = await accessSecretStoreCondition.fulfill(agreementId, did, grantee, from && from.getId())
+        const receipt = await accessSecretStoreCondition.fulfill(
+            agreementId,
+            did,
+            grantee,
+            from && from.getId()
+        )
         return !!receipt.events.Fulfilled
     }
 
@@ -66,12 +93,24 @@ export class OceanAgreementsConditions extends Instantiable {
         did: string,
         consumer: string,
         publisher: string,
-        from?: Account,
+        from?: Account
     ) {
-        const {escrowReward, accessSecretStoreCondition, lockRewardCondition} = this.ocean.keeper.conditions
+        const {
+            escrowReward,
+            accessSecretStoreCondition,
+            lockRewardCondition
+        } = this.ocean.keeper.conditions
 
-        const conditionIdAccess = await accessSecretStoreCondition.generateIdHash(agreementId, did, consumer)
-        const conditionIdLock = await lockRewardCondition.generateIdHash(agreementId, escrowReward.getAddress(), amount)
+        const conditionIdAccess = await accessSecretStoreCondition.generateIdHash(
+            agreementId,
+            did,
+            consumer
+        )
+        const conditionIdLock = await lockRewardCondition.generateIdHash(
+            agreementId,
+            escrowReward.getAddress(),
+            amount
+        )
 
         const receipt = await escrowReward.fulfill(
             agreementId,
@@ -80,7 +119,7 @@ export class OceanAgreementsConditions extends Instantiable {
             consumer,
             conditionIdLock,
             conditionIdAccess,
-            from && from.getId(),
+            from && from.getId()
         )
         return !!receipt.events.Fulfilled
     }

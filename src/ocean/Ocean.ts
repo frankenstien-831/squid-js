@@ -1,26 +1,28 @@
-import { OceanAccounts } from "./OceanAccounts"
-import { OceanAgreements } from "./OceanAgreements"
-import { OceanAssets } from "./OceanAssets"
-import { OceanAuth } from "./OceanAuth"
-import { OceanSecretStore } from "./OceanSecretStore"
-import { OceanTokens } from "./OceanTokens"
-import { OceanVersions } from "./OceanVersions"
-import { OceanUtils } from "./utils/OceanUtils"
+import { OceanAccounts } from './OceanAccounts'
+import { OceanAgreements } from './OceanAgreements'
+import { OceanAssets } from './OceanAssets'
+import { OceanAuth } from './OceanAuth'
+import { OceanSecretStore } from './OceanSecretStore'
+import { OceanTokens } from './OceanTokens'
+import { OceanVersions } from './OceanVersions'
+import { OceanUtils } from './utils/OceanUtils'
 
-import { Aquarius } from "../aquarius/Aquarius"
-import { Brizo } from "../brizo/Brizo"
+import { Aquarius } from '../aquarius/Aquarius'
+import { Brizo } from '../brizo/Brizo'
 
-import Keeper from "../keeper/Keeper"
+import Keeper from '../keeper/Keeper'
 
-import { Config } from "../models/Config"
+import { Config } from '../models/Config'
 
-import { Instantiable, generateIntantiableConfigFromConfig } from "../Instantiable.abstract"
+import {
+    Instantiable,
+    generateIntantiableConfigFromConfig
+} from '../Instantiable.abstract'
 
 /**
  * Main interface for Ocean Protocol.
  */
 export class Ocean extends Instantiable {
-
     /**
      * Returns the instance of Ocean.
      * @param  {Config} config Ocean instance configuration.
@@ -31,7 +33,7 @@ export class Ocean extends Instantiable {
 
         const instanceConfig = {
             ...generateIntantiableConfigFromConfig(config),
-            ocean: instance,
+            ocean: instance
         }
         instance.setInstanceConfig(instanceConfig)
 
@@ -44,7 +46,9 @@ export class Ocean extends Instantiable {
         instance.auth = await OceanAuth.getInstance(instanceConfig)
         instance.assets = await OceanAssets.getInstance(instanceConfig)
         instance.agreements = await OceanAgreements.getInstance(instanceConfig)
-        instance.secretStore = await OceanSecretStore.getInstance(instanceConfig)
+        instance.secretStore = await OceanSecretStore.getInstance(
+            instanceConfig
+        )
         instance.tokens = await OceanTokens.getInstance(instanceConfig)
         instance.versions = await OceanVersions.getInstance(instanceConfig)
 

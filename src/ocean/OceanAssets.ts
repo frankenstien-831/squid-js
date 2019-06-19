@@ -1,11 +1,16 @@
-import { SearchQuery } from "../aquarius/Aquarius"
-import { DDO } from "../ddo/DDO"
-import { MetaData } from "../ddo/MetaData"
-import { Service } from "../ddo/Service"
-import Account from "./Account"
-import DID from "./DID"
-import { fillConditionsWithDDO, SubscribablePromise, generateId, zeroX } from "../utils"
-import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
+import { SearchQuery } from '../aquarius/Aquarius'
+import { DDO } from '../ddo/DDO'
+import { MetaData } from '../ddo/MetaData'
+import { Service } from '../ddo/Service'
+import Account from './Account'
+import DID from './DID'
+import {
+    fillConditionsWithDDO,
+    SubscribablePromise,
+    generateId,
+    zeroX
+} from '../utils'
+import { Instantiable, InstantiableConfig } from '../Instantiable.abstract'
 
 export enum CreateProgressStep {
     EncryptingFiles,
@@ -15,26 +20,27 @@ export enum CreateProgressStep {
     RegisteringDid,
     DidRegistred,
     StoringDdo,
-    DdoStored,
+    DdoStored
 }
 
 export enum OrderProgressStep {
     CreatingAgreement,
     AgreementInitialized,
     LockingPayment,
-    LockedPayment,
+    LockedPayment
 }
 
 /**
  * Assets submodule of Ocean Protocol.
  */
 export class OceanAssets extends Instantiable {
-
     /**
      * Returns the instance of OceanAssets.
      * @return {Promise<OceanAssets>}
      */
-    public static async getInstance(config: InstantiableConfig): Promise<OceanAssets> {
+    public static async getInstance(
+        config: InstantiableConfig
+    ): Promise<OceanAssets> {
         const instance = new OceanAssets()
         instance.setInstanceConfig(config)
 
@@ -57,18 +63,26 @@ export class OceanAssets extends Instantiable {
      * @param  {Account} publisher Publisher account.
      * @return {Promise<DDO>}
      */
-    public create(metadata: MetaData, publisher: Account, services: Service[] = []): SubscribablePromise<CreateProgressStep, DDO> {
-        this.logger.log("Creating asset")
-        return new SubscribablePromise(async (observer) => {
-            const {secretStoreUri} = this.config
-            const {didRegistry, templates} = this.ocean.keeper
+    public create(
+        metadata: MetaData,
+        publisher: Account,
+        services: Service[] = []
+    ): SubscribablePromise<CreateProgressStep, DDO> {
+        this.logger.log('Creating asset')
+        return new SubscribablePromise(async observer => {
+            const { secretStoreUri } = this.config
+            const { didRegistry, templates } = this.ocean.keeper
 
             const did: DID = DID.generate()
 
-            this.logger.log("Encrypting files")
+            this.logger.log('Encrypting files')
             observer.next(CreateProgressStep.EncryptingFiles)
-            const encryptedFiles = await this.ocean.secretStore.encrypt(did.getId(), metadata.base.files, publisher)
-            this.logger.log("Files encrypted")
+            const encryptedFiles = await this.ocean.secretStore.encrypt(
+                did.getId(),
+                metadata.base.files,
+                publisher
+            )
+            this.logger.log('Files encrypted')
             observer.next(CreateProgressStep.FilesEncrypted)
 
             const serviceAgreementTemplate = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplate()
@@ -79,40 +93,42 @@ export class OceanAssets extends Instantiable {
             // create ddo itself
             const ddo: DDO = new DDO({
                 id: did.getDid(),
-                authentication: [{
-                    type: "RsaSignatureAuthentication2018",
-                    publicKey: did.getDid(),
-                }],
+                authentication: [
+                    {
+                        type: 'RsaSignatureAuthentication2018',
+                        publicKey: did.getDid()
+                    }
+                ],
                 publicKey: [
                     {
                         id: did.getDid(),
-                        type: "EthereumECDSAKey",
-                        owner: publisher.getId(),
-                    },
+                        type: 'EthereumECDSAKey',
+                        owner: publisher.getId()
+                    }
                 ],
                 service: [
                     {
-                        type: "Access",
-                        creator: "",
+                        type: 'Access',
+                        creator: '',
                         purchaseEndpoint: this.ocean.brizo.getPurchaseEndpoint(),
                         serviceEndpoint: this.ocean.brizo.getConsumeEndpoint(),
-                        name: "dataAssetAccessServiceAgreement",
+                        name: 'dataAssetAccessServiceAgreement',
                         templateId: templates.escrowAccessSecretStoreTemplate.getAddress(),
-                        serviceAgreementTemplate,
+                        serviceAgreementTemplate
                     },
                     {
-                        type: "Authorization",
-                        service: "SecretStore",
-                        serviceEndpoint: secretStoreUri,
+                        type: 'Authorization',
+                        service: 'SecretStore',
+                        serviceEndpoint: secretStoreUri
                     },
                     {
-                        type: "Metadata",
+                        type: 'Metadata',
                         serviceEndpoint,
                         metadata: {
                             // Default values
                             curation: {
                                 rating: 0,
-                                numVotes: 0,
+                                numVotes: 0
                             },
                             // Overwrites defaults
                             ...metadata,
@@ -121,23 +137,30 @@ export class OceanAssets extends Instantiable {
                                 ...metadata.base,
                                 contentUrls: undefined,
                                 encryptedFiles,
-                                files: metadata.base.files
-                                    .map((file, index) => ({
+                                files: metadata.base.files.map(
+                                    (file, index) => ({
                                         ...file,
                                         index,
-                                        url: undefined,
-                                    })),
-                            } as any,
-                        },
+                                        url: undefined
+                                    })
+                                )
+                            } as any
+                        }
                     },
-                    ...services,
+                    ...services
                 ]
                     // Remove duplications
                     .reverse()
-                    .filter(({type}, i, list) => list.findIndex(({type: t}) => t === type) === i)
+                    .filter(
+                        ({ type }, i, list) =>
+                            list.findIndex(({ type: t }) => t === type) === i
+                    )
                     .reverse()
                     // Adding ID
-                    .map((_) => ({..._, serviceDefinitionId: String(serviceDefinitionIdCount++)})) as Service[],
+                    .map(_ => ({
+                        ..._,
+                        serviceDefinitionId: String(serviceDefinitionIdCount++)
+                    })) as Service[]
             })
 
             // Overwritte initial service agreement conditions
@@ -146,72 +169,93 @@ export class OceanAssets extends Instantiable {
             serviceAgreementTemplate.conditions = conditions
 
             ddo.addChecksum()
-            this.logger.log("Generating proof")
+            this.logger.log('Generating proof')
             observer.next(CreateProgressStep.GeneratingProof)
-            await ddo.addProof(this.ocean, publisher.getId(), publisher.getPassword())
-            this.logger.log("Proof generated")
+            await ddo.addProof(
+                this.ocean,
+                publisher.getId(),
+                publisher.getPassword()
+            )
+            this.logger.log('Proof generated')
             observer.next(CreateProgressStep.ProofGenerated)
 
-            this.logger.log("Registering DID")
+            this.logger.log('Registering DID')
             observer.next(CreateProgressStep.RegisteringDid)
             await didRegistry.registerAttribute(
                 did.getId(),
                 ddo.getChecksum(),
                 [this.config.brizoAddress],
                 serviceEndpoint,
-                publisher.getId(),
+                publisher.getId()
             )
-            this.logger.log("DID registred")
+            this.logger.log('DID registred')
             observer.next(CreateProgressStep.DidRegistred)
 
-            this.logger.log("Storing DDO")
+            this.logger.log('Storing DDO')
             observer.next(CreateProgressStep.StoringDdo)
             const storedDdo = await this.ocean.aquarius.storeDDO(ddo)
-            this.logger.log("DDO stored")
+            this.logger.log('DDO stored')
             observer.next(CreateProgressStep.DdoStored)
 
             return storedDdo
         })
     }
 
-    // tslint:disable-next-line
-    public async consume(agreementId: string, did: string, serviceDefinitionId: string, consumerAccount: Account, resultPath: string, index?: number): Promise<string>
-    // tslint:disable-next-line
-    public async consume(agreementId: string, did: string, serviceDefinitionId: string, consumerAccount: Account, resultPath?: undefined | null, index?: number): Promise<true>
+    public async consume(
+        agreementId: string,
+        did: string,
+        serviceDefinitionId: string,
+        consumerAccount: Account,
+        resultPath: string,
+        index?: number
+    ): Promise<string>
+
+    public async consume(
+        agreementId: string,
+        did: string,
+        serviceDefinitionId: string,
+        consumerAccount: Account,
+        resultPath?: undefined | null,
+        index?: number
+    ): Promise<true>
+
     public async consume(
         agreementId: string,
         did: string,
         serviceDefinitionId: string,
         consumerAccount: Account,
         resultPath?: string,
-        index: number = -1,
+        index: number = -1
     ): Promise<string | true> {
-
         const ddo = await this.resolve(did)
-        const {metadata} = ddo.findServiceByType("Metadata")
+        const { metadata } = ddo.findServiceByType('Metadata')
 
         const accessService = ddo.findServiceById(serviceDefinitionId)
 
-        const files = metadata.base.files
+        const { files } = metadata.base
 
-        const {serviceEndpoint} =  accessService
+        const { serviceEndpoint } = accessService
 
         if (!serviceEndpoint) {
-            throw new Error("Consume asset failed, service definition is missing the `serviceEndpoint`.")
+            throw new Error(
+                'Consume asset failed, service definition is missing the `serviceEndpoint`.'
+            )
         }
 
-        this.logger.log("Consuming files")
+        this.logger.log('Consuming files')
 
-        resultPath = resultPath ? `${resultPath}/datafile.${ddo.shortId()}.${serviceDefinitionId}/` : undefined
+        resultPath = resultPath
+            ? `${resultPath}/datafile.${ddo.shortId()}.${serviceDefinitionId}/`
+            : undefined
         await this.ocean.brizo.consumeService(
             agreementId,
             serviceEndpoint,
             consumerAccount,
             files,
             resultPath,
-            index,
+            index
         )
-        this.logger.log("Files consumed")
+        this.logger.log('Files consumed')
 
         if (resultPath) {
             return resultPath
@@ -230,60 +274,73 @@ export class OceanAssets extends Instantiable {
     public order(
         did: string,
         serviceDefinitionId: string,
-        consumer: Account,
+        consumer: Account
     ): SubscribablePromise<OrderProgressStep, string> {
-
-        return new SubscribablePromise(async (observer) => {
+        return new SubscribablePromise(async observer => {
             const oceanAgreements = this.ocean.agreements
 
             const agreementId = zeroX(generateId())
             const ddo = await this.resolve(did)
 
-            const keeper = this.ocean.keeper
-            const templateName = ddo.findServiceByType("Access").serviceAgreementTemplate.contractName
+            const { keeper } = this.ocean
+            const templateName = ddo.findServiceByType('Access')
+                .serviceAgreementTemplate.contractName
             const template = keeper.getTemplateByName(templateName)
             const accessCondition = keeper.conditions.accessSecretStoreCondition
 
             const paymentFlow = new Promise(async (resolve, reject) => {
                 await template.getAgreementCreatedEvent(agreementId).once()
 
-                this.logger.log("Agreement initialized")
+                this.logger.log('Agreement initialized')
                 observer.next(OrderProgressStep.AgreementInitialized)
 
-                const {metadata} = ddo.findServiceByType("Metadata")
+                const { metadata } = ddo.findServiceByType('Metadata')
 
-                this.logger.log("Locking payment")
+                this.logger.log('Locking payment')
 
-                const accessGranted = accessCondition.getConditionFulfilledEvent(agreementId).once()
+                const accessGranted = accessCondition
+                    .getConditionFulfilledEvent(agreementId)
+                    .once()
 
                 observer.next(OrderProgressStep.LockingPayment)
-                const paid = await oceanAgreements.conditions.lockReward(agreementId, metadata.base.price, consumer)
+                const paid = await oceanAgreements.conditions.lockReward(
+                    agreementId,
+                    metadata.base.price,
+                    consumer
+                )
                 observer.next(OrderProgressStep.LockedPayment)
 
                 if (paid) {
-                    this.logger.log("Payment was OK")
+                    this.logger.log('Payment was OK')
                 } else {
-                    this.logger.error("Payment was KO")
-                    this.logger.error("Agreement ID: ", agreementId)
-                    this.logger.error("DID: ", ddo.id)
-                    reject("Error on payment")
+                    this.logger.error('Payment was KO')
+                    this.logger.error('Agreement ID: ', agreementId)
+                    this.logger.error('DID: ', ddo.id)
+                    reject('Error on payment')
                 }
 
                 await accessGranted
 
-                this.logger.log("Access granted")
+                this.logger.log('Access granted')
                 resolve()
             })
 
             observer.next(OrderProgressStep.CreatingAgreement)
-            this.logger.log("Creating agreement")
-            await oceanAgreements.create(did, agreementId, serviceDefinitionId, undefined, consumer, consumer)
-            this.logger.log("Agreement created")
+            this.logger.log('Creating agreement')
+            await oceanAgreements.create(
+                did,
+                agreementId,
+                serviceDefinitionId,
+                undefined,
+                consumer,
+                consumer
+            )
+            this.logger.log('Agreement created')
 
             try {
                 await paymentFlow
             } catch (e) {
-                throw new Error("Error paying the asset.")
+                throw new Error('Error paying the asset.')
             }
 
             return agreementId
@@ -298,11 +355,16 @@ export class OceanAssets extends Instantiable {
     public async owner(did: string): Promise<string> {
         const ddo = await this.resolve(did)
         const checksum = ddo.getChecksum()
-        const {creator, signatureValue} = ddo.proof
-        const signer = await this.ocean.utils.signature.verifyText(checksum, signatureValue)
+        const { creator, signatureValue } = ddo.proof
+        const signer = await this.ocean.utils.signature.verifyText(
+            checksum,
+            signatureValue
+        )
 
         if (signer.toLowerCase() !== creator.toLowerCase()) {
-            this.logger.warn(`Owner of ${ddo.id} doesn't match. Expected ${creator} instead of ${signer}.`)
+            this.logger.warn(
+                `Owner of ${ddo.id} doesn't match. Expected ${creator} instead of ${signer}.`
+            )
         }
 
         return creator
@@ -323,8 +385,9 @@ export class OceanAssets extends Instantiable {
      * @return {Promise<string[]>} List of DIDs.
      */
     public async consumerAssets(consumer: string) {
-        return (await this.ocean.keeper.conditions.accessSecretStoreCondition.getGrantedDidByConsumer(consumer))
-            .map(({did}) => did)
+        return (await this.ocean.keeper.conditions.accessSecretStoreCondition.getGrantedDidByConsumer(
+            consumer
+        )).map(({ did }) => did)
     }
 
     /**
@@ -347,11 +410,11 @@ export class OceanAssets extends Instantiable {
             page: 1,
             offset: 100,
             query: {
-                value: 1,
+                value: 1
             },
             sort: {
-                value: 1,
-            },
+                value: 1
+            }
         } as SearchQuery)
     }
 }

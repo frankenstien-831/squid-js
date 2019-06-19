@@ -10,7 +10,7 @@ const AddVendorsPlugin = require('./plugins/add-vendors-plugin')
 
 const paths = {
     entry: path.resolve(__dirname, './dist/node/squid.js'),
-    bundle: path.resolve(__dirname, 'dist/browser'),
+    bundle: path.resolve(__dirname, 'dist/browser')
 }
 
 const outputs = (base, env, mapping, overrides) => {
@@ -36,9 +36,7 @@ const outputs = (base, env, mapping, overrides) => {
                 libraryTarget: target,
                 path: paths.bundle
             },
-            plugins: [
-                new AddVendorsPlugin(`${library}.${extension}.${ext}`)
-            ]
+            plugins: [new AddVendorsPlugin(`${library}.${extension}.${ext}`)]
         }
 
         collection.push(merge(base, environment, compiled, overrides))

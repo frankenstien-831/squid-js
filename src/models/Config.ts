@@ -1,5 +1,5 @@
-import { LogLevel } from "../utils/Logger"
-export { LogLevel } from "../utils/Logger"
+import { LogLevel } from '../utils/Logger'
+export { LogLevel } from '../utils/Logger'
 
 export class Config {
     /**

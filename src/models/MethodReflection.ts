@@ -1,4 +1,4 @@
-import InputType from "./InputType"
+import InputType from './InputType'
 
 export default class MethodReflection {
     public contractName: string

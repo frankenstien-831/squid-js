@@ -1,6 +1,6 @@
 [![banner](https://raw.githubusercontent.com/oceanprotocol/art/master/github/repo-banner%402x.png)](https://oceanprotocol.com)
 
-# squid-js
+<h1 align="center">Squid-js</h1>
 
 > 🦑 JavaScript client library for Ocean Protocol
 > [oceanprotocol.com](https://oceanprotocol.com)
@@ -9,7 +9,7 @@
 [![Travis (.com)](https://img.shields.io/travis/com/oceanprotocol/squid-js.svg)](https://travis-ci.com/oceanprotocol/squid-js)
 [![GitHub contributors](https://img.shields.io/github/contributors/oceanprotocol/squid-js.svg)](https://github.com/oceanprotocol/squid-js/graphs/contributors)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/8508313231b44b0997ec84898cd6f9db)](https://app.codacy.com/app/ocean-protocol/squid-js?utm_source=github.com&utm_medium=referral&utm_content=oceanprotocol/squid-js&utm_campaign=Badge_Grade_Settings)
-[![js oceanprotocol](https://img.shields.io/badge/js-oceanprotocol-7b1173.svg)](https://github.com/oceanprotocol/eslint-config-oceanprotocol) 
+[![js oceanprotocol](https://img.shields.io/badge/js-oceanprotocol-7b1173.svg)](https://github.com/oceanprotocol/eslint-config-oceanprotocol)
 [![Greenkeeper badge](https://badges.greenkeeper.io/oceanprotocol/squid-js.svg)](https://greenkeeper.io/)
 
 ---
@@ -54,17 +54,17 @@ You can then connect to a running [Keeper](https://github.com/oceanprotocol/keep
 ```js
 const ocean: Ocean = await Ocean.getInstance({
     // the node of the blockchain to connect to, could also be infura
-    nodeUri: "http://localhost:8545",
+    nodeUri: 'http://localhost:8545',
     // the uri of aquarius
-    aquariusUri: "http://localhost:5000",
+    aquariusUri: 'http://localhost:5000',
     // the uri of brizo
-    brizoUri: "http://localhost:8030",
+    brizoUri: 'http://localhost:8030',
     // address that brizo uses
-    brizoAddress: "0x00bd138abd70e2f00903268f3db08f2d25677c9e"
+    brizoAddress: '0x00bd138abd70e2f00903268f3db08f2d25677c9e'
     // the uri to the parity node you want to use for encryption and decryption
-    parityUri: "http://localhost:9545",
+    parityUri: 'http://localhost:9545',
     // the uri of the secret store that holds the keys
-    secretStoreUri: "http://localhost:12001"
+    secretStoreUri: 'http://localhost:12001'
 })
 ```
 

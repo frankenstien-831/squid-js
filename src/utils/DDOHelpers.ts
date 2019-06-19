@@ -1,25 +1,33 @@
-import { DDO } from "../ddo/DDO"
-import { ServiceAgreementTemplateCondition, ServiceAgreementTemplateParameter } from "../ddo/ServiceAgreementTemplate"
+import { DDO } from '../ddo/DDO'
+import {
+    ServiceAgreementTemplateCondition,
+    ServiceAgreementTemplateParameter
+} from '../ddo/ServiceAgreementTemplate'
 
-function fillParameterWithDDO(parameter: ServiceAgreementTemplateParameter, ddo: DDO): ServiceAgreementTemplateParameter {
-    const getValue = (name) => {
+function fillParameterWithDDO(
+    parameter: ServiceAgreementTemplateParameter,
+    ddo: DDO
+): ServiceAgreementTemplateParameter {
+    const getValue = name => {
         switch (name) {
-            case "amount":
-            case "price":
-                return String(ddo.findServiceByType("Metadata").metadata.base.price)
-            case "assetId":
-            case "documentId":
-            case "documentKeyId":
+            case 'amount':
+            case 'price':
+                return String(
+                    ddo.findServiceByType('Metadata').metadata.base.price
+                )
+            case 'assetId':
+            case 'documentId':
+            case 'documentKeyId':
                 return ddo.shortId()
-            case "rewardAddress":
+            case 'rewardAddress':
                 return ddo.publicKey[0].owner
         }
 
-        return ""
+        return ''
     }
-    const value = getValue(parameter.name.replace(/^_/, ""))
+    const value = getValue(parameter.name.replace(/^_/, ''))
 
-    return {...parameter, value}
+    return { ...parameter, value }
 }
 
 /**
@@ -28,13 +36,14 @@ function fillParameterWithDDO(parameter: ServiceAgreementTemplateParameter, ddo:
  * @param  {DDO}                                 ddo        DDO related to this conditions.
  * @return {ServiceAgreementTemplateCondition[]}            Filled conditions.
  */
-export function fillConditionsWithDDO(conditions: ServiceAgreementTemplateCondition[], ddo: DDO): ServiceAgreementTemplateCondition[] {
-    return conditions
-        .map((condition) => ({
-            ...condition,
-            parameters: condition.parameters
-                .map((parameter) => ({
-                    ...fillParameterWithDDO(parameter, ddo),
-                })),
+export function fillConditionsWithDDO(
+    conditions: ServiceAgreementTemplateCondition[],
+    ddo: DDO
+): ServiceAgreementTemplateCondition[] {
+    return conditions.map(condition => ({
+        ...condition,
+        parameters: condition.parameters.map(parameter => ({
+            ...fillParameterWithDDO(parameter, ddo)
         }))
+    }))
 }

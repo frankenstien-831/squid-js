@@ -1,14 +1,19 @@
-import { AgreementTemplate } from "./AgreementTemplate.abstract"
-import { DDO } from "../../../ddo/DDO"
-import { generateId, zeroX } from "../../../utils"
-import { InstantiableConfig } from "../../../Instantiable.abstract"
+import { AgreementTemplate } from './AgreementTemplate.abstract'
+import { DDO } from '../../../ddo/DDO'
+import { generateId, zeroX } from '../../../utils'
+import { InstantiableConfig } from '../../../Instantiable.abstract'
 
-import { escrowAccessSecretStoreTemplateServiceAgreementTemplate } from "./EscrowAccessSecretStoreTemplate.serviceAgreementTemplate"
+import { escrowAccessSecretStoreTemplateServiceAgreementTemplate } from './EscrowAccessSecretStoreTemplate.serviceAgreementTemplate'
 
 export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
-
-    public static async getInstance(config: InstantiableConfig): Promise<EscrowAccessSecretStoreTemplate> {
-        return AgreementTemplate.getInstance(config, "EscrowAccessSecretStoreTemplate", EscrowAccessSecretStoreTemplate)
+    public static async getInstance(
+        config: InstantiableConfig
+    ): Promise<EscrowAccessSecretStoreTemplate> {
+        return AgreementTemplate.getInstance(
+            config,
+            'EscrowAccessSecretStoreTemplate',
+            EscrowAccessSecretStoreTemplate
+        )
     }
 
     public async getServiceAgreementTemplate() {
@@ -33,7 +38,7 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
         timeLocks: number[],
         timeOuts: number[],
         accessConsumer: string,
-        from?: string,
+        from?: string
     ) {
         return super.createAgreement(
             agreementId,
@@ -42,24 +47,46 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
             timeLocks,
             timeOuts,
             [accessConsumer],
-            from,
+            from
         )
     }
 
-    public async createAgreementFromDDO(agreementId: string, ddo: DDO, consumer: string, from?: string) {
-        return !!await this.createFullAgreement(
+    public async createAgreementFromDDO(
+        agreementId: string,
+        ddo: DDO,
+        consumer: string,
+        from?: string
+    ) {
+        return !!(await this.createFullAgreement(
             ddo.shortId(),
-            ddo.findServiceByType("Metadata").metadata.base.price,
+            ddo.findServiceByType('Metadata').metadata.base.price,
             consumer,
             from,
-            agreementId,
-        )
+            agreementId
+        ))
     }
 
-    public async getAgreementIdsFromDDO(agreementId: string, ddo: DDO, consumer: string, from?: string) {
-        const {accessSecretStoreConditionId, lockRewardConditionId, escrowRewardId} =
-            await this.createFullAgreementData(agreementId, ddo.shortId(), ddo.findServiceByType("Metadata").metadata.base.price, consumer)
-        return [accessSecretStoreConditionId, lockRewardConditionId, escrowRewardId]
+    public async getAgreementIdsFromDDO(
+        agreementId: string,
+        ddo: DDO,
+        consumer: string,
+        from?: string
+    ) {
+        const {
+            accessSecretStoreConditionId,
+            lockRewardConditionId,
+            escrowRewardId
+        } = await this.createFullAgreementData(
+            agreementId,
+            ddo.shortId(),
+            ddo.findServiceByType('Metadata').metadata.base.price,
+            consumer
+        )
+        return [
+            accessSecretStoreConditionId,
+            lockRewardConditionId,
+            escrowRewardId
+        ]
     }
 
     /**
@@ -74,47 +101,75 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
         amount: number | string,
         consumer: string,
         from?: string,
-        agreementId: string = generateId(),
+        agreementId: string = generateId()
     ): Promise<string> {
-
-        const {accessSecretStoreConditionId, lockRewardConditionId, escrowRewardId} =
-            await this.createFullAgreementData(agreementId, did, amount, consumer)
+        const {
+            accessSecretStoreConditionId,
+            lockRewardConditionId,
+            escrowRewardId
+        } = await this.createFullAgreementData(
+            agreementId,
+            did,
+            amount,
+            consumer
+        )
 
         await this.createAgreement(
             agreementId,
             did,
-            [accessSecretStoreConditionId, lockRewardConditionId, escrowRewardId],
+            [
+                accessSecretStoreConditionId,
+                lockRewardConditionId,
+                escrowRewardId
+            ],
             [0, 0, 0],
             [0, 0, 0],
             consumer,
-            from,
+            from
         )
 
         return zeroX(agreementId)
     }
 
-    private async createFullAgreementData(agreementId: string, did: string, amount: number | string, consumer: string) {
-        const {didRegistry, conditions} = this.ocean.keeper
+    private async createFullAgreementData(
+        agreementId: string,
+        did: string,
+        amount: number | string,
+        consumer: string
+    ) {
+        const { didRegistry, conditions } = this.ocean.keeper
 
-        const {accessSecretStoreCondition, lockRewardCondition, escrowReward} = conditions
+        const {
+            accessSecretStoreCondition,
+            lockRewardCondition,
+            escrowReward
+        } = conditions
 
         const publisher = await didRegistry.getDIDOwner(did)
 
-        const lockRewardConditionId = await lockRewardCondition.generateIdHash(agreementId, await escrowReward.getAddress(), amount)
-        const accessSecretStoreConditionId = await accessSecretStoreCondition.generateIdHash(agreementId, did, consumer)
+        const lockRewardConditionId = await lockRewardCondition.generateIdHash(
+            agreementId,
+            await escrowReward.getAddress(),
+            amount
+        )
+        const accessSecretStoreConditionId = await accessSecretStoreCondition.generateIdHash(
+            agreementId,
+            did,
+            consumer
+        )
         const escrowRewardId = await escrowReward.generateIdHash(
             agreementId,
             String(amount),
             publisher,
             consumer,
             lockRewardConditionId,
-            accessSecretStoreConditionId,
+            accessSecretStoreConditionId
         )
 
         return {
             lockRewardConditionId,
             accessSecretStoreConditionId,
-            escrowRewardId,
+            escrowRewardId
         }
     }
 }

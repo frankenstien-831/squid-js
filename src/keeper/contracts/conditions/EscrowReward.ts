@@ -1,15 +1,25 @@
-import { Condition } from "./Condition.abstract"
-import { zeroX } from "../../../utils"
-import { InstantiableConfig } from "../../../Instantiable.abstract"
+import { Condition } from './Condition.abstract'
+import { zeroX } from '../../../utils'
+import { InstantiableConfig } from '../../../Instantiable.abstract'
 
 export class EscrowReward extends Condition {
-
-    public static async getInstance(config: InstantiableConfig): Promise<EscrowReward> {
-        return Condition.getInstance(config, "EscrowReward", EscrowReward)
+    public static async getInstance(
+        config: InstantiableConfig
+    ): Promise<EscrowReward> {
+        return Condition.getInstance(config, 'EscrowReward', EscrowReward)
     }
 
-    public hashValues(amount: number, receiver: string, sender: string, lockCondition: string, releaseCondition: string) {
-        return super.hashValues(amount, ...[receiver, sender, lockCondition, releaseCondition].map(zeroX))
+    public hashValues(
+        amount: number,
+        receiver: string,
+        sender: string,
+        lockCondition: string,
+        releaseCondition: string
+    ) {
+        return super.hashValues(
+            amount,
+            ...[receiver, sender, lockCondition, releaseCondition].map(zeroX)
+        )
     }
 
     public fulfill(
@@ -19,8 +29,17 @@ export class EscrowReward extends Condition {
         sender: string,
         lockCondition: string,
         releaseCondition: string,
-        from?: string,
+        from?: string
     ) {
-        return super.fulfill(agreementId, [amount, ...[receiver, sender, lockCondition, releaseCondition].map(zeroX)], from)
+        return super.fulfill(
+            agreementId,
+            [
+                amount,
+                ...[receiver, sender, lockCondition, releaseCondition].map(
+                    zeroX
+                )
+            ],
+            from
+        )
     }
 }

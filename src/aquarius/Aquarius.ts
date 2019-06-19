@@ -1,9 +1,9 @@
-import { URL } from "whatwg-url"
-import { DDO } from "../ddo/DDO"
-import DID from "../ocean/DID"
-import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
+import { URL } from 'whatwg-url'
+import { DDO } from '../ddo/DDO'
+import DID from '../ocean/DID'
+import { Instantiable, InstantiableConfig } from '../Instantiable.abstract'
 
-const apiPath = "/api/v1/aquarius/assets/ddo"
+const apiPath = '/api/v1/aquarius/assets/ddo'
 
 export interface QueryResult {
     results: DDO[]
@@ -16,8 +16,8 @@ export interface SearchQuery {
     text?: string
     offset?: number
     page?: number
-    query: {[property: string]: string | number | string[] | number[]}
-    sort?: {[jsonPath: string]: number}
+    query: { [property: string]: string | number | string[] | number[] }
+    sort?: { [jsonPath: string]: number }
 }
 
 /**
@@ -40,20 +40,33 @@ export class Aquarius extends Instantiable {
 
     public async getAccessUrl(accessToken: any, payload: any): Promise<string> {
         const accessUrl: string = await this.ocean.utils.fetch
-            .post(`${accessToken.service_endpoint}/${accessToken.resource_id}`, payload)
+            .post(
+                `${accessToken.service_endpoint}/${accessToken.resource_id}`,
+                payload
+            )
             .then((response: any): string => {
                 if (response.ok) {
                     return response.text()
                 }
-                this.logger.error("Failed: ", response.status, response.statusText)
+                this.logger.error(
+                    'Failed: ',
+                    response.status,
+                    response.statusText
+                )
                 return null
             })
             .then((consumptionUrl: string): string => {
-                this.logger.error("Success accessing consume endpoint: ", consumptionUrl)
+                this.logger.error(
+                    'Success accessing consume endpoint: ',
+                    consumptionUrl
+                )
                 return consumptionUrl
             })
-            .catch((error) => {
-                this.logger.error("Error fetching the data asset consumption url: ", error)
+            .catch(error => {
+                this.logger.error(
+                    'Error fetching the data asset consumption url: ',
+                    error
+                )
                 return null
             })
 
@@ -72,14 +85,18 @@ export class Aquarius extends Instantiable {
                 if (response.ok) {
                     return response.json() as DDO[]
                 }
-                this.logger.error("queryMetadata failed:", response.status, response.statusText)
+                this.logger.error(
+                    'queryMetadata failed:',
+                    response.status,
+                    response.statusText
+                )
                 return this.transformResult()
             })
-            .then((results) => {
+            .then(results => {
                 return this.transformResult(results)
             })
-            .catch((error) => {
-                this.logger.error("Error fetching querying metadata: ", error)
+            .catch(error => {
+                this.logger.error('Error fetching querying metadata: ', error)
                 return this.transformResult()
             })
 
@@ -93,24 +110,34 @@ export class Aquarius extends Instantiable {
      */
     public async queryMetadataByText(query: SearchQuery): Promise<QueryResult> {
         const fullUrl = new URL(`${this.url}${apiPath}/query`)
-        fullUrl.searchParams.append("text", query.text)
-        fullUrl.searchParams.append("sort", decodeURIComponent(JSON.stringify(query.sort)))
-        fullUrl.searchParams.append("offset", query.offset.toString())
-        fullUrl.searchParams.append("page", query.page.toString())
+        fullUrl.searchParams.append('text', query.text)
+        fullUrl.searchParams.append(
+            'sort',
+            decodeURIComponent(JSON.stringify(query.sort))
+        )
+        fullUrl.searchParams.append('offset', query.offset.toString())
+        fullUrl.searchParams.append('page', query.page.toString())
         const result: QueryResult = await this.ocean.utils.fetch
             .get(fullUrl)
             .then((response: any) => {
                 if (response.ok) {
                     return response.json() as DDO[]
                 }
-                this.logger.log("queryMetadataByText failed:", response.status, response.statusText)
+                this.logger.log(
+                    'queryMetadataByText failed:',
+                    response.status,
+                    response.statusText
+                )
                 return this.transformResult()
             })
-            .then((results) => {
+            .then(results => {
                 return this.transformResult(results)
             })
-            .catch((error) => {
-                this.logger.error("Error fetching querying metadata by text: ", error)
+            .catch(error => {
+                this.logger.error(
+                    'Error fetching querying metadata by text: ',
+                    error
+                )
                 return this.transformResult()
             })
 
@@ -130,14 +157,19 @@ export class Aquarius extends Instantiable {
                 if (response.ok) {
                     return response.json()
                 }
-                this.logger.error("storeDDO failed:", response.status, response.statusText, ddo)
+                this.logger.error(
+                    'storeDDO failed:',
+                    response.status,
+                    response.statusText,
+                    ddo
+                )
                 return null as DDO
             })
             .then((response: DDO) => {
                 return new DDO(response) as DDO
             })
-            .catch((error) => {
-                this.logger.error("Error fetching querying metadata: ", error)
+            .catch(error => {
+                this.logger.error('Error fetching querying metadata: ', error)
                 return null as DDO
             })
 
@@ -157,14 +189,19 @@ export class Aquarius extends Instantiable {
                 if (response.ok) {
                     return response.json()
                 }
-                this.logger.log("retrieveDDO failed:", response.status, response.statusText, did)
+                this.logger.log(
+                    'retrieveDDO failed:',
+                    response.status,
+                    response.statusText,
+                    did
+                )
                 return null as DDO
             })
             .then((response: DDO) => {
                 return new DDO(response) as DDO
             })
-            .catch((error) => {
-                this.logger.error("Error fetching querying metadata: ", error)
+            .catch(error => {
+                this.logger.error('Error fetching querying metadata: ', error)
                 return null as DDO
             })
 
@@ -176,14 +213,18 @@ export class Aquarius extends Instantiable {
     }
 
     private transformResult(
-        {results, page, total_pages, total_results}: any = {result: [], page: 0, total_pages: 0, total_results: 0},
+        { results, page, total_pages, total_results }: any = {
+            result: [],
+            page: 0,
+            total_pages: 0,
+            total_results: 0
+        }
     ): QueryResult {
-
         return {
-            results: (results || []).map((ddo) => new DDO(ddo as DDO)),
+            results: (results || []).map(ddo => new DDO(ddo as DDO)),
             page,
             totalPages: total_pages,
-            totalResults: total_results,
+            totalResults: total_results
         }
     }
 }

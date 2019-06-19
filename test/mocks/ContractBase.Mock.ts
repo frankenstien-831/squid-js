@@ -1,4 +1,4 @@
-import ContractBase from "../../src/keeper/contracts/ContractBase"
+import ContractBase from '../../src/keeper/contracts/ContractBase'
 
 export default class ContractBaseMock extends ContractBase {
     public async initMock(config: any) {
