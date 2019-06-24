@@ -62,7 +62,6 @@ export interface File {
  * @see https://github.com/oceanprotocol/OEPs/tree/master/8#base-attributes
  */
 export interface MetaDataBase {
-
     /**
      * Descriptive name of the Asset.
      * @type {string}
@@ -76,7 +75,7 @@ export interface MetaDataBase {
      * @type {string}
      * @example "dataset"
      */
-    type: "dataset" | "algorithm" | "container" | "workflow" | "other"
+    type: 'dataset' | 'algorithm' | 'container' | 'workflow' | 'other'
 
     /**
      * Details of what the resource is. For a dataset, this attribute
@@ -150,7 +149,7 @@ export interface MetaDataBase {
      *    },
      *  ]
      */
-    links?: Array<{[name: string]: string}>
+    links?: { [name: string]: string }[]
 
     /**
      * The language of the content. Please use one of the language
@@ -242,10 +241,10 @@ export interface AdditionalInformation {
      * describing the dataset.
      * @type {StructuredMarkup[]}
      */
-    structuredMarkup: Array<{
+    structuredMarkup: {
         uri: string
-        mediaType: string,
-    }>
+        mediaType: string
+    }[]
 
     /**
      * Checksum of attributes to be able to compare if there are changes in

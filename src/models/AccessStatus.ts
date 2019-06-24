@@ -3,7 +3,7 @@ enum AccessStatus {
     Committed,
     Delivered,
     Verified,
-    Revoked,
+    Revoked
 }
 
 export default AccessStatus

@@ -1,20 +1,21 @@
-import Account from "./Account"
-import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
+import Account from './Account'
+import { Instantiable, InstantiableConfig } from '../Instantiable.abstract'
 
-const defaultAuthMessage = "Ocean Protocol Authentication"
+const defaultAuthMessage = 'Ocean Protocol Authentication'
 const defaultExpirationTime = 30 * 24 * 60 * 60 * 1000 // 30 days
-const localStorageKey = "SquidTokens"
+const localStorageKey = 'SquidTokens'
 
 /**
  * Tokens submodule of Ocean Protocol.
  */
 export class OceanAuth extends Instantiable {
-
     /**
      * Returns the instance of OceanAuth.
      * @return {Promise<OceanAuth>}
      */
-    public static async getInstance(config: InstantiableConfig): Promise<OceanAuth> {
+    public static async getInstance(
+        config: InstantiableConfig
+    ): Promise<OceanAuth> {
         const instance = new OceanAuth()
         instance.setInstanceConfig(config)
 
@@ -31,16 +32,15 @@ export class OceanAuth extends Instantiable {
         const message = `${this.getMessage()}\n${time}`
 
         try {
-            const signature = await this.ocean.utils.signature
-                .signText(
-                    message,
-                    account.getId(),
-                    account.getPassword(),
-                )
+            const signature = await this.ocean.utils.signature.signText(
+                message,
+                account.getId(),
+                account.getPassword()
+            )
 
             return `${signature}-${time}`
         } catch {
-            throw new Error("User denied the signature.")
+            throw new Error('User denied the signature.')
         }
     }
 
@@ -51,16 +51,16 @@ export class OceanAuth extends Instantiable {
      */
     public async check(token: string): Promise<string> {
         const expiration = this.getExpiration()
-        const [signature, timestamp] = token.split("-")
+        const [signature, timestamp] = token.split('-')
 
         const message = `${this.getMessage()}\n${timestamp}`
 
-        if (((+timestamp * 1000) + expiration) < Date.now()) {
-            return `0x${"0".repeat(40)}`
+        if (+timestamp * 1000 + expiration < Date.now()) {
+            return `0x${'0'.repeat(40)}`
         }
 
         return this.web3.utils.toChecksumAddress(
-            await this.ocean.utils.signature.verifyText(message, signature),
+            await this.ocean.utils.signature.verifyText(message, signature)
         )
     }
 
@@ -100,7 +100,7 @@ export class OceanAuth extends Instantiable {
      * @return {Promise<boolean>}         Is stored and valid.
      */
     public async isStored(account: Account): Promise<boolean> {
-        return !!await this.restore(account)
+        return !!(await this.restore(account))
     }
 
     private writeToken(address: string, token: string) {
@@ -108,10 +108,13 @@ export class OceanAuth extends Instantiable {
         const storedTokens = localStorage.getItem(localStorageKey)
         const tokens = storedTokens ? JSON.parse(storedTokens) : {}
 
-        localStorage.setItem(localStorageKey, JSON.stringify({
-            ...tokens,
-            [address]: token,
-        }))
+        localStorage.setItem(
+            localStorageKey,
+            JSON.stringify({
+                ...tokens,
+                [address]: token
+            })
+        )
     }
 
     private readToken(address: string) {
@@ -124,9 +127,11 @@ export class OceanAuth extends Instantiable {
 
     private getLocalStorage() {
         try {
-            localStorage.getItem("")
+            localStorage.getItem('')
         } catch {
-            throw new Error("LocalStorage is not supported. This feature is only available on browsers.")
+            throw new Error(
+                'LocalStorage is not supported. This feature is only available on browsers.'
+            )
         }
         return localStorage
     }

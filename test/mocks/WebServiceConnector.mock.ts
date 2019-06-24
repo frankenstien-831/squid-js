@@ -1,15 +1,13 @@
-import WebServiceConnector from "../../src/utils/WebServiceConnector"
+import WebServiceConnector from '../../src/utils/WebServiceConnector'
 
 // @ts-ignore
 export default class WebServiceConnectorMock extends WebServiceConnector {
-
     constructor(private returnData: any) {
         super()
     }
 
     // @ts-ignore
     private async fetch(url, opts): Promise<any> {
-
         return new Promise((resolve, reject) => {
             resolve({
                 ok: true,
@@ -17,8 +15,10 @@ export default class WebServiceConnectorMock extends WebServiceConnector {
                     return this.returnData ? this.returnData : {}
                 },
                 text: () => {
-                    return this.returnData ? JSON.stringify(this.returnData.toString()) : ""
-                },
+                    return this.returnData
+                        ? JSON.stringify(this.returnData.toString())
+                        : ''
+                }
             })
         })
     }

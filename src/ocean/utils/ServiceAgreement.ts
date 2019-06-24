@@ -1,13 +1,11 @@
-import * as Web3 from "web3"
-import { ServiceAgreementTemplateCondition } from "../../ddo/ServiceAgreementTemplate"
-import { DDO } from "../../ddo/DDO"
-import { ServiceAccess } from "../../ddo/Service"
-import Account from "../Account"
-import { zeroX } from "../../utils"
-import { Instantiable, InstantiableConfig } from "../../Instantiable.abstract"
+import { ServiceAgreementTemplateCondition } from '../../ddo/ServiceAgreementTemplate'
+import { DDO } from '../../ddo/DDO'
+import { ServiceAccess } from '../../ddo/Service'
+import Account from '../Account'
+import { zeroX } from '../../utils'
+import { Instantiable, InstantiableConfig } from '../../Instantiable.abstract'
 
 export class ServiceAgreement extends Instantiable {
-
     constructor(config: InstantiableConfig) {
         super()
         this.setInstanceConfig(config)
@@ -18,15 +16,20 @@ export class ServiceAgreement extends Instantiable {
         serviceDefinitionId: string,
         serviceAgreementId: string,
         agreementConditionsIds: string[],
-        consumer: Account,
+        consumer: Account
     ): Promise<string> {
-
-        const service = ddo.findServiceById<"Access">(serviceDefinitionId)
-        const timelockValues: number[] = this.getTimeValuesFromService(service, "timelock")
-        const timeoutValues: number[] = this.getTimeValuesFromService(service, "timeout")
+        const service = ddo.findServiceById<'Access'>(serviceDefinitionId)
+        const timelockValues: number[] = this.getTimeValuesFromService(
+            service,
+            'timelock'
+        )
+        const timeoutValues: number[] = this.getTimeValuesFromService(
+            service,
+            'timeout'
+        )
 
         if (!service.templateId) {
-            throw new Error("TemplateId not found in DDO.")
+            throw new Error('TemplateId not found in DDO.')
         }
 
         const serviceAgreementHashSignature = await this.createHashSignature(
@@ -35,10 +38,10 @@ export class ServiceAgreement extends Instantiable {
             agreementConditionsIds,
             timelockValues,
             timeoutValues,
-            consumer,
+            consumer
         )
 
-        this.logger.debug("SA hash signature:", serviceAgreementHashSignature)
+        this.logger.debug('SA hash signature:', serviceAgreementHashSignature)
 
         return serviceAgreementHashSignature
     }
@@ -49,19 +52,21 @@ export class ServiceAgreement extends Instantiable {
         valueHashes: string[],
         timelockValues: number[],
         timeoutValues: number[],
-        consumer: Account,
+        consumer: Account
     ): Promise<string> {
-
         const serviceAgreementHash = this.hashServiceAgreement(
             templateId,
             serviceAgreementId,
             valueHashes,
             timelockValues,
-            timeoutValues,
+            timeoutValues
         )
 
-        const serviceAgreementHashSignature = await this.ocean.utils.signature
-            .signText(serviceAgreementHash, consumer.getId(), consumer.getPassword())
+        const serviceAgreementHashSignature = await this.ocean.utils.signature.signText(
+            serviceAgreementHash,
+            consumer.getId(),
+            consumer.getPassword()
+        )
 
         return serviceAgreementHashSignature
     }
@@ -71,23 +76,26 @@ export class ServiceAgreement extends Instantiable {
         serviceAgreementId: string,
         valueHashes: string[],
         timelocks: number[],
-        timeouts: number[],
+        timeouts: number[]
     ): string {
-
         const args = [
-            {type: "address", value: zeroX(serviceAgreementTemplateId)},
-            {type: "bytes32[]", value: valueHashes.map(zeroX)},
-            {type: "uint256[]", value: timelocks},
-            {type: "uint256[]", value: timeouts},
-            {type: "bytes32", value: zeroX(serviceAgreementId)},
+            { type: 'address', value: zeroX(serviceAgreementTemplateId) },
+            { type: 'bytes32[]', value: valueHashes.map(zeroX) },
+            { type: 'uint256[]', value: timelocks },
+            { type: 'uint256[]', value: timeouts },
+            { type: 'bytes32', value: zeroX(serviceAgreementId) }
         ]
 
-        return this.web3.utils.soliditySha3(...args).toString("hex")
+        return this.web3.utils.soliditySha3(...args).toString('hex')
     }
 
-    private getTimeValuesFromService(service: ServiceAccess, type: "timeout" | "timelock"): number[] {
-        const timeoutValues: number[] = service.serviceAgreementTemplate.conditions
-            .map((condition: ServiceAgreementTemplateCondition) => condition[type])
+    private getTimeValuesFromService(
+        service: ServiceAccess,
+        type: 'timeout' | 'timelock'
+    ): number[] {
+        const timeoutValues: number[] = service.serviceAgreementTemplate.conditions.map(
+            (condition: ServiceAgreementTemplateCondition) => condition[type]
+        )
 
         return timeoutValues
     }

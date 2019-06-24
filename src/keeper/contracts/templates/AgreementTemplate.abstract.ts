@@ -1,28 +1,33 @@
-import ContractBase from "../ContractBase"
-import { Condition, ConditionState, conditionStateNames } from "../conditions/Condition.abstract"
-import { DDO } from "../../../ddo/DDO"
-import { ServiceAgreementTemplate } from "../../../ddo/ServiceAgreementTemplate"
-import { zeroX } from "../../../utils"
-import { InstantiableConfig } from "../../../Instantiable.abstract"
+import ContractBase from '../ContractBase'
+import {
+    Condition,
+    ConditionState,
+    conditionStateNames
+} from '../conditions/Condition.abstract'
+import { DDO } from '../../../ddo/DDO'
+import { ServiceAgreementTemplate } from '../../../ddo/ServiceAgreementTemplate'
+import { zeroX } from '../../../utils'
+import { InstantiableConfig } from '../../../Instantiable.abstract'
 
 export interface AgreementConditionsStatus {
     [condition: string]: {
-        condition: string,
-        contractName: string,
-        state: ConditionState,
-        blocked: boolean,
-        blockedBy: string[],
-    },
+        condition: string
+        contractName: string
+        state: ConditionState
+        blocked: boolean
+        blockedBy: string[]
+    }
 }
 
 export abstract class AgreementTemplate extends ContractBase {
-
     public static async getInstance(
         config: InstantiableConfig,
         conditionName: string,
-        templateClass: any,
+        templateClass: any
     ): Promise<AgreementTemplate & any> {
-        const condition: AgreementTemplate = new (templateClass as any)(conditionName)
+        const condition: AgreementTemplate = new (templateClass as any)(
+            conditionName
+        )
         await condition.init(config)
         return condition
     }
@@ -32,7 +37,14 @@ export abstract class AgreementTemplate extends ContractBase {
     }
 
     // tslint:disable-next-line
-    public createAgreement(agreementId: string, did: string, conditionIds: string[], timeLocks: number[], timeOuts: number[], ...args: any[])
+    public createAgreement(
+        agreementId: string,
+        did: string,
+        conditionIds: string[],
+        timeLocks: number[],
+        timeOuts: number[],
+        ...args: any[]
+    )
     public createAgreement(
         agreementId: string,
         did: string,
@@ -40,19 +52,19 @@ export abstract class AgreementTemplate extends ContractBase {
         timeLocks: number[],
         timeOuts: number[],
         extraArgs: any[],
-        from?: string,
+        from?: string
     ) {
         return this.sendFrom(
-            "createAgreement",
+            'createAgreement',
             [
                 zeroX(agreementId),
                 zeroX(did),
                 conditionIds.map(zeroX),
                 timeLocks,
                 timeOuts,
-                ...extraArgs,
+                ...extraArgs
             ],
-            from,
+            from
         )
     }
 
@@ -61,7 +73,7 @@ export abstract class AgreementTemplate extends ContractBase {
      * @return {Promise<string[]>} Conditions address.
      */
     public getConditionTypes(): Promise<string[]> {
-        return this.call("getConditionTypes", [])
+        return this.call('getConditionTypes', [])
     }
 
     /**
@@ -69,8 +81,9 @@ export abstract class AgreementTemplate extends ContractBase {
      * @return {Promise<Condition[]>} Conditions contracts.
      */
     public async getConditions(): Promise<Condition[]> {
-        return (await this.getConditionTypes())
-            .map((address) => this.ocean.keeper.getConditionByAddress(address))
+        return (await this.getConditionTypes()).map(address =>
+            this.ocean.keeper.getConditionByAddress(address)
+        )
     }
 
     /**
@@ -80,7 +93,12 @@ export abstract class AgreementTemplate extends ContractBase {
      * @param  {string}            from        Consumer address.
      * @return {Promise<string[]>}             Condition IDs.
      */
-    public abstract getAgreementIdsFromDDO(agreementId: string, ddo: DDO, consumer: string, from?: string): Promise<string[]>
+    public abstract getAgreementIdsFromDDO(
+        agreementId: string,
+        ddo: DDO,
+        consumer: string,
+        from?: string
+    ): Promise<string[]>
 
     /**
      * Create a new agreement using the data of a DDO.
@@ -89,9 +107,16 @@ export abstract class AgreementTemplate extends ContractBase {
      * @param  {string}            from        Creator address.
      * @return {Promise<boolean>}              Success.
      */
-    public abstract createAgreementFromDDO(agreementId: string, ddo: DDO, consumer: string, from?: string): Promise<boolean>
+    public abstract createAgreementFromDDO(
+        agreementId: string,
+        ddo: DDO,
+        consumer: string,
+        from?: string
+    ): Promise<boolean>
 
-    public abstract async getServiceAgreementTemplate(): Promise<ServiceAgreementTemplate>
+    public abstract async getServiceAgreementTemplate(): Promise<
+        ServiceAgreementTemplate
+    >
 
     public async getServiceAgreementTemplateConditions() {
         const serviceAgreementTemplate = await this.getServiceAgreementTemplate()
@@ -99,11 +124,12 @@ export abstract class AgreementTemplate extends ContractBase {
     }
 
     public async getServiceAgreementTemplateConditionByRef(ref: string) {
-        const name = (await this.getServiceAgreementTemplateConditions())
-            .find(({name: conditionRef}) => conditionRef === ref)
-            .contractName
-        return (await this.getConditions())
-            .find((condition) => condition.contractName === name)
+        const name = (await this.getServiceAgreementTemplateConditions()).find(
+            ({ name: conditionRef }) => conditionRef === ref
+        ).contractName
+        return (await this.getConditions()).find(
+            condition => condition.contractName === name
+        )
     }
 
     public async getServiceAgreementTemplateDependencies() {
@@ -117,49 +143,58 @@ export abstract class AgreementTemplate extends ContractBase {
      * @return {Promise}             Conditions status.
      */
     public async getAgreementStatus(
-        agreementId: string,
+        agreementId: string
     ): Promise<AgreementConditionsStatus | false> {
         const agreementStore = this.ocean.keeper.agreementStoreManager
         const conditionStore = this.ocean.keeper.conditionStoreManager
 
         const dependencies = await this.getServiceAgreementTemplateDependencies()
-        const {conditionIds} = await agreementStore.getAgreement(agreementId)
+        const { conditionIds } = await agreementStore.getAgreement(agreementId)
 
         if (!conditionIds.length) {
             this.logger.error(`Agreement not creeated yet: "${agreementId}"`)
             return false
         }
 
-        const conditionIdByConddition = (await this.getConditions())
-            .reduce((acc, {contractName}, i) => ({...acc, [contractName]: conditionIds[i]}), {})
+        const conditionIdByConddition = (await this.getConditions()).reduce(
+            (acc, { contractName }, i) => ({
+                ...acc,
+                [contractName]: conditionIds[i]
+            }),
+            {}
+        )
 
-        const statesPromises = Object.keys(dependencies)
-            .map(async (ref, i) => {
-                const {contractName} = await this.getServiceAgreementTemplateConditionByRef(ref)
-                return {
-                    ref,
-                    contractName,
-                    state: (await conditionStore.getCondition(conditionIdByConddition[contractName])).state,
-                }
-            })
+        const statesPromises = Object.keys(dependencies).map(async (ref, i) => {
+            const {
+                contractName
+            } = await this.getServiceAgreementTemplateConditionByRef(ref)
+            return {
+                ref,
+                contractName,
+                state: (await conditionStore.getCondition(
+                    conditionIdByConddition[contractName]
+                )).state
+            }
+        })
         const states = await Promise.all(statesPromises)
 
-        return states
-            .reduce((acc, {contractName, ref, state}) => {
-                const blockers = dependencies[ref]
-                    .map((dependency) => states.find((_) => _.ref === dependency))
-                    .filter((condition) => condition.state !== ConditionState.Fulfilled)
-                return {
-                    ...acc,
-                    [ref]: {
-                        condition: ref,
-                        contractName,
-                        state,
-                        blocked: !!blockers.length,
-                        blockedBy: blockers.map((_) => _.ref),
-                    },
+        return states.reduce((acc, { contractName, ref, state }) => {
+            const blockers = dependencies[ref]
+                .map(dependency => states.find(_ => _.ref === dependency))
+                .filter(
+                    condition => condition.state !== ConditionState.Fulfilled
+                )
+            return {
+                ...acc,
+                [ref]: {
+                    condition: ref,
+                    contractName,
+                    state,
+                    blocked: !!blockers.length,
+                    blockedBy: blockers.map(_ => _.ref)
                 }
-            }, {})
+            }
+        }, {})
     }
 
     /**
@@ -169,25 +204,30 @@ export abstract class AgreementTemplate extends ContractBase {
     public async printAgreementStatus(agreementId: string) {
         const status = await this.getAgreementStatus(agreementId)
 
-        this.logger.bypass("-".repeat(80))
-        this.logger.bypass("Template:", this.contractName)
-        this.logger.bypass("Agreement ID:", agreementId)
-        this.logger.bypass("-".repeat(40))
+        this.logger.bypass('-'.repeat(80))
+        this.logger.bypass('Template:', this.contractName)
+        this.logger.bypass('Agreement ID:', agreementId)
+        this.logger.bypass('-'.repeat(40))
         if (!status) {
-            this.logger.bypass("Agreement not created yet!")
+            this.logger.bypass('Agreement not created yet!')
         }
-        Object.values(status || [])
-            .forEach(({condition, contractName, state, blocked, blockedBy}, i) => {
+        Object.values(status || []).forEach(
+            ({ condition, contractName, state, blocked, blockedBy }, i) => {
                 if (i) {
-                    this.logger.bypass("-".repeat(20))
+                    this.logger.bypass('-'.repeat(20))
                 }
                 this.logger.bypass(`${condition} (${contractName})`)
-                this.logger.bypass("  Status:", state, `(${conditionStateNames[state]})`)
+                this.logger.bypass(
+                    '  Status:',
+                    state,
+                    `(${conditionStateNames[state]})`
+                )
                 if (blocked) {
-                    this.logger.bypass("  Blocked by:", blockedBy)
+                    this.logger.bypass('  Blocked by:', blockedBy)
                 }
-            })
-        this.logger.bypass("-".repeat(80))
+            }
+        )
+        this.logger.bypass('-'.repeat(80))
     }
 
     /**
@@ -196,6 +236,8 @@ export abstract class AgreementTemplate extends ContractBase {
      * @return {Event}              Agreement created event.
      */
     public getAgreementCreatedEvent(agreementId: string) {
-        return this.getEvent("AgreementCreated", {agreementId: zeroX(agreementId)})
+        return this.getEvent('AgreementCreated', {
+            agreementId: zeroX(agreementId)
+        })
     }
 }

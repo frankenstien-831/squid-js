@@ -1,12 +1,12 @@
-import { generateId } from "../utils/GeneratorHelpers"
-import Account from "./Account"
-import DID from "./DID"
-import { zeroX, didPrefixed } from "../utils"
-import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
-import { AgreementConditionsStatus } from "../keeper/contracts/templates/AgreementTemplate.abstract"
-import { ConditionState } from "../keeper/contracts/conditions/Condition.abstract"
+import { generateId } from '../utils/GeneratorHelpers'
+import Account from './Account'
+import DID from './DID'
+import { zeroX, didPrefixed } from '../utils'
+import { Instantiable, InstantiableConfig } from '../Instantiable.abstract'
+import { AgreementConditionsStatus } from '../keeper/contracts/templates/AgreementTemplate.abstract'
+import { ConditionState } from '../keeper/contracts/conditions/Condition.abstract'
 
-import { OceanAgreementsConditions } from "./OceanAgreementsConditions"
+import { OceanAgreementsConditions } from './OceanAgreementsConditions'
 
 export interface AgreementPrepareResult {
     agreementId: string
@@ -17,15 +17,18 @@ export interface AgreementPrepareResult {
  * Agreements submodule of Ocean Protocol.
  */
 export class OceanAgreements extends Instantiable {
-
     /**
      * Returns the instance of OceanAgreements.
      * @return {Promise<OceanAgreements>}
      */
-    public static async getInstance(config: InstantiableConfig): Promise<OceanAgreements> {
+    public static async getInstance(
+        config: InstantiableConfig
+    ): Promise<OceanAgreements> {
         const instance = new OceanAgreements()
         instance.setInstanceConfig(config)
-        instance.conditions = await OceanAgreementsConditions.getInstance(config)
+        instance.conditions = await OceanAgreementsConditions.getInstance(
+            config
+        )
 
         return instance
     }
@@ -46,27 +49,32 @@ export class OceanAgreements extends Instantiable {
     public async prepare(
         did: string,
         serviceDefinitionId: string,
-        consumer: Account,
+        consumer: Account
     ): Promise<AgreementPrepareResult> {
-
         const d: DID = DID.parse(did as string)
         const ddo = await this.ocean.aquarius.retrieveDDO(d)
         const agreementId: string = zeroX(generateId())
 
-        const templateName = ddo.findServiceByType("Access").serviceAgreementTemplate.contractName
+        const templateName = ddo.findServiceByType('Access')
+            .serviceAgreementTemplate.contractName
         const agreementConditionsIds = await this.ocean.keeper
             .getTemplateByName(templateName)
-            .getAgreementIdsFromDDO(agreementId, ddo, consumer.getId(), consumer.getId())
+            .getAgreementIdsFromDDO(
+                agreementId,
+                ddo,
+                consumer.getId(),
+                consumer.getId()
+            )
 
         const signature = await this.ocean.utils.agreements.signServiceAgreement(
             ddo,
             serviceDefinitionId,
             agreementId,
             agreementConditionsIds,
-            consumer,
+            consumer
         )
 
-        return {agreementId, signature}
+        return { agreementId, signature }
     }
 
     /**
@@ -81,20 +89,20 @@ export class OceanAgreements extends Instantiable {
         agreementId: string,
         serviceDefinitionId: string,
         signature: string,
-        consumer: Account,
+        consumer: Account
     ): Promise<void> {
-
-        const result = await this.ocean.brizo
-            .initializeServiceAgreement(
-                didPrefixed(did),
-                zeroX(agreementId),
-                serviceDefinitionId,
-                zeroX(signature),
-                consumer.getId(),
-            )
+        const result = await this.ocean.brizo.initializeServiceAgreement(
+            didPrefixed(did),
+            zeroX(agreementId),
+            serviceDefinitionId,
+            zeroX(signature),
+            consumer.getId()
+        )
 
         if (!result.ok) {
-            throw new Error("Error on initialize agreement: " + await result.text())
+            throw new Error(
+                'Error on initialize agreement: ' + (await result.text())
+            )
         }
     }
 
@@ -116,15 +124,21 @@ export class OceanAgreements extends Instantiable {
         serviceDefinitionId: string,
         signature: string,
         consumer: Account,
-        publisher: Account,
+        publisher: Account
     ) {
         const d: DID = DID.parse(did)
         const ddo = await this.ocean.aquarius.retrieveDDO(d)
 
-        const templateName = ddo.findServiceById<"Access">(serviceDefinitionId).serviceAgreementTemplate.contractName
+        const templateName = ddo.findServiceById<'Access'>(serviceDefinitionId)
+            .serviceAgreementTemplate.contractName
         await this.ocean.keeper
             .getTemplateByName(templateName)
-            .createAgreementFromDDO(agreementId, ddo, consumer.getId(), publisher.getId())
+            .createAgreementFromDDO(
+                agreementId,
+                ddo,
+                consumer.getId(),
+                publisher.getId()
+            )
 
         return true
     }
@@ -137,13 +151,20 @@ export class OceanAgreements extends Instantiable {
      * @param  {boolean} extended Returns a complete status with dependencies.
      * @return {Promise<any>}
      */
-    public async status(agreementId: string, extended?: false): Promise<{[condition: string]: ConditionState}>
-    public async status(agreementId: string, extended: true): Promise<AgreementConditionsStatus>
     public async status(
         agreementId: string,
-        extended: boolean = false,
-    ) {
-        const {templateId} = await this.ocean.keeper.agreementStoreManager.getAgreement(agreementId)
+        extended?: false
+    ): Promise<{ [condition: string]: ConditionState }>
+    public async status(
+        agreementId: string,
+        extended: true
+    ): Promise<AgreementConditionsStatus>
+    public async status(agreementId: string, extended: boolean = false) {
+        const {
+            templateId
+        } = await this.ocean.keeper.agreementStoreManager.getAgreement(
+            agreementId
+        )
         const fullStatus = await this.ocean.keeper
             .getTemplateByAddress(templateId)
             .getAgreementStatus(agreementId)
@@ -155,10 +176,9 @@ export class OceanAgreements extends Instantiable {
             return fullStatus
         }
         const simpleStatus = {}
-        Object.entries(fullStatus)
-            .forEach(([condition, {state}]) => {
-                simpleStatus[condition] = state
-            })
+        Object.entries(fullStatus).forEach(([condition, { state }]) => {
+            simpleStatus[condition] = state
+        })
         return simpleStatus as any
     }
 }

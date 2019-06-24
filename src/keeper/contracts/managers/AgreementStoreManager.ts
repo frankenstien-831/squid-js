@@ -1,6 +1,6 @@
-import ContractBase from "../ContractBase"
-import { zeroX } from "../../../utils"
-import { InstantiableConfig } from "../../../Instantiable.abstract"
+import ContractBase from '../ContractBase'
+import { zeroX } from '../../../utils'
+import { InstantiableConfig } from '../../../Instantiable.abstract'
 
 export interface AgreementData {
     did: string
@@ -12,20 +12,36 @@ export interface AgreementData {
 }
 
 export class AgreementStoreManager extends ContractBase {
-
-    public static async getInstance(config: InstantiableConfig): Promise<AgreementStoreManager> {
-        const templateStoreManeger: AgreementStoreManager = new AgreementStoreManager("AgreementStoreManager")
+    public static async getInstance(
+        config: InstantiableConfig
+    ): Promise<AgreementStoreManager> {
+        const templateStoreManeger: AgreementStoreManager = new AgreementStoreManager(
+            'AgreementStoreManager'
+        )
         await templateStoreManeger.init(config)
         return templateStoreManeger
     }
 
     public getOwner(): Promise<string> {
-        return this.call("owner", [])
+        return this.call('owner', [])
     }
 
     public async getAgreement(agreementId: string) {
-        const {did, didOwner, templateId, conditionIds, lastUpdatedBy, blockNumberUpdated} =
-            await this.call("getAgreement", [zeroX(agreementId)])
-        return {did, didOwner, templateId, conditionIds, lastUpdatedBy, blockNumberUpdated: +blockNumberUpdated} as AgreementData
+        const {
+            did,
+            didOwner,
+            templateId,
+            conditionIds,
+            lastUpdatedBy,
+            blockNumberUpdated
+        } = await this.call('getAgreement', [zeroX(agreementId)])
+        return {
+            did,
+            didOwner,
+            templateId,
+            conditionIds,
+            lastUpdatedBy,
+            blockNumberUpdated: +blockNumberUpdated
+        } as AgreementData
     }
 }

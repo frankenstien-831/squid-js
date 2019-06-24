@@ -1,16 +1,28 @@
-import { ContractBase } from "./contracts/ContractBase"
+import { ContractBase } from './contracts/ContractBase'
 
-import DIDRegistry from "./contracts/DIDRegistry"
-import Dispenser from "./contracts/Dispenser"
-import OceanToken from "./contracts/Token"
-import { Condition, LockRewardCondition, EscrowReward, AccessSecretStoreCondition } from "./contracts/conditions"
-import { AgreementTemplate, EscrowAccessSecretStoreTemplate } from "./contracts/templates"
-import { TemplateStoreManager, AgreementStoreManager, ConditionStoreManager } from "./contracts/managers"
+import DIDRegistry from './contracts/DIDRegistry'
+import Dispenser from './contracts/Dispenser'
+import OceanToken from './contracts/Token'
+import {
+    Condition,
+    LockRewardCondition,
+    EscrowReward,
+    AccessSecretStoreCondition
+} from './contracts/conditions'
+import {
+    AgreementTemplate,
+    EscrowAccessSecretStoreTemplate
+} from './contracts/templates'
+import {
+    TemplateStoreManager,
+    AgreementStoreManager,
+    ConditionStoreManager
+} from './contracts/managers'
 
-import { objectPromiseAll } from "../utils"
-import { EventHandler } from "./EventHandler"
+import { objectPromiseAll } from '../utils'
+import { EventHandler } from './EventHandler'
 
-import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
+import { Instantiable, InstantiableConfig } from '../Instantiable.abstract'
 
 /**
  * Interface with Ocean Keeper contracts.
@@ -20,12 +32,13 @@ import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
  * - Marketplace: the core marketplace where people can transact with each other with Ocean tokens.
  */
 export class Keeper extends Instantiable {
-
     /**
      * Returns Keeper instance.
      * @return {Promise<Keeper>}
      */
-    public static async getInstance(config: InstantiableConfig): Promise<Keeper> {
+    public static async getInstance(
+        config: InstantiableConfig
+    ): Promise<Keeper> {
         const keeper = new Keeper()
         keeper.setInstanceConfig(config)
 
@@ -41,14 +54,22 @@ export class Keeper extends Instantiable {
                 didRegistry: DIDRegistry.getInstance(config),
                 // Managers
                 templateStoreManager: TemplateStoreManager.getInstance(config),
-                agreementStoreManager: AgreementStoreManager.getInstance(config),
-                conditionStoreManager: ConditionStoreManager.getInstance(config),
+                agreementStoreManager: AgreementStoreManager.getInstance(
+                    config
+                ),
+                conditionStoreManager: ConditionStoreManager.getInstance(
+                    config
+                ),
                 // Conditions
                 lockRewardCondition: LockRewardCondition.getInstance(config),
                 escrowReward: EscrowReward.getInstance(config),
-                accessSecretStoreCondition: AccessSecretStoreCondition.getInstance(config),
+                accessSecretStoreCondition: AccessSecretStoreCondition.getInstance(
+                    config
+                ),
                 // Templates
-                escrowAccessSecretStoreTemplate: EscrowAccessSecretStoreTemplate.getInstance(config),
+                escrowAccessSecretStoreTemplate: EscrowAccessSecretStoreTemplate.getInstance(
+                    config
+                )
             })
 
             keeper.connected = true
@@ -69,16 +90,18 @@ export class Keeper extends Instantiable {
         keeper.conditions = {
             lockRewardCondition: keeper.instances.lockRewardCondition,
             escrowReward: keeper.instances.escrowReward,
-            accessSecretStoreCondition: keeper.instances.accessSecretStoreCondition,
+            accessSecretStoreCondition:
+                keeper.instances.accessSecretStoreCondition
         }
         // Conditions
         keeper.templates = {
-            escrowAccessSecretStoreTemplate: keeper.instances.escrowAccessSecretStoreTemplate,
+            escrowAccessSecretStoreTemplate:
+                keeper.instances.escrowAccessSecretStoreTemplate
         }
 
         // Utils
         keeper.utils = {
-            eventHandler: new EventHandler(config),
+            eventHandler: new EventHandler(config)
         }
 
         return keeper
@@ -130,26 +153,26 @@ export class Keeper extends Instantiable {
      * Conditions instances.
      */
     public conditions: {
-        lockRewardCondition: LockRewardCondition,
-        escrowReward: EscrowReward,
-        accessSecretStoreCondition: AccessSecretStoreCondition,
+        lockRewardCondition: LockRewardCondition
+        escrowReward: EscrowReward
+        accessSecretStoreCondition: AccessSecretStoreCondition
     }
 
     /**
      * Templates instances.
      */
     public templates: {
-        escrowAccessSecretStoreTemplate: EscrowAccessSecretStoreTemplate,
+        escrowAccessSecretStoreTemplate: EscrowAccessSecretStoreTemplate
     }
 
     /**
      * Helpers for contracts.
      */
     public utils: {
-        eventHandler: EventHandler,
+        eventHandler: EventHandler
     }
 
-    private instances: {[contractRef: string]: ContractBase & any}
+    private instances: { [contractRef: string]: ContractBase & any }
 
     /**
      * Returns a condition by address.
@@ -157,8 +180,9 @@ export class Keeper extends Instantiable {
      * @return {Condition} Condition instance.
      */
     public getConditionByAddress(address: string): Condition {
-        return Object.values(this.conditions)
-            .find((condition) => condition.getAddress() === address)
+        return Object.values(this.conditions).find(
+            condition => condition.getAddress() === address
+        )
     }
 
     /**
@@ -167,8 +191,9 @@ export class Keeper extends Instantiable {
      * @return {AgreementTemplate} Agreement template instance.
      */
     public getTemplateByName(name: string): AgreementTemplate {
-        return Object.values(this.templates)
-            .find((template) => template.contractName === name)
+        return Object.values(this.templates).find(
+            template => template.contractName === name
+        )
     }
 
     /**
@@ -177,8 +202,9 @@ export class Keeper extends Instantiable {
      * @return {AgreementTemplate} Agreement template instance.
      */
     public getTemplateByAddress(address: string): AgreementTemplate {
-        return Object.values(this.templates)
-            .find((template) => template.getAddress() === address)
+        return Object.values(this.templates).find(
+            template => template.getAddress() === address
+        )
     }
 
     /**
@@ -194,22 +220,32 @@ export class Keeper extends Instantiable {
      * @return {Promise<string>} Network name.
      */
     public getNetworkName(): Promise<string> {
-        return this.web3.eth.net.getId()
-            .then((networkId) => {
-                switch (networkId) {
-                    case 1: return "Main"
-                    case 2: return "Morden"
-                    case 3: return "Ropsten"
-                    case 4: return "Rinkeby"
-                    case 77: return "POA_Sokol"
-                    case 99: return "POA_Core"
-                    case 42: return "Kovan"
-                    case 2199: return "Duero"
-                    case 8996: return "Spree"
-                    case 8995: return "Nile"
-                    default: return "Development"
-                }
-            })
+        return this.web3.eth.net.getId().then(networkId => {
+            switch (networkId) {
+                case 1:
+                    return 'Main'
+                case 2:
+                    return 'Morden'
+                case 3:
+                    return 'Ropsten'
+                case 4:
+                    return 'Rinkeby'
+                case 77:
+                    return 'POA_Sokol'
+                case 99:
+                    return 'POA_Core'
+                case 42:
+                    return 'Kovan'
+                case 2199:
+                    return 'Duero'
+                case 8996:
+                    return 'Spree'
+                case 8995:
+                    return 'Nile'
+                default:
+                    return 'Development'
+            }
+        })
     }
 
     public getAllInstances() {

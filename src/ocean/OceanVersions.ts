@@ -1,13 +1,13 @@
-import * as keeperPackageJson from "@oceanprotocol/keeper-contracts/package.json"
-import * as metadata from "../metadata.json"
+import * as keeperPackageJson from '@oceanprotocol/keeper-contracts/package.json'
+import * as metadata from '../metadata.json'
 
-import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
+import { Instantiable, InstantiableConfig } from '../Instantiable.abstract'
 
 export enum OceanPlatformTechStatus {
-    Loading = "Loading",
-    Unknown = "Unknown",
-    Stopped = "Stopped",
-    Working = "Working",
+    Loading = 'Loading',
+    Unknown = 'Unknown',
+    Stopped = 'Stopped',
+    Working = 'Working'
 }
 
 export interface OceanPlatformTech {
@@ -20,7 +20,7 @@ export interface OceanPlatformTech {
 export interface OceanPlatformKeeperTech extends OceanPlatformTech {
     network?: string
     keeperVersion?: string
-    contracts?: {[contractName: string]: string}
+    contracts?: { [contractName: string]: string }
 }
 
 export interface OceanPlatformVersions {
@@ -30,7 +30,7 @@ export interface OceanPlatformVersions {
     status: {
         ok: boolean
         contracts: boolean
-        network: boolean,
+        network: boolean
     }
 }
 
@@ -38,12 +38,13 @@ export interface OceanPlatformVersions {
  * Versions submodule of Ocean Protocol.
  */
 export class OceanVersions extends Instantiable {
-
     /**
      * Returns the instance of OceanVersions.
      * @return {Promise<OceanVersions>}
      */
-    public static async getInstance(config: InstantiableConfig): Promise<OceanVersions> {
+    public static async getInstance(
+        config: InstantiableConfig
+    ): Promise<OceanVersions> {
         const instance = new OceanVersions()
         instance.setInstanceConfig(config)
 
@@ -55,50 +56,62 @@ export class OceanVersions extends Instantiable {
 
         // Squid
         versions.squid = {
-            name: "Squid-js",
+            name: 'Squid-js',
             version: metadata.version,
             commit: metadata.commit,
             status: OceanPlatformTechStatus.Working,
             network: (await this.ocean.keeper.getNetworkName()).toLowerCase(),
             keeperVersion: keeperPackageJson.version,
-            contracts: Object.values(await this.ocean.keeper.getAllInstances())
-                .reduce((acc, {contractName, address}) => ({
+            contracts: Object.values(
+                await this.ocean.keeper.getAllInstances()
+            ).reduce(
+                (acc, { contractName, address }) => ({
                     ...acc,
-                    [contractName]: address,
-                }), {}),
+                    [contractName]: address
+                }),
+                {}
+            )
         }
 
         // Brizo
         try {
-            const {contracts, "keeper-version": keeperVersion, network, software: name, version} =
-                await this.ocean.brizo.getVersionInfo()
+            const {
+                contracts,
+                'keeper-version': keeperVersion,
+                network,
+                software: name,
+                version
+            } = await this.ocean.brizo.getVersionInfo()
             versions.brizo = {
                 name,
                 status: OceanPlatformTechStatus.Working,
                 version,
                 contracts,
                 network,
-                keeperVersion: keeperVersion.replace(/^v/, ""),
+                keeperVersion: keeperVersion.replace(/^v/, '')
             }
         } catch {
             versions.brizo = {
-                name: "Brizo",
-                status: OceanPlatformTechStatus.Stopped,
+                name: 'Brizo',
+                status: OceanPlatformTechStatus.Stopped
             }
         }
 
         // Aquarius
         try {
-            const {software: name, version} = await this.ocean.aquarius.getVersionInfo()
+            const {
+                software: name,
+                version
+            } = await this.ocean.aquarius.getVersionInfo()
             versions.aquarius = {
                 name,
                 status: OceanPlatformTechStatus.Working,
-                version,
+                version
             }
         } catch {
             versions.aquarius = {
-                name: "Aquarius",
-                status: OceanPlatformTechStatus.Stopped,
+                name: 'Aquarius',
+                status: OceanPlatformTechStatus.Stopped
             }
         }
 
@@ -106,22 +119,22 @@ export class OceanVersions extends Instantiable {
         const techs: OceanPlatformKeeperTech[] = Object.values(versions as any)
 
         const networks = techs
-            .map(({network}) => network)
-            .filter((_) => !!_)
-            .reduce((acc, network) => ({...acc, [network]: true}), {})
+            .map(({ network }) => network)
+            .filter(_ => !!_)
+            .reduce((acc, network) => ({ ...acc, [network]: true }), {})
 
         let contractStatus = true
         const contractList = techs
-            .map(({contracts}) => contracts)
-            .filter((_) => !!_)
+            .map(({ contracts }) => contracts)
+            .filter(_ => !!_)
         Array.from(contractList.map(Object.keys))
             .reduce((acc, _) => [...acc, ..._], [])
             .filter((_, i, list) => list.indexOf(_) === i)
-            .forEach((name) => {
+            .forEach(name => {
                 let address
                 contractList
-                    .map((_) => _[name])
-                    .forEach((_) => {
+                    .map(_ => _[name])
+                    .forEach(_ => {
                         if (!address) {
                             address = _
                             return
@@ -133,9 +146,11 @@ export class OceanVersions extends Instantiable {
             })
 
         versions.status = {
-            ok: !techs.find(({status}) => status !== OceanPlatformTechStatus.Working),
+            ok: !techs.find(
+                ({ status }) => status !== OceanPlatformTechStatus.Working
+            ),
             network: Object.keys(networks).length === 1,
-            contracts: contractStatus,
+            contracts: contractStatus
         }
 
         return versions

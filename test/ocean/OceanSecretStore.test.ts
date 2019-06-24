@@ -1,20 +1,19 @@
-import { assert, expect, spy, use } from "chai"
-import * as spies from "chai-spies"
+import { assert, expect, spy, use } from 'chai'
+import * as spies from 'chai-spies'
 
-import Account from "../../src/ocean/Account"
-import { Ocean } from "../../src/ocean/Ocean"
-import { OceanSecretStore } from "../../src/ocean/OceanSecretStore"
-import config from "../config"
+import Account from '../../src/ocean/Account'
+import { Ocean } from '../../src/ocean/Ocean'
+import { OceanSecretStore } from '../../src/ocean/OceanSecretStore'
+import config from '../config'
 
 use(spies)
 
-describe("OceanSecretStore", () => {
-
+describe('OceanSecretStore', () => {
     let oceanSecretStore: OceanSecretStore
     let accounts: Account[]
 
     let ocean: Ocean
-    const did = "a".repeat(64)
+    const did = 'a'.repeat(64)
 
     before(async () => {
         ocean = await Ocean.getInstance(config)
@@ -26,15 +25,23 @@ describe("OceanSecretStore", () => {
         spy.restore()
     })
 
-    describe("#encrypt()", () => {
-        it("should encrypt a content", async () => {
-            const secretStoreEncryptSpy = spy.on(ocean.brizo, "encrypt", () => "encryptedResult")
+    describe('#encrypt()', () => {
+        it('should encrypt a content', async () => {
+            const secretStoreEncryptSpy = spy.on(
+                ocean.brizo,
+                'encrypt',
+                () => 'encryptedResult'
+            )
 
-            const result = await oceanSecretStore.encrypt(did, "test", accounts[0])
+            const result = await oceanSecretStore.encrypt(
+                did,
+                'test',
+                accounts[0]
+            )
 
-            expect(secretStoreEncryptSpy).to.have.been.called.with(did, "test")
+            expect(secretStoreEncryptSpy).to.have.been.called.with(did, 'test')
 
-            assert.equal(result, "encryptedResult", "Result doesn't match")
+            assert.equal(result, 'encryptedResult', "Result doesn't match")
         })
     })
 })

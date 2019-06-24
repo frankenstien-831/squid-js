@@ -1,18 +1,18 @@
-import Account from "./Account"
-import { noDidPrefixed } from "../utils"
-import { File } from "../ddo/MetaData"
-import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
+import Account from './Account'
+import { noDidPrefixed } from '../utils'
+import { Instantiable, InstantiableConfig } from '../Instantiable.abstract'
 
 /**
  * SecretStore submodule of Ocean Protocol.
  */
 export class OceanSecretStore extends Instantiable {
-
     /**
      * Returns the instance of OceanSecretStore.
      * @return {Promise<OceanSecretStore>}
      */
-    public static async getInstance(config: InstantiableConfig): Promise<OceanSecretStore> {
+    public static async getInstance(
+        config: InstantiableConfig
+    ): Promise<OceanSecretStore> {
         const instance = new OceanSecretStore()
         instance.setInstanceConfig(config)
 
@@ -27,11 +27,24 @@ export class OceanSecretStore extends Instantiable {
      * @param  {string}          publisher Publisher account.
      * @return {Promise<string>}           Encrypted text.
      */
-    public async encrypt(did: string, document: any, publisher: Account): Promise<string> {
+    public async encrypt(
+        did: string,
+        document: any,
+        publisher: Account
+    ): Promise<string> {
         const signature =
-            await publisher.getToken()
-            || await this.ocean.utils.signature.signText(noDidPrefixed(did), publisher.getId(), publisher.getPassword())
+            (await publisher.getToken()) ||
+            (await this.ocean.utils.signature.signText(
+                noDidPrefixed(did),
+                publisher.getId(),
+                publisher.getPassword()
+            ))
 
-        return await this.ocean.brizo.encrypt(noDidPrefixed(did), signature, document, publisher.getId())
+        return this.ocean.brizo.encrypt(
+            noDidPrefixed(did),
+            signature,
+            document,
+            publisher.getId()
+        )
     }
 }

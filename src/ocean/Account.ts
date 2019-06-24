@@ -1,7 +1,7 @@
-import BigNumber from "bignumber.js"
-import Balance from "../models/Balance"
+import BigNumber from 'bignumber.js'
+import Balance from '../models/Balance'
 
-import { Instantiable, InstantiableConfig } from "../Instantiable.abstract"
+import { Instantiable, InstantiableConfig } from '../Instantiable.abstract'
 
 /**
  * Account information.
@@ -10,7 +10,7 @@ export default class Account extends Instantiable {
     private password?: string
     private token?: string
 
-    constructor(private id: string = "0x0", config?: InstantiableConfig) {
+    constructor(private id: string = '0x0', config?: InstantiableConfig) {
         super()
         if (config) {
             this.setInstanceConfig(config)
@@ -54,7 +54,7 @@ export default class Account extends Instantiable {
      * @return {Promise<string>} Account token.
      */
     public async getToken(): Promise<string> {
-        return this.token || await this.ocean.auth.restore(this)
+        return this.token || this.ocean.auth.restore(this)
     }
 
     /**
@@ -77,8 +77,8 @@ export default class Account extends Instantiable {
      * @return {Promise<number>}
      */
     public async getOceanBalance(): Promise<number> {
-        const token = this.ocean.keeper.token
-        return await token.balanceOf(this.id) / (10 ** await token.decimals())
+        const { token } = this.ocean.keeper
+        return (await token.balanceOf(this.id)) / 10 ** (await token.decimals())
     }
 
     /**
@@ -86,9 +86,8 @@ export default class Account extends Instantiable {
      * @return {Promise<number>}
      */
     public async getEtherBalance(): Promise<number> {
-        return this.web3
-            .eth
-            .getBalance(this.id, "latest")
+        return this.web3.eth
+            .getBalance(this.id, 'latest')
             .then((balance: string): number => {
                 return new BigNumber(balance).toNumber()
             })
@@ -101,7 +100,7 @@ export default class Account extends Instantiable {
     public async getBalance(): Promise<Balance> {
         return {
             eth: await this.getEtherBalance(),
-            ocn: await this.getOceanBalance(),
+            ocn: await this.getOceanBalance()
         }
     }
 
@@ -113,13 +112,10 @@ export default class Account extends Instantiable {
     public async requestTokens(amount: number | string): Promise<string> {
         amount = String(amount)
         try {
-            await this.ocean.keeper
-                .dispenser
-                .requestTokens(amount, this.id)
+            await this.ocean.keeper.dispenser.requestTokens(amount, this.id)
         } catch (e) {
             this.logger.error(e)
-            throw new Error("Error requesting tokens")
-
+            throw new Error('Error requesting tokens')
         }
         return amount
     }

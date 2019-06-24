@@ -1,18 +1,17 @@
-import * as Web3 from "web3"
-import Web3Provider from "../keeper/Web3Provider"
-import LoggerInstance from "../utils/Logger"
-import { Ocean } from "../ocean/Ocean"
-import { Authentication } from "./Authentication"
-import { Proof } from "./Proof"
-import { PublicKey } from "./PublicKey"
-import { Service, ServiceType } from "./Service"
+import * as Web3 from 'web3'
+import Web3Provider from '../keeper/Web3Provider'
+import LoggerInstance from '../utils/Logger'
+import { Ocean } from '../ocean/Ocean'
+import { Authentication } from './Authentication'
+import { Proof } from './Proof'
+import { PublicKey } from './PublicKey'
+import { Service, ServiceType } from './Service'
 
 /**
  * DID Descriptor Object.
  * Contains all the data related to an asset.
  */
 export class DDO {
-
     /**
      * Serializes the DDO object.
      * @param  {DDO} DDO to be serialized.
@@ -33,7 +32,7 @@ export class DDO {
         return new DDO(ddo)
     }
 
-    public "@context": string = "https://w3id.org/did/v1"
+    public '@context': string = 'https://w3id.org/did/v1'
 
     /**
      * DID, descentralized ID.
@@ -48,12 +47,14 @@ export class DDO {
 
     public constructor(ddo: Partial<DDO> = {}) {
         Object.assign(this, ddo, {
-            created: (ddo && ddo.created) || new Date().toISOString().replace(/\.[0-9]{3}/, ""),
+            created:
+                (ddo && ddo.created) ||
+                new Date().toISOString().replace(/\.[0-9]{3}/, '')
         })
     }
 
     public shortId(): string {
-        return this.id.replace("did:op:", "")
+        return this.id.replace('did:op:', '')
     }
 
     /**
@@ -61,12 +62,16 @@ export class DDO {
      * @param  {string} serviceDefinitionId Service ID.
      * @return {Service} Service.
      */
-    public findServiceById<T extends ServiceType>(serviceDefinitionId: string): Service<T> {
+    public findServiceById<T extends ServiceType>(
+        serviceDefinitionId: string
+    ): Service<T> {
         if (!serviceDefinitionId) {
-            throw new Error("serviceDefinitionId not set")
+            throw new Error('serviceDefinitionId not set')
         }
 
-        const service = this.service.find((s) => s.serviceDefinitionId === serviceDefinitionId)
+        const service = this.service.find(
+            s => s.serviceDefinitionId === serviceDefinitionId
+        )
 
         return service as Service<T>
     }
@@ -76,12 +81,14 @@ export class DDO {
      * @param  {string} serviceType Service type.
      * @return {Service} Service.
      */
-    public findServiceByType<T extends ServiceType>(serviceType: T): Service<T> {
+    public findServiceByType<T extends ServiceType>(
+        serviceType: T
+    ): Service<T> {
         if (!serviceType) {
-            throw new Error("serviceType not set")
+            throw new Error('serviceType not set')
         }
 
-        return this.service.find((s) => s.type === serviceType) as Service<T>
+        return this.service.find(s => s.type === serviceType) as Service<T>
     }
 
     /**
@@ -89,20 +96,20 @@ export class DDO {
      * @return {string[]} DDO checksum.
      */
     public getChecksum(): string {
-        const {metadata} = this.findServiceByType("Metadata")
-        const {files, name, author, license} = metadata.base
+        const { metadata } = this.findServiceByType('Metadata')
+        const { files, name, author, license } = metadata.base
 
         const values = [
-            ...(files || [])
-                .map(({checksum}) => checksum)
-                .filter((_) => !!_),
+            ...(files || []).map(({ checksum }) => checksum).filter(_ => !!_),
             name,
             author,
             license,
-            this.id,
+            this.id
         ]
 
-        return Web3Provider.getWeb3().utils.sha3(values.join("")).replace(/^0x([a-f0-9]{64})(:!.+)?$/i, "0x$1")
+        return Web3Provider.getWeb3()
+            .utils.sha3(values.join(''))
+            .replace(/^0x([a-f0-9]{64})(:!.+)?$/i, '0x$1')
     }
 
     /**
@@ -112,16 +119,24 @@ export class DDO {
      * @param  {string}         password  Password if it's requirted.
      * @return {Promise<Proof>}           Proof object.
      */
-    public async generateProof(ocean: Ocean, publicKey: string, password?: string): Promise<Proof> {
+    public async generateProof(
+        ocean: Ocean,
+        publicKey: string,
+        password?: string
+    ): Promise<Proof> {
         const checksum = this.getChecksum()
 
-        const signature = await ocean.utils.signature.signText(checksum, publicKey, password)
+        const signature = await ocean.utils.signature.signText(
+            checksum,
+            publicKey,
+            password
+        )
 
         return {
-            created: new Date().toISOString().replace(/\.[0-9]{3}/, ""),
+            created: new Date().toISOString().replace(/\.[0-9]{3}/, ''),
             creator: publicKey,
-            type: "DDOIntegritySignature",
-            signatureValue: signature,
+            type: 'DDOIntegritySignature',
+            signatureValue: signature
         }
     }
 
@@ -129,9 +144,9 @@ export class DDO {
      * Generated and adds the checksum.
      */
     public addChecksum(): void {
-        const metadataService = this.findServiceByType("Metadata")
+        const metadataService = this.findServiceByType('Metadata')
         if (metadataService.metadata.base.checksum) {
-            LoggerInstance.log("Checksum already exists")
+            LoggerInstance.log('Checksum already exists')
             return
         }
         metadataService.metadata.base.checksum = this.getChecksum()
@@ -144,9 +159,13 @@ export class DDO {
      * @param  {string}         password  Password if it's requirted.
      * @return {Promise<Proof>}           Proof object.
      */
-    public async addProof(web3: Web3, publicKey: string, password?: string): Promise<void> {
+    public async addProof(
+        web3: Web3,
+        publicKey: string,
+        password?: string
+    ): Promise<void> {
         if (this.proof) {
-            throw new Error("Proof already exists")
+            throw new Error('Proof already exists')
         }
         this.proof = await this.generateProof(web3, publicKey, password)
     }

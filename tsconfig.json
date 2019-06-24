@@ -2,12 +2,7 @@
   "compilerOptions": {
     "resolveJsonModule": true,
     "moduleResolution": "node",
-    "lib": [
-      "es2017",
-      "es6",
-      "es7",
-      "dom"
-    ],
+    "lib": ["es2017", "es6", "es7", "dom"],
     "declaration": true,
     "module": "commonjs",
     "target": "es5",
@@ -18,15 +13,8 @@
     "outDir": "./dist/node/",
     "rootDir": "./src/",
     "sourceMap": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ]
+    "typeRoots": ["node_modules/@types"]
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.test.ts"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.test.ts"]
 }

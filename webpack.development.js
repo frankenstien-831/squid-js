@@ -8,11 +8,11 @@ module.exports = {
         minimizer: [
             new UglifyJsPlugin({
                 test: /vendor/,
-                sourceMap: false,
+                sourceMap: false
             }),
             new UglifyJsPlugin({
                 test: /^((?!(vendor)).)*.js$/,
-                sourceMap: true,
+                sourceMap: true
             })
         ],
         splitChunks: {
@@ -23,6 +23,6 @@ module.exports = {
                     chunks: 'all'
                 }
             }
-        },
-    },
+        }
+    }
 }
