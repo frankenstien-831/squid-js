@@ -14,7 +14,7 @@ describe('Signature', () => {
         ocean = await Ocean.getInstance(config)
 
         // Accounts
-        consumer = (await ocean.accounts.list())[0]
+        ;[consumer] = await ocean.accounts.list()
     })
 
     it('should generate the correct signature', async () => {

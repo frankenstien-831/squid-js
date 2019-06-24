@@ -33,8 +33,7 @@ xdescribe('Consume Asset (Large size)', () => {
         ocean = await Ocean.getInstance(config)
 
         // Accounts
-        publisher = (await ocean.accounts.list())[0]
-        consumer = (await ocean.accounts.list())[1]
+        ;[publisher, consumer] = await ocean.accounts.list()
     })
 
     it('should regiester an asset', async () => {
@@ -72,7 +71,7 @@ xdescribe('Consume Asset (Large size)', () => {
         assert.include(path, folder, 'The storage path is not correct.')
 
         const files = await new Promise<string[]>(resolve => {
-            fs.readdir(path, (err, fileList) => {
+            fs.readdir(path, (e, fileList) => {
                 resolve(fileList)
             })
         })

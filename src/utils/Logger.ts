@@ -35,7 +35,7 @@ export class Logger {
 
     private dispatch(verb: string, level: LogLevel, ...args: any[]) {
         if (this.logLevel >= level) {
-            console[verb](...args)
+            console[verb](...args) // eslint-disable-line
         }
     }
 }

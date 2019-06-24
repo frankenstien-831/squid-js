@@ -35,7 +35,7 @@ export class Aquarius extends Instantiable {
     }
 
     public async getVersionInfo() {
-        return await (await this.ocean.utils.fetch.get(this.url)).json()
+        return (await this.ocean.utils.fetch.get(this.url)).json()
     }
 
     public async getAccessUrl(accessToken: any, payload: any): Promise<string> {
@@ -213,18 +213,23 @@ export class Aquarius extends Instantiable {
     }
 
     private transformResult(
-        { results, page, total_pages, total_results }: any = {
+        {
+            results,
+            page,
+            total_pages: totalPages,
+            total_results: totalResults
+        }: any = {
             result: [],
             page: 0,
-            total_pages: 0,
-            total_results: 0
+            total_pages: 0, // eslint-disable-line @typescript-eslint/camelcase
+            total_results: 0 // eslint-disable-line @typescript-eslint/camelcase
         }
     ): QueryResult {
         return {
             results: (results || []).map(ddo => new DDO(ddo as DDO)),
             page,
-            totalPages: total_pages,
-            totalResults: total_results
+            totalPages,
+            totalResults
         }
     }
 }

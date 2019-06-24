@@ -79,13 +79,13 @@ describe('DDO', () => {
             {
                 type: 'Consume',
                 serviceEndpoint:
-                    'http://mybrizo.org/api/v1/brizo/services/consume?pubKey=${pubKey}&serviceId={serviceId}&url={url}'
+                    'http://mybrizo.org/api/v1/brizo/services/consume?pubKey={pubKey}&serviceId={serviceId}&url={url}'
             },
             {
                 type: 'Compute',
                 // tslint:disable-next-line
                 serviceEndpoint:
-                    'http://mybrizo.org/api/v1/brizo/services/compute?pubKey=${pubKey}&serviceId={serviceId}&algo={algo}&container={container}'
+                    'http://mybrizo.org/api/v1/brizo/services/compute?pubKey={pubKey}&serviceId={serviceId}&algo={algo}&container={container}'
             },
             {
                 type: 'Metadata',

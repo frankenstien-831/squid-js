@@ -75,12 +75,12 @@ describe('EventHandler', () => {
 
             const subscription = eventHandler.subscribe(callbackSpy)
 
-            await new Promise(_ => setTimeout(_, 300))
+            await new Promise(resolve => setTimeout(resolve, 300))
 
             expect(callbackSpy).not.to.has.been.called()
             blockNumber++
 
-            await new Promise(_ => setTimeout(_, 300))
+            await new Promise(resolve => setTimeout(resolve, 300))
 
             expect(callbackSpy).to.has.been.called.with(blockNumber)
 

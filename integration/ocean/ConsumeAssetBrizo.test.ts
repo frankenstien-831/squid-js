@@ -21,8 +21,7 @@ describe('Consume Asset (Brizo)', () => {
         ocean = await Ocean.getInstance(config)
 
         // Accounts
-        publisher = (await ocean.accounts.list())[0]
-        consumer = (await ocean.accounts.list())[1]
+        ;[publisher, consumer] = await ocean.accounts.list()
     })
 
     after(() => {
@@ -77,7 +76,7 @@ describe('Consume Asset (Brizo)', () => {
         assert.include(path, folder, 'The storage path is not correct.')
 
         const files = await new Promise<string[]>(resolve => {
-            fs.readdir(path, (err, fileList) => {
+            fs.readdir(path, (e, fileList) => {
                 resolve(fileList)
             })
         })

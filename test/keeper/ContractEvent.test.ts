@@ -43,7 +43,7 @@ describe('ContractEvent', () => {
 
             await Promise.all([executeTransaction(), executeTransaction()])
 
-            await new Promise(_ => setTimeout(_, 2000))
+            await new Promise(resolve => setTimeout(resolve, 2000))
             validResolve = true
 
             await Promise.all([executeTransaction(), executeTransaction()])
@@ -67,7 +67,7 @@ describe('ContractEvent', () => {
             const waitUntilEvent = new Promise((resolve, reject) => {
                 event.once(events => {
                     if (canBeRejected) {
-                        reject()
+                        reject(new Error(''))
                     }
                     setTimeout(resolve, 600)
                 })
@@ -75,7 +75,7 @@ describe('ContractEvent', () => {
 
             await executeTransaction()
 
-            await new Promise(_ => setTimeout(_, 2000))
+            await new Promise(resolve => setTimeout(resolve, 2000))
             canBeRejected = true
 
             await executeTransaction()
@@ -93,7 +93,7 @@ describe('ContractEvent', () => {
 
             const waitUntilEvent = event.once()
 
-            await new Promise(_ => setTimeout(_, 400))
+            await new Promise(resolve => setTimeout(resolve, 400))
 
             await executeTransaction()
 

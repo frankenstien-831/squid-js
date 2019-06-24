@@ -18,9 +18,7 @@ describe('Asset Owners', () => {
         ocean = await Ocean.getInstance(config)
 
         // Accounts
-        const accounts = await ocean.accounts.list()
-        account1 = accounts[0]
-        account2 = accounts[1]
+        ;[account1, account2] = await ocean.accounts.list()
     })
 
     it('should be set correctly the owner of a asset', async () => {

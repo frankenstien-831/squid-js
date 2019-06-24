@@ -316,7 +316,7 @@ export class OceanAssets extends Instantiable {
                     this.logger.error('Payment was KO')
                     this.logger.error('Agreement ID: ', agreementId)
                     this.logger.error('DID: ', ddo.id)
-                    reject('Error on payment')
+                    reject(new Error('Error on payment'))
                 }
 
                 await accessGranted

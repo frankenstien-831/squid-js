@@ -34,6 +34,6 @@ export class SignatureUtils extends Instantiable {
     }
 
     public async verifyText(text: string, signature: string): Promise<string> {
-        return await this.web3.eth.personal.ecRecover(text, signature)
+        return this.web3.eth.personal.ecRecover(text, signature)
     }
 }

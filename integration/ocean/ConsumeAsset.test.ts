@@ -24,8 +24,7 @@ describe('Consume Asset', () => {
         ocean = await Ocean.getInstance(config)
 
         // Accounts
-        publisher = (await ocean.accounts.list())[0]
-        consumer = (await ocean.accounts.list())[1]
+        ;[publisher, consumer] = await ocean.accounts.list()
     })
 
     it('should regiester a asset', async () => {
@@ -164,7 +163,7 @@ describe('Consume Asset', () => {
         assert.include(path, folder, 'The storage path is not correct.')
 
         const files = await new Promise<string[]>(resolve => {
-            fs.readdir(path, (err, fileList) => {
+            fs.readdir(path, (e, fileList) => {
                 resolve(fileList)
             })
         })
@@ -192,7 +191,7 @@ describe('Consume Asset', () => {
         assert.include(path, folder, 'The storage path is not correct.')
 
         const files = await new Promise<string[]>(resolve => {
-            fs.readdir(path, (err, fileList) => {
+            fs.readdir(path, (e, fileList) => {
                 resolve(fileList)
             })
         })

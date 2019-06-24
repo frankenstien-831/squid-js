@@ -54,7 +54,7 @@ export default class Account extends Instantiable {
      * @return {Promise<string>} Account token.
      */
     public async getToken(): Promise<string> {
-        return this.token || (await this.ocean.auth.restore(this))
+        return this.token || this.ocean.auth.restore(this)
     }
 
     /**

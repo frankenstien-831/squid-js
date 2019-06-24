@@ -54,7 +54,7 @@ describe('Register Escrow Access Secret Store Template', () => {
                 true
             )
             // TODO: Use a event to detect template mined
-            await new Promise(_ => setTimeout(_, 2 * 1000))
+            await new Promise(resolve => setTimeout(resolve, 2 * 1000))
         })
 
         it('should approve the template', async () => {
@@ -64,7 +64,7 @@ describe('Register Escrow Access Secret Store Template', () => {
                 true
             )
             // TODO: Use a event to detect template mined
-            await new Promise(_ => setTimeout(_, 2 * 1000))
+            await new Promise(resolve => setTimeout(resolve, 2 * 1000))
         })
     })
 

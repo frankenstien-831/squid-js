@@ -23,7 +23,7 @@ export class Brizo extends Instantiable {
     }
 
     public async getVersionInfo() {
-        return await (await this.ocean.utils.fetch.get(this.url)).json()
+        return (await this.ocean.utils.fetch.get(this.url)).json()
     }
 
     public getPurchaseEndpoint() {
@@ -41,7 +41,7 @@ export class Brizo extends Instantiable {
     public getComputeEndpoint(
         pubKey: string,
         serviceId: string,
-        algo: string,
+        _notUsed: string,
         container: string
     ) {
         // tslint:disable-next-line
@@ -89,7 +89,7 @@ export class Brizo extends Instantiable {
                 account.getId()
             ))
         const filesPromises = files
-            .filter(({}, i) => index === -1 || i === index)
+            .filter((_, i) => index === -1 || i === index)
             .map(async ({ index: i }) => {
                 let consumeUrl = serviceEndpoint
                 consumeUrl += `?index=${i}`

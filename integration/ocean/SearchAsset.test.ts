@@ -25,8 +25,7 @@ describe('Search Asset', () => {
         ocean = await Ocean.getInstance(config)
 
         // Accounts
-        publisher = (await ocean.accounts.list())[0]
-        publisher.setPassword(process.env.ACCOUNT_PASSWORD)
+        ;[publisher] = await ocean.accounts.list()
     })
 
     it('should be able to search the assets', async () => {

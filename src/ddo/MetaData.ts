@@ -149,7 +149,7 @@ export interface MetaDataBase {
      *    },
      *  ]
      */
-    links?: Array<{ [name: string]: string }>
+    links?: { [name: string]: string }[]
 
     /**
      * The language of the content. Please use one of the language
@@ -241,10 +241,10 @@ export interface AdditionalInformation {
      * describing the dataset.
      * @type {StructuredMarkup[]}
      */
-    structuredMarkup: Array<{
+    structuredMarkup: {
         uri: string
         mediaType: string
-    }>
+    }[]
 
     /**
      * Checksum of attributes to be able to compare if there are changes in

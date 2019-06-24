@@ -17,7 +17,7 @@ describe('Secret Store', () => {
         ocean = await Ocean.getInstance(config)
 
         // Accounts
-        account = (await ocean.accounts.list())[0]
+        ;[account] = await ocean.accounts.list()
     })
 
     it('should encrypt a text', async () => {
