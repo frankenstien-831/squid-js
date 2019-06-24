@@ -49,7 +49,7 @@
     "web3": "1.0.0-beta.37"
   },
   "dependencies": {
-    "@oceanprotocol/keeper-contracts": "^0.9.7",
+    "@oceanprotocol/keeper-contracts": "^0.10.3",
     "bignumber.js": "^8.1.1",
     "deprecated-decorator": "^0.1.6",
     "node-fetch": "^2.6.0",
