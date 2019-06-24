@@ -14,7 +14,7 @@
 
 ---
 
-**🐲🦑 THERE BE DRAGONS AND SQUIDS. This is in alpha state and you can expect running into problems. If you run into them, please open up [a new issue](https://github.com/oceanprotocol/squid-js/issues). 🦑🐲**
+**🐲🦑 THERE COULD BE DRAGONS AND SQUIDS. If you run into problems, please open up [a new issue](https://github.com/oceanprotocol/squid-js/issues). 🦑🐲**
 
 ---
 
@@ -37,7 +37,7 @@
 Start by adding the package to your dependencies:
 
 ```bash
-npm i @oceanprotocol/squid --save
+npm i @oceanprotocol/squid
 ```
 
 The package exposes `Ocean` and `Logger` which you can import in your code like this:
@@ -50,7 +50,7 @@ import { Ocean, Logger } from '@oceanprotocol/squid'
 const { Ocean, Logger } = require('@oceanprotocol/squid')
 ```
 
-You can then connect to a running [Keeper](https://github.com/oceanprotocol/keeper-contracts) & [Aquarius](https://github.com/oceanprotocol/aquarius) instance, e.g.:
+You can then connect to running [Keeper](https://github.com/oceanprotocol/keeper-contracts), [Aquarius](https://github.com/oceanprotocol/aquarius), [Brizo](https://github.com/oceanprotocol/brizo) instances, e.g.:
 
 ```js
 const ocean: Ocean = await Ocean.getInstance({
@@ -68,6 +68,8 @@ const ocean: Ocean = await Ocean.getInstance({
     secretStoreUri: 'http://localhost:12001'
 })
 ```
+
+For an overview of endpoint configurations making up various Ocean networks, please refer to [`.env.local.example`](https://github.com/oceanprotocol/commons/blob/master/client/.env.local.example) from commons.
 
 ### Examples
 
