@@ -111,6 +111,9 @@ export default class Account extends Instantiable {
      */
     public async requestTokens(amount: number | string): Promise<string> {
         amount = String(amount)
+        if (!this.ocean.keeper.dispenser) {
+            throw new Error('Dispenser not available on this network.')
+        }
         try {
             await this.ocean.keeper.dispenser.requestTokens(amount, this.id)
         } catch (e) {

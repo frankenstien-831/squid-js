@@ -49,7 +49,7 @@ export class Keeper extends Instantiable {
         try {
             keeper.instances = await objectPromiseAll({
                 // Main contracts
-                dispenser: Dispenser.getInstance(config),
+                dispenser: undefined, // Optional
                 token: OceanToken.getInstance(config),
                 didRegistry: DIDRegistry.getInstance(config),
                 // Managers
@@ -76,6 +76,13 @@ export class Keeper extends Instantiable {
         } catch {
             keeper.connected = false
             return
+        }
+
+        // Optionals
+        try {
+            keeper.instances.dispenser = await Dispenser.getInstance(config)
+        } catch {
+            keeper.logger.warn('Dispenser not available on this network.')
         }
 
         // Main contracts
