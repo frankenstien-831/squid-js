@@ -35,7 +35,7 @@ export default class ContractHandler extends Instantiable {
         this.setInstanceConfig(config)
     }
 
-    public async get(what: string): Promise<Contract> {
+    public async get(what: string, optional: boolean = false): Promise<Contract> {
         const where = (await this.ocean.keeper.getNetworkName()).toLowerCase()
         const networkId = await this.ocean.keeper.getNetworkId()
         try {
@@ -44,7 +44,9 @@ export default class ContractHandler extends Instantiable {
                 (await this.load(what, where, networkId))
             )
         } catch (err) {
-            this.logger.error('Failed to load', what, 'from', where, err)
+            if (!optional) {
+                this.logger.error('Failed to load', what, 'from', where, err)
+            }
             throw err
         }
     }

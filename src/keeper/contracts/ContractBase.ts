@@ -14,7 +14,7 @@ export abstract class ContractBase extends Instantiable {
         return this.contract.options.address
     }
 
-    constructor(contractName) {
+    constructor(contractName, private optional: boolean = false) {
         super()
         this.contractName = contractName
     }
@@ -53,7 +53,7 @@ export abstract class ContractBase extends Instantiable {
     protected async init(config: InstantiableConfig) {
         this.setInstanceConfig(config)
         const contractHandler = new ContractHandler(config)
-        this.contract = await contractHandler.get(this.contractName)
+        this.contract = await contractHandler.get(this.contractName, this.optional)
     }
 
     protected async getFromAddress(from?: string): Promise<string> {
