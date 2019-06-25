@@ -8,3 +8,4 @@ src/
 tsconfig.json
 tslint.json
 oceanprotocol-squid-*.tgz
+squid-js.json

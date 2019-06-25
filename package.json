@@ -10,7 +10,7 @@
     "build": "npm run clean && npm run build:tsc && npm run build:dist",
     "build:tsc": "tsc --sourceMap",
     "build:metadata": "./scripts/get-metadata.js > src/metadata.json",
-    "build:dist": "cross-env NODE_ENV=production webpack",
+    "build:dist": "cross-env NODE_ENV=production webpack && npm run doc:json",
     "build:watch": "tsc -w",
     "test": "mocha",
     "test:watch": "mocha -w --watch-extensions js,ts,json",
@@ -24,6 +24,7 @@
     "lint": "eslint --ignore-path .gitignore --ext .ts,.tsx .",
     "format": "prettier --parser typescript --ignore-path .gitignore --write '**/*.{js,jsx,ts,tsx}'",
     "doc": "typedoc --mode modules --out ./doc/ ./src/",
+    "doc:json": "./scripts/typedoc.js",
     "merge-coverages": "npx lcov-result-merger \"coverage/*/lcov.info\" coverage/lcov.info",
     "report-coverage": "npm run report-coverage:unit && npm run report-coverage:integration",
     "report-coverage:unit": "cat coverage/unit/lcov.info | codacy-coverage --token 71ef0d15f6f04ac29b31d704b28f866a",
@@ -80,6 +81,7 @@
     "mocha": "^6.1.4",
     "mock-local-storage": "^1.1.8",
     "nyc": "^14.1.1",
+    "ora": "^3.4.0",
     "prettier": "^1.18.2",
     "source-map-support": "^0.5.12",
     "truffle-hdwallet-provider": "^1.0.10",
@@ -111,7 +113,6 @@
   },
   "release-it": {
     "hooks": {
-      "after:init": "npm test",
       "after:bump": "npm run changelog"
     },
     "plugins": {
@@ -126,7 +127,10 @@
       "tagName": "v${version}"
     },
     "github": {
-      "release": true
+      "release": true,
+      "assets": [
+        "dist/squid-js.json"
+      ]
     },
     "npm": {
       "publish": false
