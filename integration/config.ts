@@ -10,6 +10,16 @@ const configJson: Config = {
     verbose: false
 }
 
+if (process.env.NETWORK_NAME === 'pacific') {
+    Object.assign(configJson, {
+        nodeUri: 'https://pacific.oceanprotocol.com',
+        aquariusUri: 'https://aquarius.pacific.dev-ocean.com',
+        brizoUri: 'https://brizo.pacific.dev-ocean.com',
+        secretStoreUri: 'https://secret-store.pacific.oceanprotocol.com',
+        brizoAddress: '0x008c25ed3594e094db4592f4115d5fa74c4f41ea'
+    })
+}
+
 if (process.env.NETWORK_NAME === 'nile') {
     Object.assign(configJson, {
         nodeUri: 'https://nile.dev-ocean.com',
@@ -42,4 +52,6 @@ if (process.env.SEED_WORDS) {
     )
 }
 
-export const config: Config = configJson as any
+export const config: Config & {forceVerbose: Config} = configJson as any
+
+(config as any).forceVerbose = {...configJson, verbose: true}
