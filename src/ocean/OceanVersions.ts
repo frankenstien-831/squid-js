@@ -62,15 +62,15 @@ export class OceanVersions extends Instantiable {
             status: OceanPlatformTechStatus.Working,
             network: (await this.ocean.keeper.getNetworkName()).toLowerCase(),
             keeperVersion: keeperPackageJson.version,
-            contracts: Object.values(
-                await this.ocean.keeper.getAllInstances()
-            ).reduce(
-                (acc, { contractName, address }) => ({
-                    ...acc,
-                    [contractName]: address
-                }),
-                {}
-            )
+            contracts: Object.values(await this.ocean.keeper.getAllInstances())
+                .filter(_ => !!_)
+                .reduce(
+                    (acc, { contractName, address }) => ({
+                        ...acc,
+                        [contractName]: address
+                    }),
+                    {}
+                )
         }
 
         // Brizo

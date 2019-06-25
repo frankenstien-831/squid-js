@@ -53,7 +53,10 @@ export abstract class ContractBase extends Instantiable {
     protected async init(config: InstantiableConfig) {
         this.setInstanceConfig(config)
         const contractHandler = new ContractHandler(config)
-        this.contract = await contractHandler.get(this.contractName, this.optional)
+        this.contract = await contractHandler.get(
+            this.contractName,
+            this.optional
+        )
     }
 
     protected async getFromAddress(from?: string): Promise<string> {
