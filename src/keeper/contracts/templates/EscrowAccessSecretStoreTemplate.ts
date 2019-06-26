@@ -172,4 +172,8 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
             escrowRewardId
         }
     }
+
+    public async getAgreementData(agreementId: string) {
+        return this.call<any>('getAgreementData', [zeroX(agreementId)])
+    }
 }

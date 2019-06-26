@@ -14,8 +14,9 @@ describe('Search Asset', () => {
     const testHash = Math.random()
         .toString(36)
         .substr(2)
+    let price
     const metadataGenerator = (name: string) =>
-        generateMetadata(`${name}${testHash}`)
+        generateMetadata(`${name}${testHash}`, price)
 
     let test1length
     let test2length
@@ -38,6 +39,10 @@ describe('Search Asset', () => {
             .length
         test3length = (await ocean.assets.search(`Test3${testHash}`)).results
             .length
+
+        if (!ocean.keeper.dispenser) {
+            price = 0
+        }
     })
 
     it('should regiester some a asset', async () => {

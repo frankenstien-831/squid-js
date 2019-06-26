@@ -44,12 +44,17 @@ const metadata: Partial<MetaData> = {
     }
 }
 
-export const generateMetadata = (name: string): Partial<MetaData> => ({
+export const generateMetadata = (
+    name: string,
+    price?: number
+): Partial<MetaData> => ({
     ...metadata,
     base: {
         ...metadata.base,
-        name
+        name,
+        price: (price || 21) + '0'.repeat(18)
     }
 })
 
-export const getMetadata = () => generateMetadata('TestAsset')
+export const getMetadata = (price?: number) =>
+    generateMetadata('TestAsset', price)

@@ -12,7 +12,7 @@ describe('Consume Asset', () => {
     let publisher: Account
     let consumer: Account
 
-    const metadata = getMetadata()
+    let metadata = getMetadata()
 
     let ddo: DDO
     let serviceAgreementSignatureResult: {
@@ -25,6 +25,10 @@ describe('Consume Asset', () => {
 
         // Accounts
         ;[publisher, consumer] = await ocean.accounts.list()
+
+        if (!ocean.keeper.dispenser) {
+            metadata = getMetadata(0)
+        }
     })
 
     it('should regiester a asset', async () => {
@@ -47,7 +51,10 @@ describe('Consume Asset', () => {
         const initialBalance = (await consumer.getBalance()).ocn
         const claimedTokens =
             +metadata.base.price * 10 ** -(await ocean.keeper.token.decimals())
-        await consumer.requestTokens(claimedTokens)
+
+        try {
+            await consumer.requestTokens(claimedTokens)
+        } catch {}
 
         assert.equal(
             (await consumer.getBalance()).ocn,

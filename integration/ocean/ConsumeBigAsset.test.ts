@@ -16,24 +16,29 @@ xdescribe('Consume Asset (Large size)', () => {
     let ddo: DDO
     let agreementId: string
 
-    const baseMetadata = getMetadata()
-    const metadata = {
-        ...baseMetadata,
-        base: {
-            ...baseMetadata.base,
-            files: [
-                {
-                    url: 'https://speed.hetzner.de/1GB.bin'
-                }
-            ]
-        }
-    }
+    let baseMetadata = getMetadata()
+    let metadata = getMetadata()
 
     before(async () => {
         ocean = await Ocean.getInstance(config)
 
         // Accounts
         ;[publisher, consumer] = await ocean.accounts.list()
+
+        if (!ocean.keeper.dispenser) {
+            baseMetadata = getMetadata(0)
+        }
+        metadata = {
+            ...baseMetadata,
+            base: {
+                ...baseMetadata.base,
+                files: [
+                    {
+                        url: 'https://speed.hetzner.de/1GB.bin'
+                    }
+                ]
+            }
+        }
     })
 
     it('should regiester an asset', async () => {
@@ -45,7 +50,12 @@ xdescribe('Consume Asset (Large size)', () => {
     it('should order the asset', async () => {
         const accessService = ddo.findServiceByType('Access')
 
-        await consumer.requestTokens(metadata.base.price)
+        try {
+            await consumer.requestTokens(
+                +metadata.base.price *
+                    10 ** -(await ocean.keeper.token.decimals())
+            )
+        } catch {}
 
         agreementId = await ocean.assets.order(
             ddo.id,

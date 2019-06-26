@@ -12,13 +12,17 @@ describe('Asset Owners', () => {
     let account1: Account
     let account2: Account
 
-    const metadata = getMetadata()
+    let metadata = getMetadata()
 
     before(async () => {
         ocean = await Ocean.getInstance(config)
 
         // Accounts
         ;[account1, account2] = await ocean.accounts.list()
+
+        if (!ocean.keeper.dispenser) {
+            metadata = getMetadata(0)
+        }
     })
 
     it('should be set correctly the owner of a asset', async () => {
@@ -59,9 +63,13 @@ describe('Asset Owners', () => {
         assert.equal(finalLength1 - initialLength, 0)
 
         // Granting access
-        await account2.requestTokens(
-            +metadata.base.price * 10 ** -(await ocean.keeper.token.decimals())
-        )
+        try {
+            await account2.requestTokens(
+                +metadata.base.price *
+                    10 ** -(await ocean.keeper.token.decimals())
+            )
+        } catch {}
+
         await ocean.assets.order(
             ddo.id,
             ddo.findServiceByType('Access').serviceDefinitionId,

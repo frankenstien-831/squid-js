@@ -18,7 +18,7 @@ describe('Register Escrow Access Secret Store Template', () => {
 
     const url = 'https://example.com/did/ocean/test-attr-example.txt'
     const checksum = 'b'.repeat(32)
-    const escrowAmount = 12
+    let escrowAmount = 12
 
     let templateManagerOwner: Account
     let publisher: Account
@@ -44,6 +44,10 @@ describe('Register Escrow Access Secret Store Template', () => {
             keeper.conditions.accessSecretStoreCondition
         lockRewardCondition = keeper.conditions.lockRewardCondition
         escrowReward = keeper.conditions.escrowReward
+
+        if (!ocean.keeper.dispenser) {
+            escrowAmount = 0
+        }
     })
 
     describe('Propose and approve template', () => {
@@ -169,7 +173,9 @@ describe('Register Escrow Access Secret Store Template', () => {
         })
 
         it('should fulfill LockRewardCondition', async () => {
-            await consumer.requestTokens(escrowAmount)
+            try {
+                await consumer.requestTokens(escrowAmount)
+            } catch {}
 
             await keeper.token.approve(
                 lockRewardCondition.getAddress(),
@@ -259,7 +265,9 @@ describe('Register Escrow Access Secret Store Template', () => {
         })
 
         it('should fulfill the conditions from consumer side', async () => {
-            await consumer.requestTokens(escrowAmount)
+            try {
+                await consumer.requestTokens(escrowAmount)
+            } catch {}
 
             await ocean.agreements.conditions.lockReward(
                 agreementId,

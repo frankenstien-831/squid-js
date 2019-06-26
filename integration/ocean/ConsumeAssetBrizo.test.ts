@@ -15,13 +15,17 @@ describe('Consume Asset (Brizo)', () => {
     let ddo: DDO
     let agreementId: string
 
-    const metadata = getMetadata()
+    let metadata = getMetadata()
 
     before(async () => {
         ocean = await Ocean.getInstance(config)
 
         // Accounts
         ;[publisher, consumer] = await ocean.accounts.list()
+
+        if (!ocean.keeper.dispenser) {
+            metadata = getMetadata(0)
+        }
     })
 
     after(() => {
@@ -48,9 +52,12 @@ describe('Consume Asset (Brizo)', () => {
     it('should order the asset', async () => {
         const accessService = ddo.findServiceByType('Access')
 
-        await consumer.requestTokens(
-            +metadata.base.price * 10 ** -(await ocean.keeper.token.decimals())
-        )
+        try {
+            await consumer.requestTokens(
+                +metadata.base.price *
+                    10 ** -(await ocean.keeper.token.decimals())
+            )
+        } catch {}
 
         const steps = []
         agreementId = await ocean.assets
