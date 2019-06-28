@@ -13,9 +13,9 @@ const configJson: Config = {
 if (process.env.NETWORK_NAME === 'pacific') {
     Object.assign(configJson, {
         nodeUri: 'https://pacific.oceanprotocol.com',
-        aquariusUri: 'https://aquarius.pacific.dev-ocean.com',
-        brizoUri: 'https://brizo.pacific.dev-ocean.com',
-        secretStoreUri: 'https://secret-store.pacific.oceanprotocol.com',
+        aquariusUri: 'https://aquarius.commons.oceanprotocol.com',
+        brizoUri: 'https://brizo.commons.oceanprotocol.com',
+        secretStoreUri: 'https://secret-store.oceanprotocol.com',
         brizoAddress: '0x008c25ed3594e094db4592f4115d5fa74c4f41ea'
     })
 }
@@ -23,9 +23,9 @@ if (process.env.NETWORK_NAME === 'pacific') {
 if (process.env.NETWORK_NAME === 'nile') {
     Object.assign(configJson, {
         nodeUri: 'https://nile.dev-ocean.com',
-        aquariusUri: 'https://nginx-aquarius.dev-ocean.com',
-        brizoUri: 'https://nginx-brizo.dev-ocean.com',
-        secretStoreUri: 'https://secret-store.dev-ocean.com',
+        aquariusUri: 'https://aquarius.nile.dev-ocean.com',
+        brizoUri: 'https://brizo.nile.dev-ocean.com',
+        secretStoreUri: 'https://secret-store.nile.dev-ocean.com',
         brizoAddress: '0x413c9ba0a05b8a600899b41b0c62dd661e689354'
     })
 }
