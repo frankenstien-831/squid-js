@@ -43,7 +43,7 @@ export class ServiceAgreement extends Instantiable {
 
         this.logger.debug('SA hash signature:', serviceAgreementHashSignature)
 
-        return serviceAgreementHashSignature
+        return zeroX(serviceAgreementHashSignature)
     }
 
     public async createHashSignature(
