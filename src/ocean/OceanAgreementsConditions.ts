@@ -35,19 +35,24 @@ export class OceanAgreementsConditions extends Instantiable {
             escrowReward
         } = this.ocean.keeper.conditions
 
-        await this.ocean.keeper.token.approve(
-            lockRewardCondition.getAddress(),
-            amount,
-            from.getId()
-        )
+        try {
+            await this.ocean.keeper.token.approve(
+                lockRewardCondition.getAddress(),
+                amount,
+                from.getId()
+            )
 
-        const receipt = await lockRewardCondition.fulfill(
-            agreementId,
-            escrowReward.getAddress(),
-            amount,
-            from && from.getId()
-        )
-        return !!receipt.events.Fulfilled
+            const receipt = await lockRewardCondition.fulfill(
+                agreementId,
+                escrowReward.getAddress(),
+                amount,
+                from && from.getId()
+            )
+
+            return !!receipt.events.Fulfilled
+        } catch {
+            return false
+        }
     }
 
     /**
@@ -63,15 +68,19 @@ export class OceanAgreementsConditions extends Instantiable {
         grantee: string,
         from?: Account
     ) {
-        const { accessSecretStoreCondition } = this.ocean.keeper.conditions
+        try {
+            const { accessSecretStoreCondition } = this.ocean.keeper.conditions
 
-        const receipt = await accessSecretStoreCondition.fulfill(
-            agreementId,
-            did,
-            grantee,
-            from && from.getId()
-        )
-        return !!receipt.events.Fulfilled
+            const receipt = await accessSecretStoreCondition.fulfill(
+                agreementId,
+                did,
+                grantee,
+                from && from.getId()
+            )
+            return !!receipt.events.Fulfilled
+        } catch {
+            return false
+        }
     }
 
     /**
@@ -95,32 +104,36 @@ export class OceanAgreementsConditions extends Instantiable {
         publisher: string,
         from?: Account
     ) {
-        const {
-            escrowReward,
-            accessSecretStoreCondition,
-            lockRewardCondition
-        } = this.ocean.keeper.conditions
+        try {
+            const {
+                escrowReward,
+                accessSecretStoreCondition,
+                lockRewardCondition
+            } = this.ocean.keeper.conditions
 
-        const conditionIdAccess = await accessSecretStoreCondition.generateIdHash(
-            agreementId,
-            did,
-            consumer
-        )
-        const conditionIdLock = await lockRewardCondition.generateIdHash(
-            agreementId,
-            escrowReward.getAddress(),
-            amount
-        )
+            const conditionIdAccess = await accessSecretStoreCondition.generateIdHash(
+                agreementId,
+                did,
+                consumer
+            )
+            const conditionIdLock = await lockRewardCondition.generateIdHash(
+                agreementId,
+                escrowReward.getAddress(),
+                amount
+            )
 
-        const receipt = await escrowReward.fulfill(
-            agreementId,
-            amount,
-            publisher,
-            consumer,
-            conditionIdLock,
-            conditionIdAccess,
-            from && from.getId()
-        )
-        return !!receipt.events.Fulfilled
+            const receipt = await escrowReward.fulfill(
+                agreementId,
+                amount,
+                publisher,
+                consumer,
+                conditionIdLock,
+                conditionIdAccess,
+                from && from.getId()
+            )
+            return !!receipt.events.Fulfilled
+        } catch {
+            return false
+        }
     }
 }
