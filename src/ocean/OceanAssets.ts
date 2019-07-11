@@ -207,7 +207,8 @@ export class OceanAssets extends Instantiable {
         serviceDefinitionId: string,
         consumerAccount: Account,
         resultPath: string,
-        index?: number
+        index?: number,
+        useSecretStore?: boolean
     ): Promise<string>
 
     public async consume(
@@ -216,7 +217,8 @@ export class OceanAssets extends Instantiable {
         serviceDefinitionId: string,
         consumerAccount: Account,
         resultPath?: undefined | null,
-        index?: number
+        index?: number,
+        useSecretStore?: boolean
     ): Promise<true>
 
     public async consume(
@@ -225,7 +227,8 @@ export class OceanAssets extends Instantiable {
         serviceDefinitionId: string,
         consumerAccount: Account,
         resultPath?: string,
-        index: number = -1
+        index: number = -1,
+        useSecretStore?: boolean
     ): Promise<string | true> {
         const ddo = await this.resolve(did)
         const { metadata } = ddo.findServiceByType('Metadata')
@@ -247,14 +250,28 @@ export class OceanAssets extends Instantiable {
         resultPath = resultPath
             ? `${resultPath}/datafile.${ddo.shortId()}.${serviceDefinitionId}/`
             : undefined
-        await this.ocean.brizo.consumeService(
-            agreementId,
-            serviceEndpoint,
-            consumerAccount,
-            files,
-            resultPath,
-            index
-        )
+
+        if (!useSecretStore) {
+            await this.ocean.brizo.consumeService(
+                agreementId,
+                serviceEndpoint,
+                consumerAccount,
+                files,
+                resultPath,
+                index
+            )
+        } else {
+            const files = await this.ocean.secretStore.decrypt(
+                did,
+                ddo.findServiceByType('Metadata').metadata.base.encryptedFiles,
+                consumerAccount,
+                ddo.findServiceByType('Authorization').serviceEndpoint
+            )
+            const downloads = files
+                .filter(({index: i}) => index === -1 || index === i)
+                .map(({url, index: i}) => this.ocean.utils.fetch.downloadFile(url, resultPath, i))
+            await Promise.all(downloads)
+        }
         this.logger.log('Files consumed')
 
         if (resultPath) {
