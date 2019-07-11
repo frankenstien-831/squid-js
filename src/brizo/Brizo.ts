@@ -1,10 +1,7 @@
-import * as fs from 'fs'
-
 import { File } from '../ddo/MetaData'
 import Account from '../ocean/Account'
 import { noZeroX } from '../utils'
 import { Instantiable, InstantiableConfig } from '../Instantiable.abstract'
-import save = require('save-file')
 
 const apiPath = '/api/v1/brizo/services'
 
@@ -98,7 +95,7 @@ export class Brizo extends Instantiable {
                 consumeUrl += `&signature=${signature}`
 
                 try {
-                    await this.downloadFile(consumeUrl, destination)
+                    await this.ocean.utils.fetch.downloadFile(consumeUrl, destination, i)
                 } catch (e) {
                     this.logger.error('Error consuming assets')
                     this.logger.error(e)
@@ -134,40 +131,6 @@ export class Brizo extends Instantiable {
         } catch (e) {
             this.logger.error(e)
             throw new Error('HTTP request failed')
-        }
-    }
-
-    private async downloadFile(
-        url: string,
-        destination?: string
-    ): Promise<string> {
-        const response = await this.ocean.utils.fetch.get(url)
-        if (!response.ok) {
-            throw new Error('Response error.')
-        }
-        let filename
-        try {
-            filename = response.headers
-                .get('content-disposition')
-                .match(/attachment;filename=(.+)/)[1]
-        } catch {
-            throw new Error('Response is not containing file name.')
-        }
-
-        if (destination) {
-            await new Promise(async (resolve, reject) => {
-                fs.mkdirSync(destination, { recursive: true })
-                const fileStream = fs.createWriteStream(
-                    `${destination}${filename}`
-                )
-                response.body.pipe(fileStream)
-                response.body.on('error', reject)
-                fileStream.on('finish', resolve)
-            })
-
-            return destination
-        } else {
-            save(await response.arrayBuffer(), filename)
         }
     }
 }
