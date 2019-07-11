@@ -53,6 +53,10 @@ export class Config {
      * @type {number}
      */
     public authTokenExpiration?: number
+
+    // Parity config
+    public parityUri?: string
+    public threshold?: number
 }
 
 export default Config
