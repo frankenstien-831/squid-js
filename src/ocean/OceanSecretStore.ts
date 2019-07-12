@@ -1,5 +1,5 @@
-import SecretStore from "@oceanprotocol/secret-store-client"
-import SecretStoreConfig from "@oceanprotocol/secret-store-client/dist/models/SecretStoreConfig"
+import SecretStore from '@oceanprotocol/secret-store-client'
+import SecretStoreConfig from '@oceanprotocol/secret-store-client/dist/models/SecretStoreConfig'
 
 import Account from './Account'
 import { noDidPrefixed } from '../utils'
@@ -59,13 +59,20 @@ export class OceanSecretStore extends Instantiable {
      * @param  {string}          consumer cONSUMER account.
      * @return {Promise<string>}          Encrypted text.
      */
-    public async decrypt(did: string, content: string, consumer?: Account, secretStoreUrl?: string): Promise<any> {
-        return await this.getSecretStoreByAccount(consumer, secretStoreUrl)
-            .decryptDocument(noDidPrefixed(did), content)
+    public async decrypt(
+        did: string,
+        content: string,
+        consumer?: Account,
+        secretStoreUrl?: string
+    ): Promise<any> {
+        return this.getSecretStoreByAccount(
+            consumer,
+            secretStoreUrl
+        ).decryptDocument(noDidPrefixed(did), content)
     }
 
     private getSecretStoreByAccount(account: Account, secretStoreUrl?: string) {
-        const config: any = {...this.config}
+        const config: any = { ...this.config }
         if (account) {
             config.address = account.getId()
         }
@@ -79,8 +86,14 @@ export class OceanSecretStore extends Instantiable {
     }
 
     private getSecretStore(config: SecretStoreConfig): SecretStore {
-        const {secretStoreUri, parityUri, password, address, threshold} = config
-        config = {secretStoreUri, parityUri, password, address, threshold}
+        const {
+            secretStoreUri,
+            parityUri,
+            password,
+            address,
+            threshold
+        } = config
+        config = { secretStoreUri, parityUri, password, address, threshold }
 
         return new SecretStore(config)
     }

@@ -1,8 +1,9 @@
 import fetch, { BodyInit, RequestInit, Response } from 'node-fetch'
 import * as fs from 'fs'
-import save = require('save-file')
 
 import { Instantiable, InstantiableConfig } from '../../Instantiable.abstract'
+
+import save = require('save-file')
 
 /**
  * Provides a common interface to web services.

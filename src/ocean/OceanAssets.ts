@@ -268,8 +268,10 @@ export class OceanAssets extends Instantiable {
                 ddo.findServiceByType('Authorization').serviceEndpoint
             )
             const downloads = files
-                .filter(({index: i}) => index === -1 || index === i)
-                .map(({url, index: i}) => this.ocean.utils.fetch.downloadFile(url, resultPath, i))
+                .filter(({ index: i }) => index === -1 || index === i)
+                .map(({ url, index: i }) =>
+                    this.ocean.utils.fetch.downloadFile(url, resultPath, i)
+                )
             await Promise.all(downloads)
         }
         this.logger.log('Files consumed')

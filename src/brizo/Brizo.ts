@@ -95,7 +95,11 @@ export class Brizo extends Instantiable {
                 consumeUrl += `&signature=${signature}`
 
                 try {
-                    await this.ocean.utils.fetch.downloadFile(consumeUrl, destination, i)
+                    await this.ocean.utils.fetch.downloadFile(
+                        consumeUrl,
+                        destination,
+                        i
+                    )
                 } catch (e) {
                     this.logger.error('Error consuming assets')
                     this.logger.error(e)
