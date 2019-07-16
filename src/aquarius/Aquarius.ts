@@ -178,11 +178,16 @@ export class Aquarius extends Instantiable {
 
     /**
      * Retrieves a DDO by DID.
-     * @param  {DID} did DID of the asset.
+     * @param  {DID | string} did DID of the asset.
      * @return {Promise<DDO>} DDO of the asset.
      */
-    public async retrieveDDO(did: DID): Promise<DDO> {
-        const fullUrl = `${this.url}${apiPath}/${did.getDid()}`
+    public async retrieveDDO(
+        did: DID | string,
+        metadataServiceEndpoint?: string
+    ): Promise<DDO> {
+        did = did && DID.parse(did)
+        const fullUrl =
+            metadataServiceEndpoint || `${this.url}${apiPath}/${did.getDid()}`
         const result = await this.ocean.utils.fetch
             .get(fullUrl)
             .then((response: any) => {
@@ -206,6 +211,10 @@ export class Aquarius extends Instantiable {
             })
 
         return result
+    }
+
+    public async retrieveDDOByUrl(metadataServiceEndpoint?: string) {
+        return this.retrieveDDO(undefined, metadataServiceEndpoint)
     }
 
     public getServiceEndpoint(did: DID) {

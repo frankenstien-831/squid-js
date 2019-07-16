@@ -1,6 +1,6 @@
 import Web3Provider from '../Web3Provider'
 import ContractBase from './ContractBase'
-import { zeroX, didPrefixed } from '../../utils'
+import { zeroX, didPrefixed, didZeroX } from '../../utils'
 import { InstantiableConfig } from '../../Instantiable.abstract'
 
 export default class DIDRegistry extends ContractBase {
@@ -41,5 +41,25 @@ export default class DIDRegistry extends ContractBase {
         }))
             .map(({ returnValues }) => returnValues._did)
             .map(didPrefixed)
+    }
+
+    public async getAttributesByDid(
+        did: string
+    ): Promise<{ did: string; serviceEndpoint: string; checksum: string }> {
+        return (await this.getPastEvents('DIDAttributeRegistered', {
+            _did: didZeroX(did)
+        })).map(
+            ({
+                returnValues: {
+                    _did,
+                    _checksum: checksum,
+                    _value: serviceEndpoint
+                }
+            }) => ({
+                did: didPrefixed(_did),
+                serviceEndpoint,
+                checksum
+            })
+        )[0]
     }
 }

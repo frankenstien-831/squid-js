@@ -11,7 +11,10 @@ export default class DID {
      * @param  {string} didString DID in string.
      * @return {DID}
      */
-    public static parse(didString: string): DID {
+    public static parse(didString: string | DID): DID {
+        if (didString instanceof DID) {
+            didString = didString.getDid()
+        }
         let did: DID
         const didMatch = didString.match(/^did:op:([a-f0-9]{64})$/i)
 

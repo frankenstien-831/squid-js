@@ -53,8 +53,10 @@ export class OceanAssets extends Instantiable {
      * @return {Promise<DDO>}
      */
     public async resolve(did: string): Promise<DDO> {
-        const d: DID = DID.parse(did)
-        return this.ocean.aquarius.retrieveDDO(d)
+        const {
+            serviceEndpoint
+        } = await this.ocean.keeper.didRegistry.getAttributesByDid(did)
+        return this.ocean.aquarius.retrieveDDOByUrl(serviceEndpoint)
     }
 
     /**
