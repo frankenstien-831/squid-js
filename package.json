@@ -59,7 +59,7 @@
     "node-fetch": "^2.6.0",
     "save-file": "^2.3.1",
     "uuid": "^3.3.2",
-    "web3": "1.0.0-beta.37",
+    "web3": "1.2.0",
     "whatwg-url": "^7.0.0"
   },
   "devDependencies": {
