@@ -309,6 +309,7 @@ export class OceanAssets extends Instantiable {
             const template = keeper.getTemplateByName(templateName)
             const accessCondition = keeper.conditions.accessSecretStoreCondition
 
+            // eslint-disable-next-line no-async-promise-executor
             const paymentFlow = new Promise(async (resolve, reject) => {
                 await template.getAgreementCreatedEvent(agreementId).once()
 
