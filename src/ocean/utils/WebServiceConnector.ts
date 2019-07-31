@@ -66,6 +66,7 @@ export class WebServiceConnector extends Instantiable {
         }
 
         if (destination) {
+            // eslint-disable-next-line no-async-promise-executor
             await new Promise(async (resolve, reject) => {
                 fs.mkdirSync(destination, { recursive: true })
                 const fileStream = fs.createWriteStream(

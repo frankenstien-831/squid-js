@@ -9,3 +9,13 @@ tsconfig.json
 tslint.json
 oceanprotocol-squid-*.tgz
 squid-js.json
+barge/
+integration/
+plugins/
+scripts/
+webpack*
+ganache*
+.prettierrc
+.editorconfig
+.eslintrc
+SQUID_INTERFACE.md
