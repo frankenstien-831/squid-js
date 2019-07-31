@@ -33,12 +33,12 @@ const metadata: Partial<MetaData> = {
             {
                 index: 0,
                 url:
-                    'https://raw.githubusercontent.com/oceanprotocol/squid-js/develop/package.json'
+                    'https://raw.githubusercontent.com/oceanprotocol/squid-js/master/package.json'
             },
             {
                 index: 1,
                 url:
-                    'https://raw.githubusercontent.com/oceanprotocol/squid-js/develop/README.md'
+                    'https://raw.githubusercontent.com/oceanprotocol/squid-js/master/README.md'
             }
         ]
     }
