@@ -18,17 +18,17 @@
 
 ---
 
-- [Get started](#Get-started)
-  - [Examples](#Examples)
-- [Documentation](#Documentation)
-- [Development](#Development)
-- [Testing](#Testing)
-  - [Unit Tests](#Unit-Tests)
-  - [Integration Tests](#Integration-Tests)
-- [Code Style](#Code-Style)
-- [Production build](#Production-build)
-- [Releases](#Releases)
-- [License](#License)
+- [Get started](#get-started)
+  - [Examples](#examples)
+- [Documentation](#documentation)
+- [Development](#development)
+- [Testing](#testing)
+  - [Unit Tests](#unit-tests)
+  - [Integration Tests](#integration-tests)
+- [Code Style](#code-style)
+- [Production build](#production-build)
+- [Releases](#releases)
+- [License](#license)
 
 ---
 
@@ -142,7 +142,7 @@ In another terminal window, run this script and export the seed phrase:
 
 ```bash
 # copies the contract artifacts once the local Ocean network is up and running
-./scripts/wait_for_migration_and_extract_keeper_artifacts.sh
+./scripts/keeper.sh
 
 # export Spree accounts seed phrase
 export SEED_WORDS="taxi music thumb unique chat sand crew more leg another off lamp"
@@ -215,3 +215,4 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+```
