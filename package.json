@@ -49,7 +49,7 @@
   },
   "homepage": "https://github.com/oceanprotocol/squid-js#readme",
   "peerDependencies": {
-    "web3": "1.0.0-beta.37"
+    "web3": "1.2.0"
   },
   "dependencies": {
     "@oceanprotocol/keeper-contracts": "^0.10.3",
