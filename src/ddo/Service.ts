@@ -1,11 +1,13 @@
 import { MetaData } from './MetaData'
 import { ServiceAgreementTemplate } from './ServiceAgreementTemplate'
+import { Provider } from './ComputingProvider'
 
 export type ServiceType =
     | 'Authorization'
     | 'Metadata'
     | 'Access'
     | 'Compute'
+    | 'Computing'
     | 'FitchainCompute'
 
 export interface ServiceCommon {
@@ -34,6 +36,13 @@ export interface ServiceAccess extends ServiceCommon {
     serviceAgreementTemplate?: ServiceAgreementTemplate
 }
 
+export interface ServiceComputing extends ServiceCommon {
+    type: 'Computing'
+    templateId?: string
+    provider?: Provider
+    serviceAgreementTemplate?: ServiceAgreementTemplate
+}
+
 export interface ServiceCompute extends ServiceCommon {
     templateId?: string
 }
@@ -44,6 +53,8 @@ export type Service<
     ? ServiceAuthorization
     : T extends 'Metadata'
     ? ServiceMetadata
+    : T extends 'Computing'
+    ? ServiceComputing
     : T extends 'Access'
     ? ServiceAccess
     : T extends 'Compute'
