@@ -1,3 +1,44 @@
+export interface StageRequirements {
+    computeServiceId?: string
+    serviceDefinitionId?: string
+    serverId?: string
+    serverInstances?: string
+    container: {
+        image: string
+        tag: string
+        checksum: string
+    }
+}
+
+export interface StageInput {
+    index: number
+    id: string
+}
+
+export interface StageTransformation {
+    id: string
+}
+
+export interface StageOutput {
+    metadataUrl: string
+    secretStoreUrl: string
+    accessProxyUrl: string
+    metadata: MetaDataBase
+}
+
+export interface Stage {
+    index: number
+    stageType?: string
+    requirements: StageRequirements
+    input: StageInput
+    transformation: StageTransformation
+    output: StageOutput
+}
+
+export interface Workflow {
+    stages: Stage[]
+}
+
 export interface File {
     /**
      * File name.
@@ -199,6 +240,8 @@ export interface MetaDataBase {
     checksum?: string
 
     encryptedFiles?: any
+
+    workflow?: Workflow
 }
 
 /**
