@@ -36,7 +36,6 @@ export abstract class AgreementTemplate extends ContractBase {
         super(contractName)
     }
 
-    // tslint:disable-next-line
     public createAgreement(
         agreementId: string,
         did: string,

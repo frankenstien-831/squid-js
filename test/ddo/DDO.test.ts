@@ -83,7 +83,6 @@ describe('DDO', () => {
             },
             {
                 type: 'Compute',
-                // tslint:disable-next-line
                 serviceEndpoint:
                     'http://mybrizo.org/api/v1/brizo/services/compute?pubKey={pubKey}&serviceId={serviceId}&algo={algo}&container={container}'
             },

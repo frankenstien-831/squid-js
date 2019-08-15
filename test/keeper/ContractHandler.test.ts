@@ -7,8 +7,7 @@ describe('ContractHandler', () => {
     let contractHandler: ContractHandler
 
     before(async () => {
-        const instanceConfig = ((await Ocean.getInstance(config)) as any)
-            .instanceConfig
+        const { instanceConfig } = (await Ocean.getInstance(config)) as any
 
         contractHandler = new ContractHandler(instanceConfig)
     })

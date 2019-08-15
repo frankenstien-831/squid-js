@@ -1,9 +1,7 @@
 import ContractBase from './contracts/ContractBase'
 
 interface EventEmitter {
-    // tslint:disable-next-line
     subscribe: Function
-    // tslint:disable-next-line
     unsubscribe: Function
 }
 

@@ -5,7 +5,11 @@
         "ecmaFeatures": {
             "jsx": false
         },
-        "project": "./tsconfig.json"
+        "project": [
+            "./tsconfig.json",
+            "./test/tsconfig.json",
+            "./integration/tsconfig.json"
+        ]
     },
     "extends": [
         "oceanprotocol",
@@ -20,8 +24,10 @@
             "error",
             { "multiline": { "delimiter": "none" } }
         ],
+        "@typescript-eslint/ban-ts-ignore": "off",
         "@typescript-eslint/indent": "off",
         "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-inferrable-types": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/explicit-member-accessibility": "off",
@@ -29,10 +35,7 @@
         "@typescript-eslint/no-use-before-define": "off",
         "@typescript-eslint/no-object-literal-type-assertion": "off",
         "@typescript-eslint/no-parameter-properties": "off",
-        "no-empty":  [
-            "error",
-            { "allowEmptyCatch": true }
-        ],
+        "no-empty": ["error", { "allowEmptyCatch": true }],
         "prefer-destructuring": ["warn"],
         "no-dupe-class-members": ["warn"],
         "no-useless-constructor": ["warn"]
