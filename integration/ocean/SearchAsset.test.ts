@@ -45,7 +45,7 @@ describe('Search Asset', () => {
         }
     })
 
-    it('should regiester some a asset', async () => {
+    it('should register an asset', async () => {
         assert.instanceOf(
             await ocean.assets.create(
                 metadataGenerator('Test1') as any,

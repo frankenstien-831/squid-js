@@ -59,7 +59,7 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
     ) {
         return !!(await this.createFullAgreement(
             ddo.shortId(),
-            ddo.findServiceByType('Metadata').metadata.base.price,
+            ddo.findServiceByType('Metadata').metadata.main.price,
             consumer,
             from,
             agreementId
@@ -79,7 +79,7 @@ export class EscrowAccessSecretStoreTemplate extends AgreementTemplate {
         } = await this.createFullAgreementData(
             agreementId,
             ddo.shortId(),
-            ddo.findServiceByType('Metadata').metadata.base.price,
+            ddo.findServiceByType('Metadata').metadata.main.price,
             consumer
         )
         return [

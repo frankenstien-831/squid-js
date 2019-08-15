@@ -54,7 +54,7 @@ describe('Consume Asset (Brizo)', () => {
 
         try {
             await consumer.requestTokens(
-                +metadata.base.price *
+                +metadata.main.price *
                     10 ** -(await ocean.keeper.token.decimals())
             )
         } catch {}

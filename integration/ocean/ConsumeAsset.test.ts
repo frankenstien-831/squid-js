@@ -31,7 +31,7 @@ describe('Consume Asset', () => {
         }
     })
 
-    it('should regiester a asset', async () => {
+    it('should register an asset', async () => {
         ddo = await ocean.assets.create(metadata as any, publisher)
 
         assert.isDefined(ddo, 'Register has not returned a DDO')
@@ -50,7 +50,7 @@ describe('Consume Asset', () => {
     it('should be able to request tokens for consumer', async () => {
         const initialBalance = (await consumer.getBalance()).ocn
         const claimedTokens =
-            +metadata.base.price * 10 ** -(await ocean.keeper.token.decimals())
+            +metadata.main.price * 10 ** -(await ocean.keeper.token.decimals())
 
         try {
             await consumer.requestTokens(claimedTokens)
@@ -115,7 +115,7 @@ describe('Consume Asset', () => {
     it('should lock the payment by the consumer', async () => {
         const paid = await ocean.agreements.conditions.lockReward(
             serviceAgreementSignatureResult.agreementId,
-            ddo.findServiceByType('Metadata').metadata.base.price,
+            ddo.findServiceByType('Metadata').metadata.main.price,
             consumer
         )
 
@@ -182,7 +182,7 @@ describe('Consume Asset', () => {
         )
     })
 
-    it('should consume and store one assets', async () => {
+    it('should consume and store one asset', async () => {
         const accessService = ddo.findServiceByType('Access')
 
         const folder = '/tmp/ocean/squid-js-2'

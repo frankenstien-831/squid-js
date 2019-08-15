@@ -72,7 +72,7 @@ describe('Asset Owners', () => {
         // Granting access
         try {
             await account2.requestTokens(
-                +metadata.base.price *
+                +metadata.main.price *
                     10 ** -(await ocean.keeper.token.decimals())
             )
         } catch {}
