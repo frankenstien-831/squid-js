@@ -64,7 +64,7 @@ describe('Signature', () => {
                 {
                     type: 'Metadata',
                     metadata: {
-                        base: {
+                        main: {
                             price: 10
                         }
                     }
