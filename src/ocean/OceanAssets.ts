@@ -81,7 +81,7 @@ export class OceanAssets extends Instantiable {
             observer.next(CreateProgressStep.EncryptingFiles)
             const encryptedFiles = await this.ocean.secretStore.encrypt(
                 did.getId(),
-                metadata.base.files,
+                metadata.main.files,
                 publisher
             )
             this.logger.log('Files encrypted')
@@ -135,11 +135,11 @@ export class OceanAssets extends Instantiable {
                             // Overwrites defaults
                             ...metadata,
                             // Cleaning not needed information
-                            base: {
-                                ...metadata.base,
+                            main: {
+                                ...metadata.main,
                                 contentUrls: undefined,
                                 encryptedFiles,
-                                files: metadata.base.files.map(
+                                files: metadata.main.files.map(
                                     (file, index) => ({
                                         ...file,
                                         index,
@@ -165,7 +165,7 @@ export class OceanAssets extends Instantiable {
                     })) as Service[]
             })
 
-            // Overwritte initial service agreement conditions
+            // Overwrite initial service agreement conditions
             const rawConditions = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplateConditions()
             const conditions = fillConditionsWithDDO(rawConditions, ddo)
             serviceAgreementTemplate.conditions = conditions
@@ -237,7 +237,7 @@ export class OceanAssets extends Instantiable {
 
         const accessService = ddo.findServiceById(serviceDefinitionId)
 
-        const { files } = metadata.base
+        const { files } = metadata.main
 
         const { serviceEndpoint } = accessService
 
@@ -265,7 +265,7 @@ export class OceanAssets extends Instantiable {
         } else {
             const files = await this.ocean.secretStore.decrypt(
                 did,
-                ddo.findServiceByType('Metadata').metadata.base.encryptedFiles,
+                ddo.findServiceByType('Metadata').metadata.main.encryptedFiles,
                 consumerAccount,
                 ddo.findServiceByType('Authorization').serviceEndpoint
             )
@@ -327,7 +327,7 @@ export class OceanAssets extends Instantiable {
                 observer.next(OrderProgressStep.LockingPayment)
                 const paid = await oceanAgreements.conditions.lockReward(
                     agreementId,
-                    metadata.base.price,
+                    metadata.main.price,
                     consumer
                 )
                 observer.next(OrderProgressStep.LockedPayment)

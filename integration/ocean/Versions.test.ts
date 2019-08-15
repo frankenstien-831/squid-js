@@ -11,7 +11,7 @@ describe('Versions', () => {
         ocean = await Ocean.getInstance(config)
     })
 
-    it('should returns the versions', async () => {
+    it('should return the versions', async () => {
         const versions = await ocean.versions.get()
 
         assert.equal(versions.aquarius.status, OceanPlatformTechStatus.Working)

@@ -30,8 +30,8 @@ xdescribe('Consume Asset (Large size)', () => {
         }
         metadata = {
             ...baseMetadata,
-            base: {
-                ...baseMetadata.base,
+            main: {
+                ...baseMetadata.main,
                 files: [
                     {
                         url: 'https://speed.hetzner.de/1GB.bin'
@@ -52,7 +52,7 @@ xdescribe('Consume Asset (Large size)', () => {
 
         try {
             await consumer.requestTokens(
-                +metadata.base.price *
+                +metadata.main.price *
                     10 ** -(await ocean.keeper.token.decimals())
             )
         } catch {}

@@ -102,7 +102,7 @@ export class DDO {
      */
     public getChecksum(): string {
         const { metadata } = this.findServiceByType('Metadata')
-        const { files, name, author, license } = metadata.base
+        const { files, name, author, license } = metadata.main
 
         const values = [
             ...(files || []).map(({ checksum }) => checksum).filter(_ => !!_),
@@ -121,7 +121,7 @@ export class DDO {
      * Generates proof using personal sing.
      * @param  {Web3}           web3      Web3 instance.
      * @param  {string}         publicKey Public key to be used on personal sign.
-     * @param  {string}         password  Password if it's requirted.
+     * @param  {string}         password  Password if it's required.
      * @return {Promise<Proof>}           Proof object.
      */
     public async generateProof(
@@ -150,11 +150,11 @@ export class DDO {
      */
     public addChecksum(): void {
         const metadataService = this.findServiceByType('Metadata')
-        if (metadataService.metadata.base.checksum) {
+        if (metadataService.metadata.main.checksum) {
             LoggerInstance.log('Checksum already exists')
             return
         }
-        metadataService.metadata.base.checksum = this.getChecksum()
+        metadataService.metadata.main.checksum = this.getChecksum()
     }
 
     /**
