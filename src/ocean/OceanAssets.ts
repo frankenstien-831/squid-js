@@ -110,7 +110,7 @@ export class OceanAssets extends Instantiable {
                 ],
                 service: [
                     {
-                        type: 'Access',
+                        type: 'access',
                         creator: '',
                         purchaseEndpoint: this.ocean.brizo.getPurchaseEndpoint(),
                         serviceEndpoint: this.ocean.brizo.getConsumeEndpoint(),
@@ -119,12 +119,12 @@ export class OceanAssets extends Instantiable {
                         serviceAgreementTemplate
                     },
                     {
-                        type: 'Authorization',
+                        type: 'authorization',
                         service: 'SecretStore',
                         serviceEndpoint: secretStoreUri
                     },
                     {
-                        type: 'Metadata',
+                        type: 'metadata',
                         serviceEndpoint,
                         metadata: {
                             // Default values
@@ -233,7 +233,7 @@ export class OceanAssets extends Instantiable {
         useSecretStore?: boolean
     ): Promise<string | true> {
         const ddo = await this.resolve(did)
-        const { metadata } = ddo.findServiceByType('Metadata')
+        const { metadata } = ddo.findServiceByType('metadata')
 
         const accessService = ddo.findServiceById(serviceDefinitionId)
 
@@ -265,9 +265,9 @@ export class OceanAssets extends Instantiable {
         } else {
             const files = await this.ocean.secretStore.decrypt(
                 did,
-                ddo.findServiceByType('Metadata').metadata.main.encryptedFiles,
+                ddo.findServiceByType('metadata').metadata.main.encryptedFiles,
                 consumerAccount,
-                ddo.findServiceByType('Authorization').serviceEndpoint
+                ddo.findServiceByType('authorization').serviceEndpoint
             )
             const downloads = files
                 .filter(({ index: i }) => index === -1 || index === i)
@@ -304,7 +304,7 @@ export class OceanAssets extends Instantiable {
             const ddo = await this.resolve(did)
 
             const { keeper } = this.ocean
-            const templateName = ddo.findServiceByType('Access')
+            const templateName = ddo.findServiceByType('access')
                 .serviceAgreementTemplate.contractName
             const template = keeper.getTemplateByName(templateName)
             const accessCondition = keeper.conditions.accessSecretStoreCondition
@@ -316,7 +316,7 @@ export class OceanAssets extends Instantiable {
                 this.logger.log('Agreement initialized')
                 observer.next(OrderProgressStep.AgreementInitialized)
 
-                const { metadata } = ddo.findServiceByType('Metadata')
+                const { metadata } = ddo.findServiceByType('metadata')
 
                 this.logger.log('Locking payment')
 
