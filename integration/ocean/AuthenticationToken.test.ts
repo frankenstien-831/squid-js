@@ -1,7 +1,5 @@
 import { assert } from 'chai'
-
 import { config } from '../config'
-
 import { Ocean, Account } from '../../src' // @oceanprotocol/squid
 
 describe('Authentication Token', () => {
@@ -56,8 +54,10 @@ describe('Authentication Token', () => {
     })
 
     it('should know if the token is stored', async () => {
-        let acc1Stored
-        let acc2Stored
+        let acc1Stored: boolean
+        let acc2Stored: boolean
+
+        // eslint-disable-next-line
         acc1Stored = await ocean.auth.isStored(account1)
         acc2Stored = await ocean.auth.isStored(account2)
 

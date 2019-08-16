@@ -82,13 +82,9 @@ export abstract class Instantiable {
         instance._logger = logger
     }
 
-    // tslint:disable-next-line
     private _ocean: Ocean
-    // tslint:disable-next-line
     private _web3: Web3
-    // tslint:disable-next-line
     private _config: Config
-    // tslint:disable-next-line
     private _logger: Logger
 
     protected setInstanceConfig(config: InstantiableConfig) {

@@ -41,7 +41,6 @@ export class Brizo extends Instantiable {
         _notUsed: string,
         container: string
     ) {
-        // tslint:disable-next-line
         return `${this.url}${apiPath}/compute`
     }
 

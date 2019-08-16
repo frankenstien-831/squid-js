@@ -16,7 +16,7 @@ describe('EscrowReward', () => {
     let releaseCondition
 
     before(async () => {
-        const keeper = (await Ocean.getInstance(config)).keeper
+        const { keeper } = await Ocean.getInstance(config)
 
         await TestContractHandler.prepareContracts()
         condition = keeper.conditions.escrowReward
