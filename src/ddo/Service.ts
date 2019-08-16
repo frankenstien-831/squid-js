@@ -3,12 +3,12 @@ import { ServiceAgreementTemplate } from './ServiceAgreementTemplate'
 import { Provider } from './ComputingProvider'
 
 export type ServiceType =
-    | 'Authorization'
-    | 'Metadata'
-    | 'Access'
-    | 'Compute'
-    | 'Computing'
-    | 'FitchainCompute'
+    | 'authorization'
+    | 'metadata'
+    | 'access'
+    | 'compute'
+    | 'computing'
+    | 'fitchainCompute'
 
 export interface ServiceCommon {
     type: ServiceType
@@ -17,17 +17,17 @@ export interface ServiceCommon {
 }
 
 export interface ServiceAuthorization extends ServiceCommon {
-    type: 'Authorization'
+    type: 'authorization'
     service: 'SecretStore' | 'None' | 'RSAES-OAEP'
 }
 
 export interface ServiceMetadata extends ServiceCommon {
-    type: 'Metadata'
+    type: 'metadata'
     metadata: MetaData
 }
 
 export interface ServiceAccess extends ServiceCommon {
-    type: 'Access'
+    type: 'access'
     name?: string
     description?: string
     creator?: string
@@ -37,7 +37,7 @@ export interface ServiceAccess extends ServiceCommon {
 }
 
 export interface ServiceComputing extends ServiceCommon {
-    type: 'Computing'
+    type: 'computing'
     templateId?: string
     provider?: Provider
     serviceAgreementTemplate?: ServiceAgreementTemplate
@@ -49,15 +49,15 @@ export interface ServiceCompute extends ServiceCommon {
 
 export type Service<
     T extends ServiceType | 'default' = 'default'
-> = T extends 'Authorization'
+> = T extends 'authorization'
     ? ServiceAuthorization
-    : T extends 'Metadata'
+    : T extends 'metadata'
     ? ServiceMetadata
-    : T extends 'Computing'
+    : T extends 'computing'
     ? ServiceComputing
-    : T extends 'Access'
+    : T extends 'access'
     ? ServiceAccess
-    : T extends 'Compute'
+    : T extends 'compute'
     ? ServiceCompute
     : T extends 'default'
     ? ServiceCommon

@@ -48,7 +48,7 @@ xdescribe('Consume Asset (Large size)', () => {
     })
 
     it('should order the asset', async () => {
-        const accessService = ddo.findServiceByType('Access')
+        const accessService = ddo.findServiceByType('access')
 
         try {
             await consumer.requestTokens(
@@ -67,7 +67,7 @@ xdescribe('Consume Asset (Large size)', () => {
     })
 
     it('should consume and store the assets', async () => {
-        const accessService = ddo.findServiceByType('Access')
+        const accessService = ddo.findServiceByType('access')
 
         const folder = '/tmp/ocean/squid-js'
         const path = await ocean.assets.consume(

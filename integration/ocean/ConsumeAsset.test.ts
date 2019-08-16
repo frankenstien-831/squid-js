@@ -42,8 +42,8 @@ describe('Consume Asset', () => {
             'Default authentication not added'
         )
         assert.isDefined(
-            ddo.findServiceByType('Access'),
-            "DDO Access service doesn't exist"
+            ddo.findServiceByType('access'),
+            "DDO access service doesn't exist"
         )
     })
 
@@ -64,7 +64,7 @@ describe('Consume Asset', () => {
     })
 
     it('should sign the service agreement', async () => {
-        const accessService = ddo.findServiceByType('Access')
+        const accessService = ddo.findServiceByType('access')
 
         serviceAgreementSignatureResult = await ocean.agreements.prepare(
             ddo.id,
@@ -86,7 +86,7 @@ describe('Consume Asset', () => {
     })
 
     it('should execute the service agreement', async () => {
-        const accessService = ddo.findServiceByType('Access')
+        const accessService = ddo.findServiceByType('access')
 
         const success = await ocean.agreements.create(
             ddo.id,
@@ -115,7 +115,7 @@ describe('Consume Asset', () => {
     it('should lock the payment by the consumer', async () => {
         const paid = await ocean.agreements.conditions.lockReward(
             serviceAgreementSignatureResult.agreementId,
-            ddo.findServiceByType('Metadata').metadata.main.price,
+            ddo.findServiceByType('metadata').metadata.main.price,
             consumer
         )
 
@@ -156,7 +156,7 @@ describe('Consume Asset', () => {
     })
 
     it('should consume and store the assets', async () => {
-        const accessService = ddo.findServiceByType('Access')
+        const accessService = ddo.findServiceByType('access')
 
         const folder = '/tmp/ocean/squid-js-1'
         const path = await ocean.assets.consume(
@@ -183,7 +183,7 @@ describe('Consume Asset', () => {
     })
 
     it('should consume and store one asset', async () => {
-        const accessService = ddo.findServiceByType('Access')
+        const accessService = ddo.findServiceByType('access')
 
         const folder = '/tmp/ocean/squid-js-2'
         const path = await ocean.assets.consume(

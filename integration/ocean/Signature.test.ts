@@ -54,7 +54,7 @@ describe('Signature', () => {
             id: did,
             service: [
                 {
-                    type: 'Access',
+                    type: 'access',
                     purchaseEndpoint: undefined,
                     serviceEndpoint: undefined,
                     serviceDefinitionId,
@@ -62,7 +62,7 @@ describe('Signature', () => {
                     serviceAgreementTemplate
                 } as any,
                 {
-                    type: 'Metadata',
+                    type: 'metadata',
                     metadata: {
                         main: {
                             price: 10

@@ -101,7 +101,7 @@ export class DDO {
      * @return {string[]} DDO checksum.
      */
     public getChecksum(): string {
-        const { metadata } = this.findServiceByType('Metadata')
+        const { metadata } = this.findServiceByType('metadata')
         const { files, name, author, license } = metadata.main
 
         const values = [
@@ -149,7 +149,7 @@ export class DDO {
      * Generated and adds the checksum.
      */
     public addChecksum(): void {
-        const metadataService = this.findServiceByType('Metadata')
+        const metadataService = this.findServiceByType('metadata')
         if (metadataService.metadata.main.checksum) {
             LoggerInstance.log('Checksum already exists')
             return
