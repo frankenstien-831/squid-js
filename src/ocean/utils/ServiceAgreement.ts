@@ -18,7 +18,7 @@ export class ServiceAgreement extends Instantiable {
         agreementConditionsIds: string[],
         consumer: Account
     ): Promise<string> {
-        const service = ddo.findServiceById<'Access'>(serviceDefinitionId)
+        const service = ddo.findServiceById<'access'>(serviceDefinitionId)
         const timelockValues: number[] = this.getTimeValuesFromService(
             service,
             'timelock'
