@@ -12,7 +12,7 @@ export type ServiceType =
 
 export interface ServiceCommon {
     type: ServiceType
-    serviceDefinitionId?: string
+    index: number
     serviceEndpoint?: string
 }
 
@@ -23,7 +23,7 @@ export interface ServiceAuthorization extends ServiceCommon {
 
 export interface ServiceMetadata extends ServiceCommon {
     type: 'metadata'
-    metadata: MetaData
+    attributes: MetaData
 }
 
 export interface ServiceAccess extends ServiceCommon {

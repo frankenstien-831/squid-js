@@ -61,7 +61,7 @@ describe('Consume Asset (Brizo)', () => {
 
         const steps = []
         agreementId = await ocean.assets
-            .order(ddo.id, accessService.serviceDefinitionId, consumer)
+            .order(ddo.id, accessService.index, consumer)
             .next(step => steps.push(step))
 
         assert.isDefined(agreementId)
@@ -75,7 +75,7 @@ describe('Consume Asset (Brizo)', () => {
         const path = await ocean.assets.consume(
             agreementId,
             ddo.id,
-            accessService.serviceDefinitionId,
+            accessService.index,
             consumer,
             folder
         )

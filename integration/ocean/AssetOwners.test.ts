@@ -50,7 +50,7 @@ describe('Asset Owners', () => {
         assert.equal(finalLength - initialLength, 1)
     })
 
-    it('should get the assets that can be consumer by a user', async () => {
+    it('should get the assets that can be consumed by a user', async () => {
         const { length: initialLength } = await ocean.assets.consumerAssets(
             account2.getId()
         )
@@ -70,9 +70,11 @@ describe('Asset Owners', () => {
             )
         } catch {}
 
+        const accessService = ddo.findServiceByType('access')
+
         await ocean.assets.order(
             ddo.id,
-            ddo.findServiceByType('access').serviceDefinitionId,
+            accessService.index,
             account2
         )
         // Access granted

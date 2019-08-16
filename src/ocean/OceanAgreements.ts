@@ -42,13 +42,13 @@ export class OceanAgreements extends Instantiable {
     /**
      * Creates a consumer signature for the specified asset service.
      * @param  {string} did Decentralized ID.
-     * @param  {string} serviceDefinitionId Service definition ID.
+     * @param  {number} index Service index.
      * @param  {Account} consumer Consumer account.
      * @return {Promise<AgreementPrepareResult>} Agreement ID and signaturee.
      */
     public async prepare(
         did: string,
-        serviceDefinitionId: string,
+        index: number,
         consumer: Account
     ): Promise<AgreementPrepareResult> {
         const d: DID = DID.parse(did as string)
@@ -68,7 +68,7 @@ export class OceanAgreements extends Instantiable {
 
         const signature = await this.ocean.utils.agreements.signServiceAgreement(
             ddo,
-            serviceDefinitionId,
+            index,
             agreementId,
             agreementConditionsIds,
             consumer
@@ -80,21 +80,21 @@ export class OceanAgreements extends Instantiable {
     /**
      * Submit a service agreement to the publisher to create the agreement on-chain.
      * @param  {string} did Decentralized ID.
-     * @param  {string} serviceDefinitionId Service definition ID.
+     * @param  {number} index Service index.
      * @param  {Account} consumer Consumer account.
      * @return {Promise<void>}
      */
     public async send(
         did: string,
         agreementId: string,
-        serviceDefinitionId: string,
+        index: number,
         signature: string,
         consumer: Account
     ): Promise<void> {
         const result = await this.ocean.brizo.initializeServiceAgreement(
             didPrefixed(did),
             zeroX(agreementId),
-            serviceDefinitionId,
+            index,
             zeroX(signature),
             consumer.getId()
         )
@@ -112,7 +112,7 @@ export class OceanAgreements extends Instantiable {
      * in this method before submitting on-chain.
      * @param  {string} did Decentralized ID.
      * @param  {string} agreementId Service agreement ID.
-     * @param  {string} serviceDefinitionId Service definition ID.
+     * @param  {number} index Service index.
      * @param  {string} signature Service agreement signature.
      * @param  {Account} consumer Consumer account.
      * @param  {Account} publisher Publisher account.
@@ -121,7 +121,7 @@ export class OceanAgreements extends Instantiable {
     public async create(
         did: string,
         agreementId: string,
-        serviceDefinitionId: string,
+        index: number,
         signature: string,
         consumer: Account,
         publisher: Account
@@ -129,7 +129,7 @@ export class OceanAgreements extends Instantiable {
         const d: DID = DID.parse(did)
         const ddo = await this.ocean.aquarius.retrieveDDO(d)
 
-        const templateName = ddo.findServiceById<'access'>(serviceDefinitionId)
+        const templateName = ddo.findServiceById<'access'>(index)
             .serviceAgreementTemplate.contractName
         await this.ocean.keeper
             .getTemplateByName(templateName)
@@ -145,9 +145,7 @@ export class OceanAgreements extends Instantiable {
 
     /**
      * Get the status of a service agreement.
-     * @param  {string} did Decentralized ID.
      * @param  {string} agreementId Service agreement ID.
-     * @param  {string} serviceDefinitionId Service definition ID.
      * @param  {boolean} extended Returns a complete status with dependencies.
      * @return {Promise<any>}
      */

@@ -91,7 +91,7 @@ export class OceanAssets extends Instantiable {
 
             const serviceEndpoint = this.ocean.aquarius.getServiceEndpoint(did)
 
-            let serviceDefinitionIdCount = 0
+            let indexCount = 0
             // create ddo itself
             const ddo: DDO = new DDO({
                 id: did.getDid(),
@@ -126,7 +126,7 @@ export class OceanAssets extends Instantiable {
                     {
                         type: 'metadata',
                         serviceEndpoint,
-                        metadata: {
+                        attributes: {
                             // Default values
                             curation: {
                                 rating: 0,
@@ -158,10 +158,10 @@ export class OceanAssets extends Instantiable {
                             list.findIndex(({ type: t }) => t === type) === i
                     )
                     .reverse()
-                    // Adding ID
+                    // Adding index
                     .map(_ => ({
                         ..._,
-                        serviceDefinitionId: String(serviceDefinitionIdCount++)
+                        index: indexCount++
                     })) as Service[]
             })
 
@@ -206,7 +206,7 @@ export class OceanAssets extends Instantiable {
     public async consume(
         agreementId: string,
         did: string,
-        serviceDefinitionId: string,
+        serviceIndex: number,
         consumerAccount: Account,
         resultPath: string,
         index?: number,
@@ -216,7 +216,7 @@ export class OceanAssets extends Instantiable {
     public async consume(
         agreementId: string,
         did: string,
-        serviceDefinitionId: string,
+        serviceIndex: number,
         consumerAccount: Account,
         resultPath?: undefined | null,
         index?: number,
@@ -226,18 +226,18 @@ export class OceanAssets extends Instantiable {
     public async consume(
         agreementId: string,
         did: string,
-        serviceDefinitionId: string,
+        serviceIndex: number,
         consumerAccount: Account,
         resultPath?: string,
         index: number = -1,
         useSecretStore?: boolean
     ): Promise<string | true> {
         const ddo = await this.resolve(did)
-        const { metadata } = ddo.findServiceByType('metadata')
+        const { attributes } = ddo.findServiceByType('metadata')
 
-        const accessService = ddo.findServiceById(serviceDefinitionId)
+        const accessService = ddo.findServiceById(serviceIndex)
 
-        const { files } = metadata.main
+        const { files } = attributes.main
 
         const { serviceEndpoint } = accessService
 
@@ -250,7 +250,7 @@ export class OceanAssets extends Instantiable {
         this.logger.log('Consuming files')
 
         resultPath = resultPath
-            ? `${resultPath}/datafile.${ddo.shortId()}.${serviceDefinitionId}/`
+            ? `${resultPath}/datafile.${ddo.shortId()}.${serviceIndex}/`
             : undefined
 
         if (!useSecretStore) {
@@ -265,7 +265,7 @@ export class OceanAssets extends Instantiable {
         } else {
             const files = await this.ocean.secretStore.decrypt(
                 did,
-                ddo.findServiceByType('metadata').metadata.main.encryptedFiles,
+                ddo.findServiceByType('metadata').attributes.main.encryptedFiles,
                 consumerAccount,
                 ddo.findServiceByType('authorization').serviceEndpoint
             )
@@ -288,13 +288,13 @@ export class OceanAssets extends Instantiable {
      * Start the purchase/order of an asset's service. Starts by signing the service agreement
      * then sends the request to the publisher via the service endpoint (Brizo http service).
      * @param  {string} did Decentralized ID.
-     * @param  {string} serviceDefinitionId Service definition ID.
+     * @param  {number} index Service index.
      * @param  {Account} consumer Consumer account.
      * @return {Promise<string>} Returns Agreement ID
      */
     public order(
         did: string,
-        serviceDefinitionId: string,
+        index: number,
         consumer: Account
     ): SubscribablePromise<OrderProgressStep, string> {
         return new SubscribablePromise(async observer => {
@@ -316,7 +316,7 @@ export class OceanAssets extends Instantiable {
                 this.logger.log('Agreement initialized')
                 observer.next(OrderProgressStep.AgreementInitialized)
 
-                const { metadata } = ddo.findServiceByType('metadata')
+                const { attributes } = ddo.findServiceByType('metadata')
 
                 this.logger.log('Locking payment')
 
@@ -327,7 +327,7 @@ export class OceanAssets extends Instantiable {
                 observer.next(OrderProgressStep.LockingPayment)
                 const paid = await oceanAgreements.conditions.lockReward(
                     agreementId,
-                    metadata.main.price,
+                    attributes.main.price,
                     consumer
                 )
                 observer.next(OrderProgressStep.LockedPayment)
@@ -352,7 +352,7 @@ export class OceanAssets extends Instantiable {
             await oceanAgreements.create(
                 did,
                 agreementId,
-                serviceDefinitionId,
+                index,
                 undefined,
                 consumer,
                 consumer

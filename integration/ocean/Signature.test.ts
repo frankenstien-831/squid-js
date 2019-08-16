@@ -36,7 +36,7 @@ describe('Signature', () => {
         assert.equal(
             hash,
             '0x67901517c18a3d23e05806fff7f04235cc8ae3b1f82345b8bfb3e4b02b5800c7',
-            'The signatuere is not correct.'
+            'The signature is not correct.'
         )
     })
 
@@ -46,7 +46,6 @@ describe('Signature', () => {
         const did = `did:op:${'c'.repeat(64)}`
         const templateId = `0x${'f'.repeat(40)}`
         const agreementId = `0x${'e'.repeat(64)}`
-        const serviceDefinitionId = '0'
 
         const serviceAgreementTemplate = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplate()
 
@@ -55,15 +54,16 @@ describe('Signature', () => {
             service: [
                 {
                     type: 'access',
+                    index: 0,
                     purchaseEndpoint: undefined,
                     serviceEndpoint: undefined,
-                    serviceDefinitionId,
                     templateId,
                     serviceAgreementTemplate
                 } as any,
                 {
                     type: 'metadata',
-                    metadata: {
+                    index: 1,
+                    attributes: {
                         main: {
                             price: 10
                         }
@@ -74,7 +74,7 @@ describe('Signature', () => {
 
         const signature = await ocean.utils.agreements.signServiceAgreement(
             ddo,
-            serviceDefinitionId,
+            0,
             agreementId,
             [
                 `0x${'1'.repeat(64)}`,
