@@ -59,7 +59,7 @@ xdescribe('Consume Asset (Large size)', () => {
 
         agreementId = await ocean.assets.order(
             ddo.id,
-            accessService.serviceDefinitionId,
+            accessService.index,
             consumer
         )
 
@@ -73,7 +73,7 @@ xdescribe('Consume Asset (Large size)', () => {
         const path = await ocean.assets.consume(
             agreementId,
             ddo.id,
-            accessService.serviceDefinitionId,
+            accessService.index,
             consumer,
             folder
         )

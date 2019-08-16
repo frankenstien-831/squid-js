@@ -37,7 +37,7 @@ export class Brizo extends Instantiable {
 
     public getComputeEndpoint(
         pubKey: string,
-        serviceId: string,
+        serviceIndex: number,
         _notUsed: string,
         container: string
     ) {
@@ -47,14 +47,14 @@ export class Brizo extends Instantiable {
     public async initializeServiceAgreement(
         did: string,
         serviceAgreementId: string,
-        serviceDefinitionId: string,
+        serviceIndex: number,
         signature: string,
         consumerAddress: string
     ): Promise<any> {
         const args = {
             did,
             serviceAgreementId,
-            serviceDefinitionId,
+            serviceIndex,
             signature,
             consumerAddress
         }

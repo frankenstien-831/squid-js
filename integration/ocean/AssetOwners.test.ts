@@ -77,9 +77,11 @@ describe('Asset Owners', () => {
             )
         } catch {}
 
+        const accessService = ddo.findServiceByType('access')
+
         await ocean.assets.order(
             ddo.id,
-            ddo.findServiceByType('access').serviceDefinitionId,
+            accessService.index,
             account2
         )
         // Access granted
