@@ -40,7 +40,7 @@
   "service": [
     {
       "type": "access",
-      "serviceDefinitionId": "0",
+      "index": 0,
       "serviceEndpoint": "http://mybrizo.org/api/v1/brizo/services/consume?pubKey=${pubKey}&serviceId={serviceId}&url={url}",
       "purchaseEndpoint": "http://mybrizo.org/api/v1/brizo/services/access/purchase?",
       "templateId": "044852b2a670ade5407e78fb2863c51000000000000000000000000000000000",
@@ -145,16 +145,16 @@
     },
     {
       "type": "compute",
-      "serviceDefinitionId": "1",
+      "index": 1,
       "serviceEndpoint": "http://mybrizo.org/api/v1/brizo/services/compute?pubKey=${pubKey}&serviceId={serviceId}&algo={algo}&container={container}",
       "templateId": "044852b2a670ade5407e78fb2863c51000000000000000000000000000000002"
     },
     {
       "type": "metadata",
-      "serviceDefinitionId": "2",
+      "index": 2,
       "serviceEndpoint": "http://myaquarius.org/api/v1/provider/assets/metadata/{did}",
-      "metadata": {
-        "base": {
+      "attributes": {
+        "main": {
           "name": "UK Weather information 2011",
           "type": "dataset",
           "dateCreated": "2012-10-10T17:00:000Z",

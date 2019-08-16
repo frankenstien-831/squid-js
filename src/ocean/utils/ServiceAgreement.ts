@@ -13,12 +13,12 @@ export class ServiceAgreement extends Instantiable {
 
     public async signServiceAgreement(
         ddo: DDO,
-        serviceDefinitionId: string,
+        index: number,
         serviceAgreementId: string,
         agreementConditionsIds: string[],
         consumer: Account
     ): Promise<string> {
-        const service = ddo.findServiceById<'access'>(serviceDefinitionId)
+        const service = ddo.findServiceById<'access'>(index)
         const timelockValues: number[] = this.getTimeValuesFromService(
             service,
             'timelock'

@@ -63,19 +63,19 @@ export class DDO {
     }
 
     /**
-     * Finds a service of a DDO by ID.
-     * @param  {string} serviceDefinitionId Service ID.
+     * Finds a service of a DDO by index.
+     * @param  {number} Service index.
      * @return {Service} Service.
      */
     public findServiceById<T extends ServiceType>(
-        serviceDefinitionId: string
+        index: number
     ): Service<T> {
-        if (!serviceDefinitionId) {
-            throw new Error('serviceDefinitionId not set')
+        if (!index) {
+            throw new Error('index is not set')
         }
 
         const service = this.service.find(
-            s => s.serviceDefinitionId === serviceDefinitionId
+            s => s.index === index
         )
 
         return service as Service<T>
@@ -101,8 +101,8 @@ export class DDO {
      * @return {string[]} DDO checksum.
      */
     public getChecksum(): string {
-        const { metadata } = this.findServiceByType('metadata')
-        const { files, name, author, license } = metadata.main
+        const { attributes } = this.findServiceByType('metadata')
+        const { files, name, author, license } = attributes.main
 
         const values = [
             ...(files || []).map(({ checksum }) => checksum).filter(_ => !!_),
@@ -150,11 +150,11 @@ export class DDO {
      */
     public addChecksum(): void {
         const metadataService = this.findServiceByType('metadata')
-        if (metadataService.metadata.main.checksum) {
+        if (metadataService.attributes.main.checksum) {
             LoggerInstance.log('Checksum already exists')
             return
         }
-        metadataService.metadata.main.checksum = this.getChecksum()
+        metadataService.attributes.main.checksum = this.getChecksum()
     }
 
     /**

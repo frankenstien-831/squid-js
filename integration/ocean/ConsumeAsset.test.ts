@@ -68,7 +68,7 @@ describe('Consume Asset', () => {
 
         serviceAgreementSignatureResult = await ocean.agreements.prepare(
             ddo.id,
-            accessService.serviceDefinitionId,
+            accessService.index,
             consumer
         )
 
@@ -91,7 +91,7 @@ describe('Consume Asset', () => {
         const success = await ocean.agreements.create(
             ddo.id,
             serviceAgreementSignatureResult.agreementId,
-            accessService.serviceDefinitionId,
+            accessService.index,
             serviceAgreementSignatureResult.signature,
             consumer,
             publisher
@@ -115,7 +115,7 @@ describe('Consume Asset', () => {
     it('should lock the payment by the consumer', async () => {
         const paid = await ocean.agreements.conditions.lockReward(
             serviceAgreementSignatureResult.agreementId,
-            ddo.findServiceByType('metadata').metadata.main.price,
+            ddo.findServiceByType('metadata').attributes.main.price,
             consumer
         )
 
@@ -162,7 +162,7 @@ describe('Consume Asset', () => {
         const path = await ocean.assets.consume(
             serviceAgreementSignatureResult.agreementId,
             ddo.id,
-            accessService.serviceDefinitionId,
+            accessService.index,
             consumer,
             folder
         )
@@ -189,7 +189,7 @@ describe('Consume Asset', () => {
         const path = await ocean.assets.consume(
             serviceAgreementSignatureResult.agreementId,
             ddo.id,
-            accessService.serviceDefinitionId,
+            accessService.index,
             consumer,
             folder,
             1

@@ -46,7 +46,6 @@ describe('Signature', () => {
         const did = `did:op:${'c'.repeat(64)}`
         const templateId = `0x${'f'.repeat(40)}`
         const agreementId = `0x${'e'.repeat(64)}`
-        const serviceDefinitionId = '0'
 
         const serviceAgreementTemplate = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplate()
 
@@ -55,15 +54,16 @@ describe('Signature', () => {
             service: [
                 {
                     type: 'access',
+                    index: 0,
                     purchaseEndpoint: undefined,
                     serviceEndpoint: undefined,
-                    serviceDefinitionId,
                     templateId,
                     serviceAgreementTemplate
                 } as any,
                 {
                     type: 'metadata',
-                    metadata: {
+                    index: 1,
+                    attributes: {
                         main: {
                             price: 10
                         }
@@ -74,7 +74,7 @@ describe('Signature', () => {
 
         const signature = await ocean.utils.agreements.signServiceAgreement(
             ddo,
-            serviceDefinitionId,
+            0,
             agreementId,
             [
                 `0x${'1'.repeat(64)}`,
