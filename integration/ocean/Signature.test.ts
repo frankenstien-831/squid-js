@@ -54,7 +54,7 @@ describe('Signature', () => {
             id: did,
             service: [
                 {
-                    type: 'Access',
+                    type: 'access',
                     purchaseEndpoint: undefined,
                     serviceEndpoint: undefined,
                     serviceDefinitionId,
@@ -62,7 +62,7 @@ describe('Signature', () => {
                     serviceAgreementTemplate
                 } as any,
                 {
-                    type: 'Metadata',
+                    type: 'metadata',
                     metadata: {
                         main: {
                             price: 10
@@ -87,7 +87,7 @@ describe('Signature', () => {
         assert.equal(
             signature,
             '0x3aa8a1c48b8e582d694bbd4ba3a29fde573b78da9720dc48baeb831b2163e1fa6e10e983882ebf8a00f4124de2505136354fd146934053f0d58bba4eced5f8d000',
-            'The signatuere is not correct.'
+            'The signature is not correct.'
         )
     })
 })

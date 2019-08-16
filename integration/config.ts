@@ -3,7 +3,7 @@ import { Config } from '../src'
 
 const configJson: Config = {
     nodeUri: 'http://localhost:8545',
-    aquariusUri: 'http://172.15.0.15:5000',
+    aquariusUri: 'http://aquarius:5000',
     brizoUri: 'http://localhost:8030',
     secretStoreUri: 'http://localhost:12001',
     brizoAddress: '0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e',

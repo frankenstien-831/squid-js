@@ -72,7 +72,7 @@ describe('Asset Owners', () => {
 
         await ocean.assets.order(
             ddo.id,
-            ddo.findServiceByType('Access').serviceDefinitionId,
+            ddo.findServiceByType('access').serviceDefinitionId,
             account2
         )
         // Access granted

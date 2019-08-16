@@ -39,7 +39,7 @@
   },
   "service": [
     {
-      "type": "Access",
+      "type": "access",
       "serviceDefinitionId": "0",
       "serviceEndpoint": "http://mybrizo.org/api/v1/brizo/services/consume?pubKey=${pubKey}&serviceId={serviceId}&url={url}",
       "purchaseEndpoint": "http://mybrizo.org/api/v1/brizo/services/access/purchase?",
@@ -144,13 +144,13 @@
       ]
     },
     {
-      "type": "CloudCompute",
+      "type": "compute",
       "serviceDefinitionId": "1",
       "serviceEndpoint": "http://mybrizo.org/api/v1/brizo/services/compute?pubKey=${pubKey}&serviceId={serviceId}&algo={algo}&container={container}",
       "templateId": "044852b2a670ade5407e78fb2863c51000000000000000000000000000000002"
     },
     {
-      "type": "Metadata",
+      "type": "metadata",
       "serviceDefinitionId": "2",
       "serviceEndpoint": "http://myaquarius.org/api/v1/provider/assets/metadata/{did}",
       "metadata": {
