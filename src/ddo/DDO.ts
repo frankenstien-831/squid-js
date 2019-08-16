@@ -62,16 +62,12 @@ export class DDO {
      * @param  {number} Service index.
      * @return {Service} Service.
      */
-    public findServiceById<T extends ServiceType>(
-        index: number
-    ): Service<T> {
+    public findServiceById<T extends ServiceType>(index: number): Service<T> {
         if (!index) {
             throw new Error('index is not set')
         }
 
-        const service = this.service.find(
-            s => s.index === index
-        )
+        const service = this.service.find(s => s.index === index)
 
         return service as Service<T>
     }
