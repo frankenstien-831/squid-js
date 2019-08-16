@@ -265,7 +265,8 @@ export class OceanAssets extends Instantiable {
         } else {
             const files = await this.ocean.secretStore.decrypt(
                 did,
-                ddo.findServiceByType('metadata').attributes.main.encryptedFiles,
+                ddo.findServiceByType('metadata').attributes.main
+                    .encryptedFiles,
                 consumerAccount,
                 ddo.findServiceByType('authorization').serviceEndpoint
             )
