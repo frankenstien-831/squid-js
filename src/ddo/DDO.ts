@@ -39,10 +39,15 @@ export class DDO {
      * @type {string}
      */
     public id: string = null
+
     public created: string
+
     public publicKey: PublicKey[] = []
+
     public authentication: Authentication[] = []
+
     public service: Service[] = []
+
     public proof: Proof
 
     public constructor(ddo: Partial<DDO> = {}) {

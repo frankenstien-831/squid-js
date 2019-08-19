@@ -13,6 +13,7 @@ export class Config {
      * @type {string}
      */
     public brizoUri: string
+
     /**
      * Address of Brizo.
      * @type {string}
@@ -24,6 +25,7 @@ export class Config {
      * @type {string}
      */
     public nodeUri?: string
+
     /**
      * Web3 Provider.
      * @type {any}
@@ -56,6 +58,7 @@ export class Config {
 
     // Parity config
     public parityUri?: string
+
     public threshold?: number
 }
 

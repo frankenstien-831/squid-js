@@ -8,6 +8,7 @@ import { Instantiable, InstantiableConfig } from '../Instantiable.abstract'
  */
 export default class Account extends Instantiable {
     private password?: string
+
     private token?: string
 
     constructor(private id: string = '0x0', config?: InstantiableConfig) {
