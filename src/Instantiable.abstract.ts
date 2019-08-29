@@ -66,6 +66,7 @@ export abstract class Instantiable {
     }
 
     public static async getInstance(...args: any[]): Promise<any>
+
     public static async getInstance(config: InstantiableConfig): Promise<any> {
         LoggerInstance.warn(
             'getInstance() methods has needs to be added to child class.'
@@ -83,8 +84,11 @@ export abstract class Instantiable {
     }
 
     private _ocean: Ocean
+
     private _web3: Web3
+
     private _config: Config
+
     private _logger: Logger
 
     protected setInstanceConfig(config: InstantiableConfig) {

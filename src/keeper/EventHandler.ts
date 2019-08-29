@@ -9,9 +9,13 @@ export class EventHandler extends Instantiable {
     }
 
     private events = new Set<(blockNumber) => void>()
+
     private lastBlock: number
+
     private interval = 200
+
     private polling: boolean = false
+
     private lastTimeout: NodeJS.Timeout
 
     constructor(config: InstantiableConfig) {

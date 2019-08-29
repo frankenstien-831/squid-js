@@ -2,6 +2,7 @@ import { SubscribableObserver } from './SubscribableObserver'
 
 export class SubscribablePromise<T extends any, P extends any> {
     private observer = new SubscribableObserver<T, P>()
+
     private promise = Object.assign(
         new Promise<P>((resolve, reject) => {
             setTimeout(() => {
