@@ -7,6 +7,8 @@ export class EventHandler extends Instantiable {
     get count() {
         return this.events.size
     }
+
+
     private events = new Set<(blockNumber) => void>()
     private lastBlock: number
     private interval = 200
