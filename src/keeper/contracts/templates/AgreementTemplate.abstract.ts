@@ -45,7 +45,6 @@ export abstract class AgreementTemplate extends ContractBase {
         ...args: any[]
     )
 
-
     public createAgreement(
         agreementId: string,
         did: string,
