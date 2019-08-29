@@ -44,6 +44,7 @@ export abstract class AgreementTemplate extends ContractBase {
         timeOuts: number[],
         ...args: any[]
     )
+
     public createAgreement(
         agreementId: string,
         did: string,
