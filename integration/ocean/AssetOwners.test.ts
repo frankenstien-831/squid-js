@@ -25,12 +25,23 @@ describe('Asset Owners', () => {
         }
     })
 
-    it('should be set correctly the owner of a asset', async () => {
+    it('should be set correctly the owner of an asset', async () => {
         const ddo = await ocean.assets.create(metadata as any, account1)
 
         const owner = await ocean.assets.owner(ddo.id)
 
         assert.equal(owner, account1.getId())
+    })
+
+    it('should be set correctly the provider of an asset', async () => {
+        const ddo = await ocean.assets.create(metadata as any, account1)
+
+        const isProvider = await ocean.keeper.didRegistry.isDIDProvider(
+            ddo.id,
+            config.brizoAddress
+        )
+
+        assert.isTrue(isProvider)
     })
 
     it('should get the assets owned by a user', async () => {
