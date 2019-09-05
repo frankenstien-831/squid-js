@@ -12,7 +12,8 @@ import {
 } from './contracts/conditions'
 import {
     AgreementTemplate,
-    EscrowAccessSecretStoreTemplate
+    EscrowAccessSecretStoreTemplate,
+    EscrowComputeExecutionTemplate
 } from './contracts/templates'
 import {
     TemplateStoreManager,
@@ -73,6 +74,9 @@ export class Keeper extends Instantiable {
                 // Templates
                 escrowAccessSecretStoreTemplate: EscrowAccessSecretStoreTemplate.getInstance(
                     config
+                ),
+                escrowComputeExecutionTemplate: EscrowComputeExecutionTemplate.getInstance(
+                    config
                 )
             })
 
@@ -109,9 +113,10 @@ export class Keeper extends Instantiable {
         // Conditions
         keeper.templates = {
             escrowAccessSecretStoreTemplate:
-                keeper.instances.escrowAccessSecretStoreTemplate
+                keeper.instances.escrowAccessSecretStoreTemplate,
+            escrowComputeExecutionTemplate:
+                keeper.instances.escrowComputeExecutionTemplate
         }
-
         // Utils
         keeper.utils = {
             eventHandler: new EventHandler(config)
@@ -177,6 +182,7 @@ export class Keeper extends Instantiable {
      */
     public templates: {
         escrowAccessSecretStoreTemplate: EscrowAccessSecretStoreTemplate
+        escrowComputeExecutionTemplate: EscrowComputeExecutionTemplate
     }
 
     /**
