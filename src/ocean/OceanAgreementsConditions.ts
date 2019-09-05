@@ -84,6 +84,34 @@ export class OceanAgreementsConditions extends Instantiable {
     }
 
     /**
+     * Authorize the consumer defined in the agreement to execute a remote service associated with this asset.
+     * @param {string}  agreementId Agreement ID.
+     * @param {string}  did         Asset ID.
+     * @param {string}  grantee     Consumer address.
+     * @param {Account} from        Account of sender.
+     */
+    public async grantServiceExecution(
+        agreementId: string,
+        did: string,
+        grantee: string,
+        from?: Account
+    ) {
+        try {
+            const { computeExecutionCondition } = this.ocean.keeper.conditions
+
+            const receipt = await computeExecutionCondition.fulfill(
+                agreementId,
+                did,
+                grantee,
+                from && from.getId()
+            )
+            return !!receipt.events.Fulfilled
+        } catch {
+            return false
+        }
+    }
+
+    /**
      * Transfer the escrow or locked tokens from the LockRewardCondition contract to the publisher's account.
      * This should be allowed after access has been given to the consumer and the asset data is downloaded.
      *
