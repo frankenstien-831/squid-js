@@ -12,9 +12,7 @@ export class OceanUtils extends Instantiable {
      * Returns the instance of OceanUtils.
      * @return {Promise<OceanUtils>}
      */
-    public static async getInstance(
-        config: InstantiableConfig
-    ): Promise<OceanUtils> {
+    public static async getInstance(config: InstantiableConfig): Promise<OceanUtils> {
         const instance = new OceanUtils()
         instance.setInstanceConfig(config)
 

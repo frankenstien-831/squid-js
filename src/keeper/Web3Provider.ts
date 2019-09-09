@@ -7,10 +7,6 @@ export default class Web3Provider {
      * @return {Web3}
      */
     public static getWeb3(config: Partial<Config> = {}): Web3 {
-        return new Web3(
-            config.web3Provider ||
-                Web3.givenProvider ||
-                new Web3.providers.HttpProvider(config.nodeUri)
-        )
+        return new Web3(config.web3Provider || Web3.givenProvider || new Web3.providers.HttpProvider(config.nodeUri))
     }
 }

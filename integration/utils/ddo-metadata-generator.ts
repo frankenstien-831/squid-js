@@ -13,23 +13,19 @@ const metadata: Partial<MetaData> = {
             {
                 index: 0,
                 contentType: 'application/json',
-                url:
-                    'https://raw.githubusercontent.com/oceanprotocol/squid-js/master/package.json'
+                url: 'https://raw.githubusercontent.com/oceanprotocol/squid-js/master/package.json'
             },
             {
                 index: 1,
                 contentType: 'text/plain',
-                url:
-                    'https://raw.githubusercontent.com/oceanprotocol/squid-js/master/README.md'
+                url: 'https://raw.githubusercontent.com/oceanprotocol/squid-js/master/README.md'
             }
         ]
     },
     additionalInformation: {
-        description:
-            'Weather information of UK including temperature and humidity',
+        description: 'Weather information of UK including temperature and humidity',
         copyrightHolder: 'Met Office',
-        workExample:
-            '423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68',
+        workExample: '423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68',
         links: [
             {
                 name: 'Sample of Asset Data',
@@ -48,10 +44,7 @@ const metadata: Partial<MetaData> = {
     }
 }
 
-export const generateMetadata = (
-    name: string,
-    price?: number
-): Partial<MetaData> => ({
+export const generateMetadata = (name: string, price?: number): Partial<MetaData> => ({
     ...metadata,
     main: {
         ...metadata.main,
@@ -63,5 +56,4 @@ export const generateMetadata = (
     }
 })
 
-export const getMetadata = (price?: number) =>
-    generateMetadata('TestAsset', price)
+export const getMetadata = (price?: number) => generateMetadata('TestAsset', price)

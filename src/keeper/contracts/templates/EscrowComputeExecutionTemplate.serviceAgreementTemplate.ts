@@ -13,11 +13,7 @@ export const escrowComputeExecutionTemplateServiceAgreementTemplate: ServiceAgre
             }
         }
     ],
-    fulfillmentOrder: [
-        'lockReward.fulfill',
-        'serviceExecution.fulfill',
-        'escrowReward.fulfill'
-    ],
+    fulfillmentOrder: ['lockReward.fulfill', 'serviceExecution.fulfill', 'escrowReward.fulfill'],
     conditionDependency: {
         lockReward: [],
         serviceExecution: [],

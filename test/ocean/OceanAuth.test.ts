@@ -54,11 +54,7 @@ describe('OceanAuth', () => {
 
     describe('#store()', () => {
         it('should sign and store the token', async () => {
-            const writeTokenSpy = spy.on(
-                oceanAuth as any,
-                'writeToken',
-                () => {}
-            )
+            const writeTokenSpy = spy.on(oceanAuth as any, 'writeToken', () => {})
 
             await oceanAuth.store(account)
 

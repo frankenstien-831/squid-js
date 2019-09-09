@@ -20,33 +20,23 @@ export default class TestContractHandler extends ContractHandler {
         Logger.log('Trying to deploy contracts')
 
         // Libraries
-        const epochLibrary = await TestContractHandler.deployContract(
-            'EpochLibrary',
-            deployerAddress
-        )
-        const didRegistryLibrary = await TestContractHandler.deployContract(
-            'DIDRegistryLibrary',
-            deployerAddress
-        )
+        const epochLibrary = await TestContractHandler.deployContract('EpochLibrary', deployerAddress)
+        const didRegistryLibrary = await TestContractHandler.deployContract('DIDRegistryLibrary', deployerAddress)
 
         // Contracts
-        const token = await TestContractHandler.deployContract(
-            'OceanToken',
+        const token = await TestContractHandler.deployContract('OceanToken', deployerAddress, [
             deployerAddress,
-            [deployerAddress, deployerAddress]
-        )
+            deployerAddress
+        ])
 
-        const dispenser = await TestContractHandler.deployContract(
-            'Dispenser',
-            deployerAddress,
-            [token.options.address, deployerAddress]
-        )
+        const dispenser = await TestContractHandler.deployContract('Dispenser', deployerAddress, [
+            token.options.address,
+            deployerAddress
+        ])
 
         // Add dispenser as Token minter
         if (!token.$initialized) {
-            await token.methods
-                .addMinter(dispenser.options.address)
-                .send({ from: deployerAddress })
+            await token.methods.addMinter(dispenser.options.address).send({ from: deployerAddress })
         }
 
         const didRegistry = await TestContractHandler.deployContract(
@@ -59,11 +49,9 @@ export default class TestContractHandler extends ContractHandler {
         )
 
         // Managers
-        const templateStoreManager = await TestContractHandler.deployContract(
-            'TemplateStoreManager',
-            deployerAddress,
-            [deployerAddress]
-        )
+        const templateStoreManager = await TestContractHandler.deployContract('TemplateStoreManager', deployerAddress, [
+            deployerAddress
+        ])
         const conditionStoreManager = await TestContractHandler.deployContract(
             'ConditionStoreManager',
             deployerAddress,
@@ -84,49 +72,33 @@ export default class TestContractHandler extends ContractHandler {
         )
 
         // Conditions
-        const lockRewardCondition = await TestContractHandler.deployContract(
-            'LockRewardCondition',
+        const lockRewardCondition = await TestContractHandler.deployContract('LockRewardCondition', deployerAddress, [
             deployerAddress,
-            [
-                deployerAddress,
-                conditionStoreManager.options.address,
-                token.options.address
-            ]
-        )
+            conditionStoreManager.options.address,
+            token.options.address
+        ])
         const accessSecretStoreCondition = await TestContractHandler.deployContract(
             'AccessSecretStoreCondition',
             deployerAddress,
-            [
-                deployerAddress,
-                conditionStoreManager.options.address,
-                agreementStoreManager.options.address
-            ]
+            [deployerAddress, conditionStoreManager.options.address, agreementStoreManager.options.address]
         )
 
         // Conditions rewards
-        const escrowReward = await TestContractHandler.deployContract(
-            'EscrowReward',
+        const escrowReward = await TestContractHandler.deployContract('EscrowReward', deployerAddress, [
             deployerAddress,
-            [
-                deployerAddress,
-                conditionStoreManager.options.address,
-                token.options.address
-            ]
-        )
+            conditionStoreManager.options.address,
+            token.options.address
+        ])
 
         // Templates
-        await TestContractHandler.deployContract(
-            'EscrowAccessSecretStoreTemplate',
+        await TestContractHandler.deployContract('EscrowAccessSecretStoreTemplate', deployerAddress, [
             deployerAddress,
-            [
-                deployerAddress,
-                agreementStoreManager.options.address,
-                didRegistry.options.address,
-                accessSecretStoreCondition.options.address,
-                lockRewardCondition.options.address,
-                escrowReward.options.address
-            ]
-        )
+            agreementStoreManager.options.address,
+            didRegistry.options.address,
+            accessSecretStoreCondition.options.address,
+            lockRewardCondition.options.address,
+            escrowReward.options.address
+        ])
     }
 
     private static async deployContract(
@@ -156,10 +128,7 @@ export default class TestContractHandler extends ContractHandler {
                 gasPrice: 10000000000
             }
             const artifact = require(`@oceanprotocol/keeper-contracts/artifacts/${name}.development.json`)
-            const tempContract = new web3.eth.Contract(
-                artifact.abi,
-                artifact.address
-            )
+            const tempContract = new web3.eth.Contract(artifact.abi, artifact.address)
             const isZos = !!tempContract.methods.initialize
 
             Logger.debug({
@@ -176,42 +145,27 @@ export default class TestContractHandler extends ContractHandler {
 
             contractInstance = await tempContract
                 .deploy({
-                    data: TestContractHandler.replaceTokens(
-                        artifact.bytecode.toString(),
-                        tokens
-                    ),
+                    data: TestContractHandler.replaceTokens(artifact.bytecode.toString(), tokens),
                     arguments: isZos ? undefined : args
                 })
                 .send(sendConfig)
             if (isZos) {
-                await contractInstance.methods
-                    .initialize(...args)
-                    .send(sendConfig)
+                await contractInstance.methods.initialize(...args).send(sendConfig)
             }
             contractInstance.testContract = true
             ContractHandler.setContract(name, where, contractInstance)
             // Logger.log("Deployed", name, "at", contractInstance.options.address);
         } catch (err) {
-            Logger.error(
-                'Deployment failed for',
-                name,
-                'with args',
-                JSON.stringify(args, null, 2),
-                err.message
-            )
+            Logger.error('Deployment failed for', name, 'with args', JSON.stringify(args, null, 2), err.message)
             throw err
         }
 
         return contractInstance
     }
 
-    private static replaceTokens(
-        bytecode: string,
-        tokens: { [name: string]: string }
-    ): string {
+    private static replaceTokens(bytecode: string, tokens: { [name: string]: string }): string {
         return Object.entries(tokens).reduce(
-            (acc, [token, address]) =>
-                acc.replace(new RegExp(`_+${token}_+`, 'g'), address.substr(2)),
+            (acc, [token, address]) => acc.replace(new RegExp(`_+${token}_+`, 'g'), address.substr(2)),
             bytecode
         )
     }

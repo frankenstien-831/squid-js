@@ -76,11 +76,7 @@ describe('Signature', () => {
             ddo,
             0,
             agreementId,
-            [
-                `0x${'1'.repeat(64)}`,
-                `0x${'2'.repeat(64)}`,
-                `0x${'3'.repeat(64)}`
-            ],
+            [`0x${'1'.repeat(64)}`, `0x${'2'.repeat(64)}`, `0x${'3'.repeat(64)}`],
             consumer
         )
 

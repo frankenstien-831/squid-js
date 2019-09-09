@@ -30,11 +30,9 @@ describe('ContractWrapperBase', () => {
         })
 
         it('should fail to call on an unknown contract function', done => {
-            wrappedContract
-                .sendMock('balanceOfxxx', '0x00', ['0x00'])
-                .catch(() => {
-                    done()
-                })
+            wrappedContract.sendMock('balanceOfxxx', '0x00', ['0x00']).catch(() => {
+                done()
+            })
         })
 
         it('should fail to call on an contract function with wrong set of parameters', done => {
@@ -46,11 +44,9 @@ describe('ContractWrapperBase', () => {
 
     describe('#send()', () => {
         it('should fail to call on an unknown contract function', done => {
-            wrappedContract
-                .sendMock('transferxxx', accounts[0].getId(), [])
-                .catch(() => {
-                    done()
-                })
+            wrappedContract.sendMock('transferxxx', accounts[0].getId(), []).catch(() => {
+                done()
+            })
         })
     })
 
