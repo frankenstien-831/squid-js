@@ -13,11 +13,7 @@ export interface PublicKey {
      * Type of key.
      * @type {string}
      */
-    type:
-        | 'Ed25519VerificationKey2018'
-        | 'RsaVerificationKey2018'
-        | 'EdDsaSAPublicKeySecp256k1'
-        | 'EthereumECDSAKey'
+    type: 'Ed25519VerificationKey2018' | 'RsaVerificationKey2018' | 'EdDsaSAPublicKeySecp256k1' | 'EthereumECDSAKey'
 
     /**
      * Key owner.

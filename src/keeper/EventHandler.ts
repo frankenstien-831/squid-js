@@ -41,11 +41,7 @@ export class EventHandler extends Instantiable {
         }
     }
 
-    public getEvent(
-        contract: ContractBase,
-        eventName: string,
-        filter: { [key: string]: any }
-    ) {
+    public getEvent(contract: ContractBase, eventName: string, filter: { [key: string]: any }) {
         return new ContractEvent(this, contract, eventName, filter)
     }
 
@@ -65,9 +61,6 @@ export class EventHandler extends Instantiable {
             this.events.forEach(fn => fn(this.lastBlock + 1))
             this.lastBlock = blockNumber
         }
-        this.lastTimeout = global.setTimeout(
-            () => this.checkBlock(true, n++),
-            this.interval
-        )
+        this.lastTimeout = global.setTimeout(() => this.checkBlock(true, n++), this.interval)
     }
 }

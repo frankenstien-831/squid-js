@@ -10,9 +10,7 @@ export class OceanAccounts extends Instantiable {
      * Returns the instance of OceanAccounts.
      * @return {Promise<OceanAccounts>}
      */
-    public static async getInstance(
-        config: InstantiableConfig
-    ): Promise<OceanAccounts> {
+    public static async getInstance(config: InstantiableConfig): Promise<OceanAccounts> {
         const instance = new OceanAccounts()
         instance.setInstanceConfig(config)
 
@@ -27,9 +25,7 @@ export class OceanAccounts extends Instantiable {
         // retrieve eth accounts
         const ethAccounts: string[] = await this.web3.eth.getAccounts()
 
-        const accountPromises = ethAccounts.map(
-            address => new Account(address, this.instanceConfig)
-        )
+        const accountPromises = ethAccounts.map(address => new Account(address, this.instanceConfig))
         return Promise.all(accountPromises)
     }
 
@@ -48,10 +44,7 @@ export class OceanAccounts extends Instantiable {
      * @param  {number}           amount  Token amount.
      * @return {Promise<boolean>}         Success.
      */
-    public async requestTokens(
-        account: Account,
-        amount: number
-    ): Promise<boolean> {
+    public async requestTokens(account: Account, amount: number): Promise<boolean> {
         try {
             await account.requestTokens(amount)
             return true

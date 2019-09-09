@@ -7,11 +7,7 @@ export class SubscribableObserver<T, P> {
         onError?: (error: any) => void
     }>()
 
-    public subscribe(
-        onNext?: (next: T) => void,
-        onComplete?: (complete: P) => void,
-        onError?: (error: any) => void
-    ) {
+    public subscribe(onNext?: (next: T) => void, onComplete?: (complete: P) => void, onError?: (error: any) => void) {
         if (this.completed) {
             throw new Error('Observer completed.')
         }
@@ -40,9 +36,7 @@ export class SubscribableObserver<T, P> {
     private emit(type: 'onNext' | 'onComplete' | 'onError', value: any) {
         Array.from(this.subscriptions)
             .map(subscription => subscription[type])
-            .filter(
-                (callback: any) => callback && typeof callback === 'function'
-            )
+            .filter((callback: any) => callback && typeof callback === 'function')
             .forEach((callback: any) => callback(value))
     }
 

@@ -3,9 +3,7 @@ import { zeroX, didPrefixed, didZeroX } from '../../utils'
 import { InstantiableConfig } from '../../Instantiable.abstract'
 
 export default class DIDRegistry extends ContractBase {
-    public static async getInstance(
-        config: InstantiableConfig
-    ): Promise<DIDRegistry> {
+    public static async getInstance(config: InstantiableConfig): Promise<DIDRegistry> {
         const didRegistry: DIDRegistry = new DIDRegistry('DIDRegistry')
         await didRegistry.init(config)
         return didRegistry
@@ -18,12 +16,7 @@ export default class DIDRegistry extends ContractBase {
         value: string,
         ownerAddress: string
     ) {
-        return this.send('registerAttribute', ownerAddress, [
-            zeroX(did),
-            zeroX(checksum),
-            providers.map(zeroX),
-            value
-        ])
+        return this.send('registerAttribute', ownerAddress, [zeroX(did), zeroX(checksum), providers.map(zeroX), value])
     }
 
     public async getDIDOwner(did: string): Promise<string> {
@@ -46,46 +39,22 @@ export default class DIDRegistry extends ContractBase {
             .map(didPrefixed)
     }
 
-    public async getAttributesByDid(
-        did: string
-    ): Promise<{ did: string; serviceEndpoint: string; checksum: string }> {
+    public async getAttributesByDid(did: string): Promise<{ did: string; serviceEndpoint: string; checksum: string }> {
         return (await this.getPastEvents('DIDAttributeRegistered', {
             _did: didZeroX(did)
-        })).map(
-            ({
-                returnValues: {
-                    _did,
-                    _checksum: checksum,
-                    _value: serviceEndpoint
-                }
-            }) => ({
-                did: didPrefixed(_did),
-                serviceEndpoint,
-                checksum
-            })
-        )[0]
+        })).map(({ returnValues: { _did, _checksum: checksum, _value: serviceEndpoint } }) => ({
+            did: didPrefixed(_did),
+            serviceEndpoint,
+            checksum
+        }))[0]
     }
 
-    public async grantPermission(
-        did: string,
-        grantee: string,
-        ownerAddress: string
-    ) {
-        return this.send('grantPermission', ownerAddress, [
-            zeroX(did),
-            zeroX(grantee)
-        ])
+    public async grantPermission(did: string, grantee: string, ownerAddress: string) {
+        return this.send('grantPermission', ownerAddress, [zeroX(did), zeroX(grantee)])
     }
 
-    public async revokePermission(
-        did: string,
-        grantee: string,
-        ownerAddress: string
-    ) {
-        return this.send('revokePermission', ownerAddress, [
-            zeroX(did),
-            zeroX(grantee)
-        ])
+    public async revokePermission(did: string, grantee: string, ownerAddress: string) {
+        return this.send('revokePermission', ownerAddress, [zeroX(did), zeroX(grantee)])
     }
 
     public async getPermission(did: string, grantee: string): Promise<boolean> {

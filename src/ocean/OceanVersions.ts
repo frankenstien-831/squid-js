@@ -42,9 +42,7 @@ export class OceanVersions extends Instantiable {
      * Returns the instance of OceanVersions.
      * @return {Promise<OceanVersions>}
      */
-    public static async getInstance(
-        config: InstantiableConfig
-    ): Promise<OceanVersions> {
+    public static async getInstance(config: InstantiableConfig): Promise<OceanVersions> {
         const instance = new OceanVersions()
         instance.setInstanceConfig(config)
 
@@ -99,10 +97,7 @@ export class OceanVersions extends Instantiable {
 
         // Aquarius
         try {
-            const {
-                software: name,
-                version
-            } = await this.ocean.aquarius.getVersionInfo()
+            const { software: name, version } = await this.ocean.aquarius.getVersionInfo()
             versions.aquarius = {
                 name,
                 status: OceanPlatformTechStatus.Working,
@@ -124,9 +119,7 @@ export class OceanVersions extends Instantiable {
             .reduce((acc, network) => ({ ...acc, [network]: true }), {})
 
         let contractStatus = true
-        const contractList = techs
-            .map(({ contracts }) => contracts)
-            .filter(_ => !!_)
+        const contractList = techs.map(({ contracts }) => contracts).filter(_ => !!_)
         Array.from(contractList.map(Object.keys))
             .reduce((acc, _) => [...acc, ..._], [])
             .filter((_, i, list) => list.indexOf(_) === i)
@@ -146,9 +139,7 @@ export class OceanVersions extends Instantiable {
             })
 
         versions.status = {
-            ok: !techs.find(
-                ({ status }) => status !== OceanPlatformTechStatus.Working
-            ),
+            ok: !techs.find(({ status }) => status !== OceanPlatformTechStatus.Working),
             network: Object.keys(networks).length === 1,
             contracts: contractStatus
         }

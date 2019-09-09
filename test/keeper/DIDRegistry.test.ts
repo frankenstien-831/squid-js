@@ -21,13 +21,7 @@ describe('DIDRegistry', () => {
             const ownerAccount: Account = (await ocean.accounts.list())[0]
             const did = generateId()
             const data = 'my nice provider, is nice'
-            const receipt = await didRegistry.registerAttribute(
-                did,
-                `0123456789abcdef`,
-                [],
-                data,
-                ownerAccount.getId()
-            )
+            const receipt = await didRegistry.registerAttribute(did, `0123456789abcdef`, [], data, ownerAccount.getId())
             assert(receipt.status)
             assert(receipt.events.DIDAttributeRegistered)
         })
@@ -38,13 +32,7 @@ describe('DIDRegistry', () => {
             {
                 // register the first attribute
                 const data = 'my nice provider, is nice'
-                await didRegistry.registerAttribute(
-                    did,
-                    '0123456789abcdef',
-                    [],
-                    data,
-                    ownerAccount.getId()
-                )
+                await didRegistry.registerAttribute(did, '0123456789abcdef', [], data, ownerAccount.getId())
             }
             {
                 // register the second attribute with the same did
@@ -67,21 +55,11 @@ describe('DIDRegistry', () => {
             const ownerAccount: Account = (await ocean.accounts.list())[0]
             const did = generateId()
             const data = 'my nice provider, is nice'
-            await didRegistry.registerAttribute(
-                did,
-                '0123456789abcdef',
-                [],
-                data,
-                ownerAccount.getId()
-            )
+            await didRegistry.registerAttribute(did, '0123456789abcdef', [], data, ownerAccount.getId())
 
             const owner = await didRegistry.getDIDOwner(did)
 
-            assert.equal(
-                owner,
-                ownerAccount.getId(),
-                `Got ${owner} but expected ${ownerAccount.getId()}`
-            )
+            assert.equal(owner, ownerAccount.getId(), `Got ${owner} but expected ${ownerAccount.getId()}`)
         })
 
         it('should get 0x0 for a not registered did', async () => {
