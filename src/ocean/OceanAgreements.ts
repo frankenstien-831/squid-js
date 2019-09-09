@@ -153,10 +153,12 @@ export class OceanAgreements extends Instantiable {
         agreementId: string,
         extended?: false
     ): Promise<{ [condition: string]: ConditionState }>
+
     public async status(
         agreementId: string,
         extended: true
     ): Promise<AgreementConditionsStatus>
+
     public async status(agreementId: string, extended: boolean = false) {
         const {
             templateId

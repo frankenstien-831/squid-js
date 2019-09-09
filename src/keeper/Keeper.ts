@@ -7,11 +7,13 @@ import {
     Condition,
     LockRewardCondition,
     EscrowReward,
-    AccessSecretStoreCondition
+    AccessSecretStoreCondition,
+    ComputeExecutionCondition
 } from './contracts/conditions'
 import {
     AgreementTemplate,
-    EscrowAccessSecretStoreTemplate
+    EscrowAccessSecretStoreTemplate,
+    EscrowComputeExecutionTemplate
 } from './contracts/templates'
 import {
     TemplateStoreManager,
@@ -66,8 +68,14 @@ export class Keeper extends Instantiable {
                 accessSecretStoreCondition: AccessSecretStoreCondition.getInstance(
                     config
                 ),
+                computeExecutionCondition: ComputeExecutionCondition.getInstance(
+                    config
+                ),
                 // Templates
                 escrowAccessSecretStoreTemplate: EscrowAccessSecretStoreTemplate.getInstance(
+                    config
+                ),
+                escrowComputeExecutionTemplate: EscrowComputeExecutionTemplate.getInstance(
                     config
                 )
             })
@@ -98,14 +106,17 @@ export class Keeper extends Instantiable {
             lockRewardCondition: keeper.instances.lockRewardCondition,
             escrowReward: keeper.instances.escrowReward,
             accessSecretStoreCondition:
-                keeper.instances.accessSecretStoreCondition
+                keeper.instances.accessSecretStoreCondition,
+            computeExecutionCondition:
+                keeper.instances.computeExecutionCondition
         }
         // Conditions
         keeper.templates = {
             escrowAccessSecretStoreTemplate:
-                keeper.instances.escrowAccessSecretStoreTemplate
+                keeper.instances.escrowAccessSecretStoreTemplate,
+            escrowComputeExecutionTemplate:
+                keeper.instances.escrowComputeExecutionTemplate
         }
-
         // Utils
         keeper.utils = {
             eventHandler: new EventHandler(config)
@@ -163,6 +174,7 @@ export class Keeper extends Instantiable {
         lockRewardCondition: LockRewardCondition
         escrowReward: EscrowReward
         accessSecretStoreCondition: AccessSecretStoreCondition
+        computeExecutionCondition: ComputeExecutionCondition
     }
 
     /**
@@ -170,6 +182,7 @@ export class Keeper extends Instantiable {
      */
     public templates: {
         escrowAccessSecretStoreTemplate: EscrowAccessSecretStoreTemplate
+        escrowComputeExecutionTemplate: EscrowComputeExecutionTemplate
     }
 
     /**

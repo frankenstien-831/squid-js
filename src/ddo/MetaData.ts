@@ -69,6 +69,12 @@ export interface Service {
 
 export interface File {
     /**
+     * File name.
+     * @type {string}
+     */
+    name?: string
+
+    /**
      * File URL.
      * @type {string}
      */

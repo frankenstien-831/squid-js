@@ -6,6 +6,7 @@ import { Instantiable, InstantiableConfig } from '../../Instantiable.abstract'
 
 export abstract class ContractBase extends Instantiable {
     protected static instance = null
+
     public contractName: string
 
     private contract: Contract = null
