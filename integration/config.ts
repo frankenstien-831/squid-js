@@ -44,12 +44,7 @@ if (process.env.SEED_WORDS) {
     const seedphrase = process.env.SEED_WORDS
 
     // @ts-ignore
-    configJson.web3Provider = new HDWalletProvider(
-        seedphrase,
-        configJson.nodeUri,
-        0,
-        5
-    )
+    configJson.web3Provider = new HDWalletProvider(seedphrase, configJson.nodeUri, 0, 5)
 }
 
 export const config: Config & { forceVerbose: Config } = configJson as any

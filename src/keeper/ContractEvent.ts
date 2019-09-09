@@ -17,9 +17,7 @@ export class ContractEvent {
         private filter: { [key: string]: any }
     ) {}
 
-    public subscribe(
-        callback: (events: any[]) => void
-    ): ContractEventSubscription {
+    public subscribe(callback: (events: any[]) => void): ContractEventSubscription {
         const onEvent = async (blockNumber: number) => {
             const events = await this.contract.getEventData(this.eventName, {
                 filter: this.filter,

@@ -43,20 +43,14 @@ export class WebServiceConnector extends Instantiable {
         })
     }
 
-    public async downloadFile(
-        url: string,
-        destination?: string,
-        index?: number
-    ): Promise<string> {
+    public async downloadFile(url: string, destination?: string, index?: number): Promise<string> {
         const response = await this.get(url)
         if (!response.ok) {
             throw new Error('Response error.')
         }
         let filename
         try {
-            filename = response.headers
-                .get('content-disposition')
-                .match(/attachment;filename=(.+)/)[1]
+            filename = response.headers.get('content-disposition').match(/attachment;filename=(.+)/)[1]
         } catch {
             try {
                 filename = url.split('/').pop()
@@ -69,9 +63,7 @@ export class WebServiceConnector extends Instantiable {
             // eslint-disable-next-line no-async-promise-executor
             await new Promise(async (resolve, reject) => {
                 fs.mkdirSync(destination, { recursive: true })
-                const fileStream = fs.createWriteStream(
-                    `${destination}${filename}`
-                )
+                const fileStream = fs.createWriteStream(`${destination}${filename}`)
                 response.body.pipe(fileStream)
                 response.body.on('error', reject)
                 fileStream.on('finish', resolve)

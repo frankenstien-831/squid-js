@@ -1,8 +1,5 @@
 import { DDO } from '../ddo/DDO'
-import {
-    ServiceAgreementTemplateCondition,
-    ServiceAgreementTemplateParameter
-} from '../ddo/ServiceAgreementTemplate'
+import { ServiceAgreementTemplateCondition, ServiceAgreementTemplateParameter } from '../ddo/ServiceAgreementTemplate'
 
 function fillParameterWithDDO(
     parameter: ServiceAgreementTemplateParameter,
@@ -12,9 +9,7 @@ function fillParameterWithDDO(
         switch (name) {
             case 'amount':
             case 'price':
-                return String(
-                    ddo.findServiceByType('metadata').attributes.main.price
-                )
+                return String(ddo.findServiceByType('metadata').attributes.main.price)
             case 'assetId':
             case 'documentId':
             case 'documentKeyId':
