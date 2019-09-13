@@ -98,17 +98,24 @@ export class OceanAssets extends Instantiable {
                 service: [
                     {
                         type: 'access',
-                        creator: '',
-                        purchaseEndpoint: this.ocean.brizo.getPurchaseEndpoint(),
                         serviceEndpoint: this.ocean.brizo.getConsumeEndpoint(),
-                        name: 'dataAssetAccessServiceAgreement',
                         templateId: templates.escrowAccessSecretStoreTemplate.getAddress(),
-                        serviceAgreementTemplate
+                        attributes: {
+                            main: {
+                                creator: publisher.getId(),
+                                datePublished: metadata.main.datePublished,
+                                name: 'dataAssetAccessServiceAgreement',
+                                price: metadata.main.price,
+                                timeout: 3600
+                            },
+                            serviceAgreementTemplate
+                        }
                     },
                     {
                         type: 'authorization',
                         service: 'SecretStore',
-                        serviceEndpoint: secretStoreUri
+                        serviceEndpoint: secretStoreUri,
+                        attributes: { main: {} }
                     },
                     {
                         type: 'metadata',
@@ -121,11 +128,11 @@ export class OceanAssets extends Instantiable {
                             },
                             // Overwrites defaults
                             ...metadata,
+                            encryptedFiles,
                             // Cleaning not needed information
                             main: {
                                 ...metadata.main,
                                 contentUrls: undefined,
-                                encryptedFiles,
                                 files: metadata.main.files.map((file, index) => ({
                                     ...file,
                                     index,
@@ -239,7 +246,7 @@ export class OceanAssets extends Instantiable {
         } else {
             const files = await this.ocean.secretStore.decrypt(
                 did,
-                ddo.findServiceByType('metadata').attributes.main.encryptedFiles,
+                ddo.findServiceByType('metadata').attributes.encryptedFiles,
                 consumerAccount,
                 ddo.findServiceByType('authorization').serviceEndpoint
             )
@@ -272,7 +279,7 @@ export class OceanAssets extends Instantiable {
             const ddo = await this.resolve(did)
 
             const { keeper } = this.ocean
-            const templateName = ddo.findServiceByType('access').serviceAgreementTemplate.contractName
+            const templateName = ddo.findServiceByType('access').attributes.serviceAgreementTemplate.contractName
             const template = keeper.getTemplateByName(templateName)
             const accessCondition = keeper.conditions.accessSecretStoreCondition
 

@@ -133,6 +133,7 @@ export class OceanVersions extends Instantiable {
                             return
                         }
                         if (address !== _) {
+                            this.logger.warn(`Error on contract ${name}`)
                             contractStatus = false
                         }
                     })
