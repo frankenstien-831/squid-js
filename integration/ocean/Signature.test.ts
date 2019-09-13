@@ -58,7 +58,9 @@ describe('Signature', () => {
                     purchaseEndpoint: undefined,
                     serviceEndpoint: undefined,
                     templateId,
-                    serviceAgreementTemplate
+                    attributes: {
+                        serviceAgreementTemplate
+                    }
                 } as any,
                 {
                     type: 'metadata',

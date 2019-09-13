@@ -47,7 +47,7 @@ export class OceanAgreements extends Instantiable {
         const ddo = await this.ocean.aquarius.retrieveDDO(d)
         const agreementId: string = zeroX(generateId())
 
-        const templateName = ddo.findServiceByType('access').serviceAgreementTemplate.contractName
+        const templateName = ddo.findServiceByType('access').attributes.serviceAgreementTemplate.contractName
         const agreementConditionsIds = await this.ocean.keeper
             .getTemplateByName(templateName)
             .getAgreementIdsFromDDO(agreementId, ddo, consumer.getId(), consumer.getId())
@@ -113,7 +113,7 @@ export class OceanAgreements extends Instantiable {
         const d: DID = DID.parse(did)
         const ddo = await this.ocean.aquarius.retrieveDDO(d)
 
-        const templateName = ddo.findServiceById<'access'>(index).serviceAgreementTemplate.contractName
+        const templateName = ddo.findServiceById<'access'>(index).attributes.serviceAgreementTemplate.contractName
         await this.ocean.keeper
             .getTemplateByName(templateName)
             .createAgreementFromDDO(agreementId, ddo, consumer.getId(), publisher.getId())

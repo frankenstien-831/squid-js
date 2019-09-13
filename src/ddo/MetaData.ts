@@ -203,8 +203,6 @@ export interface MetaDataMain {
      */
     checksum?: string
 
-    encryptedFiles?: any
-
     encryptedService?: any
 
     workflow?: Workflow
@@ -339,6 +337,7 @@ export interface AdditionalInformation {
 
 export interface MetaData {
     main: MetaDataMain
+    encryptedFiles?: string
     additionalInformation?: AdditionalInformation
     curation?: Curation
 }

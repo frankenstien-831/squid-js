@@ -19,6 +19,12 @@ describe('Authentication Token', () => {
         ;[account1, account2] = await ocean.accounts.list()
     })
 
+    after(async () => {
+        try {
+            localStorage.clear()
+        } catch {}
+    })
+
     it('should generate a token', async () => {
         const token = await ocean.auth.get(account1)
 
