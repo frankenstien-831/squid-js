@@ -8,6 +8,9 @@ export interface ServiceCommon {
     type: ServiceType
     index: number
     serviceEndpoint?: string
+    attributes: any & {
+        main: { [key: string]: any }
+    }
 }
 
 export interface ServiceAuthorization extends ServiceCommon {
@@ -22,12 +25,20 @@ export interface ServiceMetadata extends ServiceCommon {
 
 export interface ServiceAccess extends ServiceCommon {
     type: 'access'
-    name?: string
-    description?: string
-    creator?: string
     templateId?: string
-    purchaseEndpoint?: string
-    serviceAgreementTemplate?: ServiceAgreementTemplate
+    attributes: {
+        main: {
+            creator: string
+            name: string
+            datePublished: string
+            price: string
+            timeout: number
+        }
+        serviceAgreementTemplate?: ServiceAgreementTemplate
+        additionalInformation: {
+            description: string
+        }
+    }
 }
 
 export interface ServiceComputing extends ServiceCommon {

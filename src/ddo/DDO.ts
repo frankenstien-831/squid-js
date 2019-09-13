@@ -66,7 +66,7 @@ export class DDO {
      * @return {Service} Service.
      */
     public findServiceById<T extends ServiceType>(index: number): Service<T> {
-        if (!index) {
+        if (isNaN(index)) {
             throw new Error('index is not set')
         }
 

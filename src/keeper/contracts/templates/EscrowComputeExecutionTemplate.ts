@@ -18,7 +18,7 @@ export class EscrowComputeExecutionTemplate extends BaseEscrowTemplate {
     public async createAgreementFromDDO(agreementId: string, ddo: DDO, consumer: string, from?: string) {
         return !!(await this.createFullAgreement(
             ddo.shortId(),
-            ddo.findServiceByType('Metadata').metadata.base.price,
+            ddo.findServiceByType('metadata').attributes.main.price,
             consumer,
             from,
             agreementId
@@ -33,7 +33,7 @@ export class EscrowComputeExecutionTemplate extends BaseEscrowTemplate {
         } = await this.createFullAgreementData(
             agreementId,
             ddo.shortId(),
-            ddo.findServiceByType('Metadata').metadata.base.price,
+            ddo.findServiceByType('metadata').attributes.main.price,
             consumer
         )
         return [computeExecutionConditionId, lockRewardConditionId, escrowRewardId]
