@@ -63,9 +63,10 @@ export class Keeper extends Instantiable {
             })
 
             keeper.connected = true
-        } catch {
+        } catch (e) {
+            keeper.logger.error(e)
             keeper.connected = false
-            return
+            return keeper
         }
 
         // Optionals

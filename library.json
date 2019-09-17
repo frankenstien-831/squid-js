@@ -7,15 +7,19 @@
   "dependencies": [
     {
       "name": "keeper-contracts",
-      "version": "~0.10.3"
+      "version": "~0.12.0"
     },
     {
       "name": "brizo",
-      "version": "~0.3.14"
+      "version": "~0.5.2"
     },
     {
       "name": "aquarius",
-      "version": "~0.4.1"
+      "version": "~0.4.2"
+    },
+    {
+      "name": "events-handler",
+      "version": "~0.1.2"
     }
   ]
 }
