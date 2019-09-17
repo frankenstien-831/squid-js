@@ -33,7 +33,7 @@ script:
   - export ETH_PORT=18545; npm run test:cover
   - npm run build
   - npm run doc
-  - npm run integration:cover
+  - export SEED_WORDS="taxi music thumb unique chat sand crew more leg another off lamp"; npm run integration:cover
   - npm run report-coverage
 
 after_script:
