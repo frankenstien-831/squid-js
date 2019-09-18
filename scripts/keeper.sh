@@ -11,7 +11,7 @@ mkdir -p artifacts
 
 until [ $COMMAND_STATUS -eq 0 ] || [ $RETRY_COUNT -eq 120 ]; do
   keeper_contracts_docker_id=$(docker container ls | grep keeper-contracts | awk '{print $1}')
-  docker cp "${keeper_contracts_docker_id}":/keeper-contracts/artifacts/ready ./artifacts/ > /dev/null 2>&1
+  docker cp "${keeper_contracts_docker_id}":/keeper-contracts/artifacts/ready ./artifacts/
   COMMAND_STATUS=$?
   sleep 5
   (( RETRY_COUNT=RETRY_COUNT+1 ))
