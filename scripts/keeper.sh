@@ -9,7 +9,7 @@ printf '\n\e[33m◯ Waiting for contracts to be generated...\e[0m\n'
 
 mkdir -p artifacts
 
-until [ $COMMAND_STATUS -eq 0 ] || [ $RETRY_COUNT -eq 120 ]; do
+until [ $COMMAND_STATUS -eq 0 ] || [ $RETRY_COUNT -eq 240 ]; do
   keeper_contracts_docker_id=$(docker container ls | grep keeper-contracts | awk '{print $1}')
   docker cp "${keeper_contracts_docker_id}":/keeper-contracts/artifacts/ready ./artifacts/
   COMMAND_STATUS=$?
