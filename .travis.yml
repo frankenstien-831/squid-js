@@ -29,6 +29,12 @@ before_script:
   - rm -rf "${HOME}/.ocean/keeper-contracts/artifacts"
   - bash -x start_ocean.sh --no-commons --no-dashboard 2>&1 > start_ocean.log &
   - cd ..
+  - |
+      for i in $(seq 1 50); do
+        sleep 5
+        [ -f "${HOME}/.ocean/keeper-contracts/artifacts/ready" ] && break
+      done
+      ls -la "${HOME}/.ocean/keeper-contracts/artifacts/"
 
 script:
   - npm run lint
