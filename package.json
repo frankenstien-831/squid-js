@@ -83,7 +83,7 @@
     "mocha": "^6.2.0",
     "mock-local-storage": "^1.1.8",
     "nyc": "^14.1.1",
-    "ora": "^3.4.0",
+    "ora": "^4.0.0",
     "prettier": "^1.18.2",
     "source-map-support": "^0.5.13",
     "truffle-hdwallet-provider": "^1.0.17",
