@@ -11,9 +11,7 @@ export interface InstantiableConfig {
     logger?: Logger
 }
 
-export function generateIntantiableConfigFromConfig(
-    config: Config
-): Partial<InstantiableConfig> {
+export function generateIntantiableConfigFromConfig(config: Config): Partial<InstantiableConfig> {
     const logLevel =
         typeof config.verbose !== 'number'
             ? config.verbose
@@ -68,9 +66,7 @@ export abstract class Instantiable {
     public static async getInstance(...args: any[]): Promise<any>
 
     public static async getInstance(config: InstantiableConfig): Promise<any> {
-        LoggerInstance.warn(
-            'getInstance() methods has needs to be added to child class.'
-        )
+        LoggerInstance.warn('getInstance() methods has needs to be added to child class.')
     }
 
     protected static setInstanceConfig<T extends Instantiable>(

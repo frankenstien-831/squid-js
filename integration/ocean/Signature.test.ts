@@ -36,7 +36,7 @@ describe('Signature', () => {
         assert.equal(
             hash,
             '0x67901517c18a3d23e05806fff7f04235cc8ae3b1f82345b8bfb3e4b02b5800c7',
-            'The signatuere is not correct.'
+            'The signature is not correct.'
         )
     })
 
@@ -46,7 +46,6 @@ describe('Signature', () => {
         const did = `did:op:${'c'.repeat(64)}`
         const templateId = `0x${'f'.repeat(40)}`
         const agreementId = `0x${'e'.repeat(64)}`
-        const serviceDefinitionId = '0'
 
         const serviceAgreementTemplate = await templates.escrowAccessSecretStoreTemplate.getServiceAgreementTemplate()
 
@@ -54,17 +53,20 @@ describe('Signature', () => {
             id: did,
             service: [
                 {
-                    type: 'Access',
+                    type: 'access',
+                    index: 0,
                     purchaseEndpoint: undefined,
                     serviceEndpoint: undefined,
-                    serviceDefinitionId,
                     templateId,
-                    serviceAgreementTemplate
+                    attributes: {
+                        serviceAgreementTemplate
+                    }
                 } as any,
                 {
-                    type: 'Metadata',
-                    metadata: {
-                        base: {
+                    type: 'metadata',
+                    index: 1,
+                    attributes: {
+                        main: {
                             price: 10
                         }
                     }
@@ -74,20 +76,16 @@ describe('Signature', () => {
 
         const signature = await ocean.utils.agreements.signServiceAgreement(
             ddo,
-            serviceDefinitionId,
+            0,
             agreementId,
-            [
-                `0x${'1'.repeat(64)}`,
-                `0x${'2'.repeat(64)}`,
-                `0x${'3'.repeat(64)}`
-            ],
+            [`0x${'1'.repeat(64)}`, `0x${'2'.repeat(64)}`, `0x${'3'.repeat(64)}`],
             consumer
         )
 
         assert.equal(
             signature,
             '0x3aa8a1c48b8e582d694bbd4ba3a29fde573b78da9720dc48baeb831b2163e1fa6e10e983882ebf8a00f4124de2505136354fd146934053f0d58bba4eced5f8d000',
-            'The signatuere is not correct.'
+            'The signature is not correct.'
         )
     })
 })

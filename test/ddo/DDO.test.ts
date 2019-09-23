@@ -46,8 +46,7 @@ describe('DDO', () => {
             },
             {
                 type: 'CredentialRepositoryService',
-                serviceEndpoint:
-                    'https://repository.example.com/service/8377464'
+                serviceEndpoint: 'https://repository.example.com/service/8377464'
             },
             {
                 type: 'XdiService',
@@ -55,8 +54,7 @@ describe('DDO', () => {
             },
             {
                 type: 'HubService',
-                serviceEndpoint:
-                    'https://hub.example.com/.identity/did:op:0123456789abcdef/'
+                serviceEndpoint: 'https://hub.example.com/.identity/did:op:0123456789abcdef/'
             },
             {
                 type: 'MessagingService',
@@ -77,71 +75,45 @@ describe('DDO', () => {
                 serviceEndpoint: 'https://bops.example.com/enterprise/'
             },
             {
-                type: 'Consume',
+                type: 'consume',
                 serviceEndpoint:
                     'http://mybrizo.org/api/v1/brizo/services/consume?pubKey={pubKey}&serviceId={serviceId}&url={url}'
             },
             {
-                type: 'Compute',
+                type: 'compute',
                 serviceEndpoint:
                     'http://mybrizo.org/api/v1/brizo/services/compute?pubKey={pubKey}&serviceId={serviceId}&algo={algo}&container={container}'
             },
             {
-                type: 'Metadata',
-                serviceEndpoint:
-                    'http://myaquarius.org/api/v1/provider/assets/metadata/{did}',
-                metadata: {
-                    base: {
+                type: 'metadata',
+                index: 0,
+                serviceEndpoint: 'http://myaquarius.org/api/v1/provider/assets/metadata/{did}',
+                attributes: {
+                    main: {
                         name: 'UK Weather information 2011',
                         type: 'dataset',
-                        description:
-                            'Weather information of UK including temperature and humidity',
                         dateCreated: '2012-10-10T17:00:000Z',
                         datePublished: '2012-10-10T17:00:000Z',
                         author: 'Met Office',
                         license: 'CC-BY',
-                        copyrightHolder: 'Met Office',
-                        workExample:
-                            '423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68',
-                        links: [
-                            {
-                                sample1:
-                                    'http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-daily/'
-                            },
-                            {
-                                sample2:
-                                    'http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-averages-25km/'
-                            },
-                            {
-                                fieldsDescription:
-                                    'http://data.ceda.ac.uk/badc/ukcp09/'
-                            }
-                        ],
-                        inLanguage: 'en',
-                        categories: ['Economy', 'Data Science'],
-                        tags: [
-                            'weather',
-                            'uk',
-                            '2011',
-                            'temperature',
-                            'humidity'
-                        ],
                         price: 10,
                         files: [
                             {
                                 index: 0,
                                 checksum: 'efb2c764274b745f5fc37f97c6b0e761',
                                 contentLength: 4535431,
-                                resourceId:
-                                    'access-log2018-02-13-15-17-29-18386C502CAEA932'
+                                contentType: 'application/json',
+                                resourceId: 'access-log2018-02-13-15-17-29-18386C502CAEA932'
                             },
                             {
                                 index: 1,
                                 checksum: '085340abffh21495345af97c6b0e761',
-                                contentLength: 12324
+                                contentLength: 12324,
+                                contentType: 'application/json'
                             },
                             {
-                                index: 2
+                                index: 2,
+                                contentType: ''
                             }
                         ],
                         checksum: ''
@@ -152,16 +124,33 @@ describe('DDO', () => {
                         schema: 'Binary Voting'
                     },
                     additionalInformation: {
-                        updateFrecuency: 'yearly',
+                        description: 'Weather information of UK including temperature and humidity',
+                        copyrightHolder: 'Met Office',
+                        workExample: '423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68',
+                        links: [
+                            {
+                                sample1:
+                                    'http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-daily/'
+                            },
+                            {
+                                sample2:
+                                    'http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-averages-25km/'
+                            },
+                            {
+                                fieldsDescription: 'http://data.ceda.ac.uk/badc/ukcp09/'
+                            }
+                        ],
+                        inLanguage: 'en',
+                        categories: ['Economy', 'Data Science'],
+                        tags: ['weather', 'uk', '2011', 'temperature', 'humidity'],
+                        updateFrequency: 'yearly',
                         structuredMarkup: [
                             {
-                                uri:
-                                    'http://skos.um.es/unescothes/C01194/jsonld',
+                                uri: 'http://skos.um.es/unescothes/C01194/jsonld',
                                 mediaType: 'application/ld+json'
                             },
                             {
-                                uri:
-                                    'http://skos.um.es/unescothes/C01194/turtle',
+                                uri: 'http://skos.um.es/unescothes/C01194/turtle',
                                 mediaType: 'text/turtle'
                             }
                         ]
@@ -230,10 +219,7 @@ describe('DDO', () => {
             assert.instanceOf(ddo, DDO)
 
             assert.equal(ddo.id, testDDO.id)
-            assert.equal(
-                ddo.publicKey[0].publicKeyPem,
-                testDDO.publicKey[0].publicKeyPem
-            )
+            assert.equal(ddo.publicKey[0].publicKeyPem, testDDO.publicKey[0].publicKeyPem)
         })
 
         it('should properly deserialize from json file', async () => {
@@ -241,10 +227,7 @@ describe('DDO', () => {
             assert(ddo)
 
             assert.equal(ddo.id, jsonDDO.id)
-            assert.equal(
-                ddo.publicKey[0].publicKeyPem,
-                jsonDDO.publicKey[0].publicKeyPem
-            )
+            assert.equal(ddo.publicKey[0].publicKeyPem, jsonDDO.publicKey[0].publicKeyPem)
         })
     })
 
@@ -253,10 +236,7 @@ describe('DDO', () => {
             const ddo = new DDO(testDDO)
             const checksum = ddo.getChecksum()
 
-            assert.equal(
-                checksum,
-                '0x15f27a7a3c7b15d2b06dec7347c6b8da168adddd7df51a8ebbbe87b59b80049b'
-            )
+            assert.equal(checksum, '0x15f27a7a3c7b15d2b06dec7347c6b8da168adddd7df51a8ebbbe87b59b80049b')
         })
     })
 
@@ -265,11 +245,7 @@ describe('DDO', () => {
         const signature = `0x${'a'.repeat(130)}`
 
         it('should properly generate the proof', async () => {
-            const signTextSpy = spy.on(
-                ocean.utils.signature,
-                'signText',
-                () => signature
-            )
+            const signTextSpy = spy.on(ocean.utils.signature, 'signText', () => signature)
             const ddo = new DDO(testDDO)
             const checksum = ddo.getChecksum()
             const proof = await ddo.generateProof(ocean, publicKey)
@@ -294,11 +270,7 @@ describe('DDO', () => {
                 signaturValue: 'test'
             } as any
             const ddo = new DDO(testDDO)
-            const generateProofSpy = spy.on(
-                ddo,
-                'generateProof',
-                () => fakeProof
-            )
+            const generateProofSpy = spy.on(ddo, 'generateProof', () => fakeProof)
             await ddo.addProof(web3, publicKey)
 
             assert.equal(ddo.proof, fakeProof)

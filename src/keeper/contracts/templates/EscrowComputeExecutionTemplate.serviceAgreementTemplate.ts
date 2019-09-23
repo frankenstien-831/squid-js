@@ -1,23 +1,23 @@
 import { ServiceAgreementTemplate } from '../../../ddo/ServiceAgreementTemplate'
 
-export const escrowAccessSecretStoreTemplateServiceAgreementTemplate: ServiceAgreementTemplate = {
-    contractName: 'EscrowAccessSecretStoreTemplate',
+export const escrowComputeExecutionTemplateServiceAgreementTemplate: ServiceAgreementTemplate = {
+    contractName: 'EscrowComputeExecutionTemplate',
     events: [
         {
             name: 'AgreementCreated',
             actorType: 'consumer',
             handler: {
-                moduleName: 'escrowAccessSecretStoreTemplate',
+                moduleName: 'serviceExecutionTemplate',
                 functionName: 'fulfillLockRewardCondition',
                 version: '0.1'
             }
         }
     ],
-    fulfillmentOrder: ['lockReward.fulfill', 'accessSecretStore.fulfill', 'escrowReward.fulfill'],
+    fulfillmentOrder: ['lockReward.fulfill', 'serviceExecution.fulfill', 'escrowReward.fulfill'],
     conditionDependency: {
         lockReward: [],
-        accessSecretStore: [],
-        escrowReward: ['lockReward', 'accessSecretStore']
+        serviceExecution: [],
+        escrowReward: ['lockReward', 'serviceExecution']
     },
     conditions: [
         {
@@ -44,17 +44,17 @@ export const escrowAccessSecretStoreTemplateServiceAgreementTemplate: ServiceAgr
                     actorType: 'publisher',
                     handler: {
                         moduleName: 'lockRewardCondition',
-                        functionName: 'fulfillAccessSecretStoreCondition',
+                        functionName: 'fulfillServiceExecutionCondition',
                         version: '0.1'
                     }
                 }
             ]
         },
         {
-            name: 'accessSecretStore',
+            name: 'serviceExecution',
             timelock: 0,
             timeout: 0,
-            contractName: 'AccessSecretStoreCondition',
+            contractName: 'ComputeExecutionCondition',
             functionName: 'fulfill',
             parameters: [
                 {
@@ -73,8 +73,8 @@ export const escrowAccessSecretStoreTemplateServiceAgreementTemplate: ServiceAgr
                     name: 'Fulfilled',
                     actorType: 'publisher',
                     handler: {
-                        moduleName: 'accessSecretStore',
-                        functionName: 'fulfillEscrowRewardCondition',
+                        moduleName: 'serviceExecution',
+                        functionName: 'fulfillServiceExecutionCondition',
                         version: '0.1'
                     }
                 },
@@ -82,8 +82,8 @@ export const escrowAccessSecretStoreTemplateServiceAgreementTemplate: ServiceAgr
                     name: 'TimedOut',
                     actorType: 'consumer',
                     handler: {
-                        moduleName: 'accessSecretStore',
-                        functionName: 'fulfillEscrowRewardCondition',
+                        moduleName: 'serviceExec',
+                        functionName: 'fulfillServiceExecutionCondition',
                         version: '0.1'
                     }
                 }

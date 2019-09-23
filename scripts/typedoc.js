@@ -15,10 +15,7 @@ const outPath = './dist/squid-js.json'
 const files = ['./src/squid.ts']
 
 // specifically point to tsconfig, otherwise TypeDoc fails
-const config = typescript.findConfigFile(
-    './tsconfig.js',
-    typescript.sys.fileExists
-)
+const config = typescript.findConfigFile('./tsconfig.js', typescript.sys.fileExists)
 
 const generateJson = () => {
     const spinnerTypedoc = ora('Generating TypeDoc json...').start()

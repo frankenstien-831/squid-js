@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "10"
+  - "12"
 
 services:
   - docker
@@ -19,21 +19,28 @@ before_script:
   - ganache-cli --port 18545 > ganache-cli.log &
   - git clone https://github.com/oceanprotocol/barge
   - cd barge
-  - export AQUARIUS_VERSION=v0.3.8
-  - export BRIZO_VERSION=v0.4.4
-  - export KEEPER_VERSION=v0.11.1
-  - export EVENTS_HANDLER_VERSION=v0.1.2
+  - export AQUARIUS_VERSION=v0.4.2
+  - export BRIZO_VERSION=v0.5.2
+  - export KEEPER_VERSION=v0.12.0
+  - export EVENTS_HANDLER_VERSION=v0.2.0
   - export KEEPER_OWNER_ROLE_ADDRESS="0xe2DD09d719Da89e5a3D0F2549c7E24566e947260"
+  - rm -rf "${HOME}/.ocean/keeper-contracts/artifacts"
   - bash -x start_ocean.sh --no-pleuston --local-spree-node 2>&1 > start_ocean.log &
   - cd ..
+  - |
+      for i in $(seq 1 50); do
+        sleep 5
+        [ -f "${HOME}/.ocean/keeper-contracts/artifacts/ready" ] && break
+      done
+      ls -la "${HOME}/.ocean/keeper-contracts/artifacts/"
 
 script:
   - npm run lint
-  - ./scripts/keeper.sh
   - export ETH_PORT=18545; npm run test:cover
   - npm run build
   - npm run doc
-  - export SEED_WORDS="taxi music thumb unique chat sand crew more leg another off lamp"; npm run integration:cover
+  - ./scripts/keeper.sh
+  - npm run integration:cover
   - npm run report-coverage
 
 after_script:

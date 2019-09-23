@@ -24,14 +24,4 @@ export {
 export { AgreementTemplate } from './keeper/contracts/templates'
 export { Condition, ConditionState } from './keeper/contracts/conditions'
 
-export {
-    Ocean,
-    Account,
-    Config,
-    DID,
-    Logger,
-    Keeper,
-    conditions,
-    templates,
-    utils
-}
+export { Ocean, Account, Config, DID, Logger, Keeper, conditions, templates, utils }
