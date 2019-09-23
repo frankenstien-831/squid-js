@@ -39,8 +39,8 @@
   },
   "service": [
     {
-      "type": "Access",
-      "serviceDefinitionId": "0",
+      "type": "access",
+      "index": 0,
       "serviceEndpoint": "http://mybrizo.org/api/v1/brizo/services/consume?pubKey=${pubKey}&serviceId={serviceId}&url={url}",
       "purchaseEndpoint": "http://mybrizo.org/api/v1/brizo/services/access/purchase?",
       "templateId": "044852b2a670ade5407e78fb2863c51000000000000000000000000000000000",
@@ -58,9 +58,7 @@
           },
           "events": {
             "PaymentLocked": {
-              "actorType": [
-                "publisher"
-              ],
+              "actorType": ["publisher"],
               "handlers": [
                 {
                   "moduleName": "accessControl",
@@ -84,9 +82,7 @@
           },
           "events": {
             "PaymentReleased": {
-              "actorType": [
-                "publisher"
-              ],
+              "actorType": ["publisher"],
               "handlers": [
                 {
                   "moduleName": "serviceAgreement",
@@ -110,9 +106,7 @@
           },
           "events": {
             "AccessGranted": {
-              "actorType": [
-                "consumer"
-              ],
+              "actorType": ["consumer"],
               "handlers": [
                 {
                   "moduleName": "asset",
@@ -136,9 +130,7 @@
           },
           "events": {
             "PaymentRefund": {
-              "actorType": [
-                "consumer"
-              ],
+              "actorType": ["consumer"],
               "handlers": [
                 {
                   "moduleName": "serviceAgreement",
@@ -152,39 +144,47 @@
       ]
     },
     {
-      "type": "CloudCompute",
-      "serviceDefinitionId": "1",
+      "type": "compute",
+      "index": 1,
       "serviceEndpoint": "http://mybrizo.org/api/v1/brizo/services/compute?pubKey=${pubKey}&serviceId={serviceId}&algo={algo}&container={container}",
       "templateId": "044852b2a670ade5407e78fb2863c51000000000000000000000000000000002"
     },
     {
-      "type": "Metadata",
-      "serviceDefinitionId": "2",
+      "type": "metadata",
+      "index": 2,
       "serviceEndpoint": "http://myaquarius.org/api/v1/provider/assets/metadata/{did}",
-      "metadata": {
-        "base": {
+      "attributes": {
+        "main": {
           "name": "UK Weather information 2011",
           "type": "dataset",
-          "description": "Weather information of UK including temperature and humidity",
           "dateCreated": "2012-10-10T17:00:000Z",
           "author": "Met Office",
           "license": "CC-BY",
+          "price": 10,
+          "files": [
+            {
+              "index": 0,
+              "url": "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip",
+              "checksum": "085340abffh21495345af97c6b0e761",
+              "contentLength": 12324
+            },
+            {
+              "url": "https://testocnfiles.blob.core.windows.net/testfiles/testzkp2.zip"
+            }
+          ]
+        },
+        "curation": {
+          "rating": 0.93,
+          "numVotes": 123,
+          "schema": "Binary Voting"
+        },
+        "additionalInformation": {
+          "description": "Weather information of UK including temperature and humidity",
           "copyrightHolder": "Met Office",
           "workExample": "423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68",
           "contentUrls": [
             "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip"
           ],
-          "files": [
-            {
-                "index": 0,
-                "url": "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.zip",
-                "checksum": "085340abffh21495345af97c6b0e761",
-                "contentLength": 12324
-            },
-            {
-                "url": "https://testocnfiles.blob.core.windows.net/testfiles/testzkp2.zip"
-            }
-        ],
           "links": [
             {
               "name": "Sample of Asset Data",
@@ -200,14 +200,6 @@
           "inLanguage": "en",
           "categories": ["Economy", "Data Science"],
           "tags": ["weather", "uk", "2011", "temperature", "humidity"],
-          "price": 10
-        },
-        "curation": {
-          "rating": 0.93,
-          "numVotes": 123,
-          "schema": "Binary Voting"
-        },
-        "additionalInformation": {
           "updateFrequency": "yearly",
           "structuredMarkup": [
             {

@@ -39,10 +39,7 @@ describe('Account', () => {
             const balance = await account.getEtherBalance()
             const web3 = Web3Provider.getWeb3()
 
-            assert(
-                Number(web3.utils.toWei('100', 'ether')) === balance,
-                `ether did not match ${balance}`
-            )
+            assert(Number(web3.utils.toWei('100', 'ether')) === balance, `ether did not match ${balance}`)
         })
     })
 
@@ -52,10 +49,7 @@ describe('Account', () => {
             const balance = await account.getBalance()
             const web3 = Web3Provider.getWeb3()
 
-            assert(
-                Number(web3.utils.toWei('100', 'ether')) === balance.eth,
-                `ether did not match ${balance.eth}`
-            )
+            assert(Number(web3.utils.toWei('100', 'ether')) === balance.eth, `ether did not match ${balance.eth}`)
             assert(balance.ocn === 0, `tokens did not match ${balance.ocn}`)
         })
     })

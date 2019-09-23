@@ -4,7 +4,7 @@ export default class BrizoMock extends Brizo {
     public async initializeServiceAgreement(
         did: string,
         serviceAgreementId: string,
-        serviceDefinitionId: string,
+        index: number,
         signature: string,
         consumerPublicKey: string
     ): Promise<any> {

@@ -1,36 +1,50 @@
 import { MetaData } from './MetaData'
 import { ServiceAgreementTemplate } from './ServiceAgreementTemplate'
+import { Provider } from './ComputingProvider'
 
-export type ServiceType =
-    | 'Authorization'
-    | 'Metadata'
-    | 'Access'
-    | 'Compute'
-    | 'FitchainCompute'
+export type ServiceType = 'authorization' | 'metadata' | 'access' | 'compute' | 'computing' | 'fitchainCompute'
 
 export interface ServiceCommon {
     type: ServiceType
-    serviceDefinitionId?: string
+    index: number
     serviceEndpoint?: string
+    attributes: any & {
+        main: { [key: string]: any }
+    }
 }
 
 export interface ServiceAuthorization extends ServiceCommon {
-    type: 'Authorization'
+    type: 'authorization'
     service: 'SecretStore' | 'None' | 'RSAES-OAEP'
 }
 
 export interface ServiceMetadata extends ServiceCommon {
-    type: 'Metadata'
-    metadata: MetaData
+    type: 'metadata'
+    attributes: MetaData
 }
 
 export interface ServiceAccess extends ServiceCommon {
-    type: 'Access'
-    name?: string
-    description?: string
-    creator?: string
+    type: 'access'
     templateId?: string
-    purchaseEndpoint?: string
+    attributes: {
+        main: {
+            creator: string
+            name: string
+            datePublished: string
+            price: string
+            timeout: number
+        }
+        serviceAgreementTemplate?: ServiceAgreementTemplate
+        additionalInformation: {
+            description: string
+        }
+    }
+}
+
+export interface ServiceComputing extends ServiceCommon {
+    type: 'computing'
+    templateId?: string
+    provider?: Provider
     serviceAgreementTemplate?: ServiceAgreementTemplate
 }
 
@@ -38,15 +52,15 @@ export interface ServiceCompute extends ServiceCommon {
     templateId?: string
 }
 
-export type Service<
-    T extends ServiceType | 'default' = 'default'
-> = T extends 'Authorization'
+export type Service<T extends ServiceType | 'default' = 'default'> = T extends 'authorization'
     ? ServiceAuthorization
-    : T extends 'Metadata'
+    : T extends 'metadata'
     ? ServiceMetadata
-    : T extends 'Access'
+    : T extends 'computing'
+    ? ServiceComputing
+    : T extends 'access'
     ? ServiceAccess
-    : T extends 'Compute'
+    : T extends 'compute'
     ? ServiceCompute
     : T extends 'default'
     ? ServiceCommon

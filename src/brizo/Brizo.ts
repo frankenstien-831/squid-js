@@ -35,35 +35,27 @@ export class Brizo extends Instantiable {
         return `${this.url}${apiPath}/publish`
     }
 
-    public getComputeEndpoint(
-        pubKey: string,
-        serviceId: string,
-        _notUsed: string,
-        container: string
-    ) {
+    public getComputeEndpoint(pubKey: string, serviceIndex: number, _notUsed: string, container: string) {
         return `${this.url}${apiPath}/compute`
     }
 
     public async initializeServiceAgreement(
         did: string,
         serviceAgreementId: string,
-        serviceDefinitionId: string,
+        serviceIndex: number,
         signature: string,
         consumerAddress: string
     ): Promise<any> {
         const args = {
             did,
             serviceAgreementId,
-            serviceDefinitionId,
+            serviceIndex,
             signature,
             consumerAddress
         }
 
         try {
-            return await this.ocean.utils.fetch.post(
-                this.getPurchaseEndpoint(),
-                decodeURI(JSON.stringify(args))
-            )
+            return await this.ocean.utils.fetch.post(this.getPurchaseEndpoint(), decodeURI(JSON.stringify(args)))
         } catch (e) {
             this.logger.error(e)
             throw new Error('HTTP request failed')
@@ -80,10 +72,7 @@ export class Brizo extends Instantiable {
     ): Promise<string> {
         const signature =
             (await account.getToken()) ||
-            (await this.ocean.utils.signature.signText(
-                noZeroX(agreementId),
-                account.getId()
-            ))
+            (await this.ocean.utils.signature.signText(noZeroX(agreementId), account.getId()))
         const filesPromises = files
             .filter((_, i) => index === -1 || i === index)
             .map(async ({ index: i }) => {
@@ -94,11 +83,7 @@ export class Brizo extends Instantiable {
                 consumeUrl += `&signature=${signature}`
 
                 try {
-                    await this.ocean.utils.fetch.downloadFile(
-                        consumeUrl,
-                        destination,
-                        i
-                    )
+                    await this.ocean.utils.fetch.downloadFile(consumeUrl, destination, i)
                 } catch (e) {
                     this.logger.error('Error consuming assets')
                     this.logger.error(e)
@@ -109,12 +94,7 @@ export class Brizo extends Instantiable {
         return destination
     }
 
-    public async encrypt(
-        did: string,
-        signature: string,
-        document: any,
-        publisher: string
-    ): Promise<string> {
+    public async encrypt(did: string, signature: string, document: any, publisher: string): Promise<string> {
         const args = {
             documentId: did,
             signature,

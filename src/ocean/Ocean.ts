@@ -14,10 +14,7 @@ import Keeper from '../keeper/Keeper'
 
 import { Config } from '../models/Config'
 
-import {
-    Instantiable,
-    generateIntantiableConfigFromConfig
-} from '../Instantiable.abstract'
+import { Instantiable, generateIntantiableConfigFromConfig } from '../Instantiable.abstract'
 
 /**
  * Main interface for Ocean Protocol.
@@ -46,9 +43,7 @@ export class Ocean extends Instantiable {
         instance.auth = await OceanAuth.getInstance(instanceConfig)
         instance.assets = await OceanAssets.getInstance(instanceConfig)
         instance.agreements = await OceanAgreements.getInstance(instanceConfig)
-        instance.secretStore = await OceanSecretStore.getInstance(
-            instanceConfig
-        )
+        instance.secretStore = await OceanSecretStore.getInstance(instanceConfig)
         instance.tokens = await OceanTokens.getInstance(instanceConfig)
         instance.versions = await OceanVersions.getInstance(instanceConfig)
 

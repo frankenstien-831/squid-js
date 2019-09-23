@@ -38,33 +38,18 @@ describe('SignatureUtils', () => {
         })
 
         it('should sign a text as expected using password', async () => {
-            const signed = await ocean.utils.signature.signText(
-                text,
-                publicKey,
-                'test'
-            )
+            const signed = await ocean.utils.signature.signText(text, publicKey, 'test')
 
             assert.equal(signed, signature)
-            expect(personalSignSpy).to.have.been.called.with(
-                text,
-                publicKey,
-                'test'
-            )
+            expect(personalSignSpy).to.have.been.called.with(text, publicKey, 'test')
         })
     })
 
     describe('#verifyText', () => {
         it('should recover the privateKey of a signed message', async () => {
-            const personalRecoverSpy = spy.on(
-                web3.eth.personal,
-                'ecRecover',
-                () => publicKey
-            )
+            const personalRecoverSpy = spy.on(web3.eth.personal, 'ecRecover', () => publicKey)
 
-            const verifiedPublicKey = await ocean.utils.signature.verifyText(
-                text,
-                signature
-            )
+            const verifiedPublicKey = await ocean.utils.signature.verifyText(text, signature)
 
             assert.equal(publicKey, verifiedPublicKey)
             expect(personalRecoverSpy).to.have.been.called.with(text, signature)

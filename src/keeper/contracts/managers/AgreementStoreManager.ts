@@ -12,12 +12,8 @@ export interface AgreementData {
 }
 
 export class AgreementStoreManager extends ContractBase {
-    public static async getInstance(
-        config: InstantiableConfig
-    ): Promise<AgreementStoreManager> {
-        const templateStoreManeger: AgreementStoreManager = new AgreementStoreManager(
-            'AgreementStoreManager'
-        )
+    public static async getInstance(config: InstantiableConfig): Promise<AgreementStoreManager> {
+        const templateStoreManeger: AgreementStoreManager = new AgreementStoreManager('AgreementStoreManager')
         await templateStoreManeger.init(config)
         return templateStoreManeger
     }
@@ -27,14 +23,10 @@ export class AgreementStoreManager extends ContractBase {
     }
 
     public async getAgreement(agreementId: string) {
-        const {
-            did,
-            didOwner,
-            templateId,
-            conditionIds,
-            lastUpdatedBy,
-            blockNumberUpdated
-        } = await this.call('getAgreement', [zeroX(agreementId)])
+        const { did, didOwner, templateId, conditionIds, lastUpdatedBy, blockNumberUpdated } = await this.call(
+            'getAgreement',
+            [zeroX(agreementId)]
+        )
         return {
             did,
             didOwner,
