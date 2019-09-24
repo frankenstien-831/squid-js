@@ -1,6 +1,6 @@
 {
   "name": "@oceanprotocol/squid",
-  "version": "0.8.2",
+  "version": "1.0.0-beta.0",
   "description": "JavaScript client library for Ocean Protocol",
   "main": "./dist/node/squid.js",
   "typings": "./dist/node/squid.d.ts",
