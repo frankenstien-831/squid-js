@@ -50,7 +50,7 @@ export default class DIDRegistry extends ContractBase {
     }
 
     public async grantPermission(did: string, grantee: string, ownerAddress: string) {
-        return this.send('grantPermission', ownerAddress, [zeroX(did), zeroX(grantee)])
+        return this.send('grantPermission', ownerAddress, [didZeroX(did), zeroX(grantee)])
     }
 
     public async revokePermission(did: string, grantee: string, ownerAddress: string) {

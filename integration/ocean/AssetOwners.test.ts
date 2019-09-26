@@ -37,6 +37,16 @@ describe('Asset Owners', () => {
         assert.isTrue(isProvider)
     })
 
+    it('should be added correctly a permission on an asset', async () => {
+        const ddo = await ocean.assets.create(metadata as any, account1)
+
+        assert.isFalse(await ocean.keeper.didRegistry.getPermission(ddo.id, account2.getId()))
+
+        await ocean.keeper.didRegistry.grantPermission(ddo.id, account2.getId(), account1.getId())
+
+        assert.isTrue(await ocean.keeper.didRegistry.getPermission(ddo.id, account2.getId()))
+    })
+
     it('should get the assets owned by a user', async () => {
         const { length: initialLength } = await ocean.assets.ownerAssets(account2.getId())
 
