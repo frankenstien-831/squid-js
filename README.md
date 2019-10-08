@@ -135,7 +135,7 @@ Besides a running `ganache-cli` instance, a locally running Ocean network is req
 git clone https://github.com/oceanprotocol/barge
 cd barge
 
-./start_ocean.sh --no-pleuston
+./start_ocean.sh --no-commons
 ```
 
 In another terminal window, run this script and export the seed phrase:
