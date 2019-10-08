@@ -7,6 +7,8 @@ node_js:
 services:
   - docker
 
+sudo: required
+
 cache: npm
 
 matrix:
