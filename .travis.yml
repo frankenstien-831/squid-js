@@ -1,6 +1,8 @@
+dist: xenial
+sudo: required
 language: node_js
 node_js:
-  - "10"
+  - '10'
 
 services:
   - docker
@@ -24,7 +26,7 @@ before_script:
   - export KEEPER_VERSION=v0.11.1
   - export EVENTS_HANDLER_VERSION=v0.1.2
   - export KEEPER_OWNER_ROLE_ADDRESS="0xe2DD09d719Da89e5a3D0F2549c7E24566e947260"
-  - bash -x start_ocean.sh --no-pleuston --local-spree-node 2>&1 > start_ocean.log &
+  - bash -x start_ocean.sh --no-commons --local-spree-node 2>&1 > start_ocean.log &
   - cd ..
 
 script:
@@ -44,7 +46,7 @@ notifications:
 
 deploy:
   - provider: npm
-    email: "devops@oceanprotocol.com"
+    email: 'devops@oceanprotocol.com'
     api_key: ${NPM_TOKEN}
     skip_cleanup: true
     on:
