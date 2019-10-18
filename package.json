@@ -52,7 +52,7 @@
     "web3": "^1.2.0"
   },
   "dependencies": {
-    "@oceanprotocol/keeper-contracts": "^0.11.1",
+    "@oceanprotocol/keeper-contracts": "^0.12.4",
     "@oceanprotocol/secret-store-client": "0.0.15",
     "bignumber.js": "^9.0.0",
     "deprecated-decorator": "^0.1.6",
