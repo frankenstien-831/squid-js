@@ -1,4 +1,5 @@
 import { LogLevel } from '../utils/Logger'
+import Web3 from 'web3'
 export { LogLevel } from '../utils/Logger'
 
 export class Config {

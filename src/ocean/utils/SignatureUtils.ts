@@ -14,7 +14,7 @@ export class SignatureUtils extends Instantiable {
         const isMetaMask =
             this.web3 &&
             this.web3.currentProvider &&
-            this.web3.currentProvider.isMetaMask
+            (this.web3 as any).currentProvider.isMetaMask
         try {
             return await this.web3.eth.personal.sign(text, publicKey, password)
         } catch (e) {
@@ -24,7 +24,7 @@ export class SignatureUtils extends Instantiable {
             this.logger.warn('Error on personal sign.')
             this.logger.warn(e)
             try {
-                return await this.web3.eth.sign(text, publicKey, password)
+                return await this.web3.eth.sign(text, publicKey)
             } catch (e2) {
                 this.logger.error('Error on sign.')
                 this.logger.error(e2)
