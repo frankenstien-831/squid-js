@@ -1,6 +1,6 @@
 import { assert, expect, spy, use } from 'chai'
 import * as spies from 'chai-spies'
-import * as Web3 from 'web3'
+import Web3 from 'web3'
 
 import { DDO } from '../../src/ddo/DDO'
 import { Service } from '../../src/ddo/Service'

@@ -1,4 +1,4 @@
-import * as Web3 from 'web3'
+import Web3 from 'web3'
 import Config from './models/Config'
 import { Logger, LoggerInstance, LogLevel } from './utils'
 import Web3Provider from './keeper/Web3Provider'
