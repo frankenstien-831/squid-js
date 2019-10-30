@@ -17,7 +17,7 @@ describe('Signature', () => {
         ;[consumer] = await ocean.accounts.list()
     })
 
-    it('should generate the correct signature', async () => {
+    it('hashServiceAgreement should generate the correct signature', () => {
         const templateId = `0x${'f'.repeat(40)}`
         const agreementId = `0x${'e'.repeat(64)}`
 
@@ -25,7 +25,7 @@ describe('Signature', () => {
         const lockId = `0x${'b'.repeat(64)}`
         const escrowId = `0x${'c'.repeat(64)}`
 
-        const hash = await ocean.utils.agreements.hashServiceAgreement(
+        const hash = ocean.utils.agreements.hashServiceAgreement(
             templateId,
             agreementId,
             [accessId, lockId, escrowId],
@@ -36,11 +36,11 @@ describe('Signature', () => {
         assert.equal(
             hash,
             '0x67901517c18a3d23e05806fff7f04235cc8ae3b1f82345b8bfb3e4b02b5800c7',
-            'The signatuere is not correct.'
+            'The signature is not correct.'
         )
     })
 
-    it('should generate the correct signature', async () => {
+    it('signServiceAgreement should generate the correct signature', async () => {
         const { templates } = ocean.keeper
 
         const did = `did:op:${'c'.repeat(64)}`
@@ -86,8 +86,8 @@ describe('Signature', () => {
 
         assert.equal(
             signature,
-            '0x3aa8a1c48b8e582d694bbd4ba3a29fde573b78da9720dc48baeb831b2163e1fa6e10e983882ebf8a00f4124de2505136354fd146934053f0d58bba4eced5f8d000',
-            'The signatuere is not correct.'
+            '0x3aa8a1c48b8e582d694bbd4ba3a29fde573b78da9720dc48baeb831b2163e1fa6e10e983882ebf8a00f4124de2505136354fd146934053f0d58bba4eced5f8d01b',
+            'The signature is not correct.'
         )
     })
 })

@@ -86,9 +86,7 @@ export class ServiceAgreement extends Instantiable {
             { type: 'bytes32', value: zeroX(serviceAgreementId) }
         ]
 
-        // return this.web3.utils.soliditySha3(...args).toString('hex')
-        const sha3 = this.web3.utils.soliditySha3(...args)
-        return this.web3.utils.toHex(sha3)
+        return this.web3.utils.soliditySha3(...args)
     }
 
     private getTimeValuesFromService(
