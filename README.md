@@ -102,11 +102,12 @@ npm start
 
 ### Unit Tests
 
-For unit tests, running [`ganache-cli`](https://github.com/trufflesuite/ganache-cli) is required before starting the tests:
+For unit tests, running [`ganache-cli`](https://github.com/trufflesuite/ganache-cli) is required before starting the tests. It's best to start it on a different port so it doesn't clash with anything running in Barge:
 
 ```bash
 npm i -g ganache-cli
-ganache-cli
+ganache-cli --port 18545
+export ETH_PORT=18545
 ```
 
 To start unit tests, run:
