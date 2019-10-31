@@ -4,6 +4,11 @@ import Web3Provider from '../../src/keeper/Web3Provider'
 import Logger from '../../src/utils/Logger'
 import config from '../config'
 
+interface TestContract extends Contract {
+    testContract?: boolean
+    $initialized?: boolean
+}
+
 export default class TestContractHandler extends ContractHandler {
     public static async prepareContracts() {
         const web3 = Web3Provider.getWeb3(config)
@@ -134,20 +139,23 @@ export default class TestContractHandler extends ContractHandler {
         from: string,
         args: any[] = [],
         tokens: { [name: string]: string } = {}
-    ): Promise<any & { $initialized: boolean }> {
+    ): Promise<any> {
         const where = this.networkId
 
         // dont redeploy if there is already something loaded
         if (TestContractHandler.hasContract(name, where)) {
-            const contract = await ContractHandler.getContract(name, where)
-            if ((contract as any).testContract) {
+            const contract: TestContract = ContractHandler.getContract(
+                name,
+                where
+            )
+            if (contract.testContract) {
                 return { ...contract, $initialized: true }
             }
         }
 
         const web3 = Web3Provider.getWeb3(config)
 
-        let contractInstance: Contract
+        let contractInstance: TestContract
         try {
             Logger.log('Deploying', name)
             const sendConfig = {
@@ -188,7 +196,7 @@ export default class TestContractHandler extends ContractHandler {
                     .initialize(...args)
                     .send(sendConfig)
             }
-            ;(contractInstance as any).testContract = true
+            contractInstance.testContract = true
             ContractHandler.setContract(name, where, contractInstance)
             // Logger.log("Deployed", name, "at", contractInstance.options.address);
         } catch (err) {

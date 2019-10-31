@@ -22,7 +22,7 @@ describe('ContractEvent', () => {
     })
 
     describe('#subscribe()', () => {
-        it('should listen the events', async () => {
+        it('should be able to listen to events', async () => {
             const event = eventHandler.getEvent(
                 ocean.keeper.token,
                 'Transfer',
@@ -55,7 +55,7 @@ describe('ContractEvent', () => {
     })
 
     describe('#once()', () => {
-        it('should listen only once', async () => {
+        it('should listen to event only once', async () => {
             const to = account
             const event = eventHandler.getEvent(
                 ocean.keeper.token,
@@ -65,7 +65,7 @@ describe('ContractEvent', () => {
             let canBeRejected = false
 
             const waitUntilEvent = new Promise((resolve, reject) => {
-                event.once(events => {
+                event.once(() => {
                     if (canBeRejected) {
                         reject(new Error(''))
                     }
