@@ -52,8 +52,8 @@
     "web3": "^1.2.0"
   },
   "dependencies": {
-    "@oceanprotocol/keeper-contracts": "^0.12.6",
-    "@oceanprotocol/secret-store-client": "0.0.15",
+    "@oceanprotocol/keeper-contracts": "^0.12.7",
+    "@oceanprotocol/secret-store-client": "^0.0.15",
     "bignumber.js": "^9.0.0",
     "deprecated-decorator": "^0.1.6",
     "node-fetch": "^2.6.0",
@@ -68,8 +68,8 @@
     "@types/chai": "^4.2.4",
     "@types/chai-spies": "^1.0.1",
     "@types/mocha": "^5.2.7",
-    "@types/node": "^12.12.0",
-    "@types/node-fetch": "^2.5.2",
+    "@types/node": "^12.12.5",
+    "@types/node-fetch": "^2.5.3",
     "@typescript-eslint/eslint-plugin": "^2.6.0",
     "@typescript-eslint/parser": "^2.6.0",
     "auto-changelog": "^1.16.2",
@@ -92,7 +92,7 @@
     "typescript": "^3.6.4",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.9",
+    "webpack-cli": "^3.3.10",
     "webpack-merge": "^4.2.2"
   },
   "nyc": {
