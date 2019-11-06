@@ -1,13 +1,8 @@
-import { Contract } from 'web3-eth-contract'
+import Contract from 'web3-eth-contract'
 import ContractHandler from '../../src/keeper/ContractHandler'
 import Web3Provider from '../../src/keeper/Web3Provider'
 import Logger from '../../src/utils/Logger'
 import config from '../config'
-
-interface TestContract extends Contract {
-    testContract?: boolean
-    $initialized?: boolean
-}
 
 export default class TestContractHandler extends ContractHandler {
     public static async prepareContracts() {
@@ -139,15 +134,12 @@ export default class TestContractHandler extends ContractHandler {
         from: string,
         args: any[] = [],
         tokens: { [name: string]: string } = {}
-    ): Promise<any> {
+    ): Promise<Contract & { $initialized: boolean }> {
         const where = this.networkId
 
         // dont redeploy if there is already something loaded
         if (TestContractHandler.hasContract(name, where)) {
-            const contract: TestContract = ContractHandler.getContract(
-                name,
-                where
-            )
+            const contract = await ContractHandler.getContract(name, where)
             if (contract.testContract) {
                 return { ...contract, $initialized: true }
             }
@@ -155,13 +147,13 @@ export default class TestContractHandler extends ContractHandler {
 
         const web3 = Web3Provider.getWeb3(config)
 
-        let contractInstance: TestContract
+        let contractInstance: Contract
         try {
             Logger.log('Deploying', name)
             const sendConfig = {
                 from,
                 gas: 3000000,
-                gasPrice: String(10000000000)
+                gasPrice: 10000000000
             }
             const artifact = require(`@oceanprotocol/keeper-contracts/artifacts/${name}.development.json`)
             const tempContract = new web3.eth.Contract(

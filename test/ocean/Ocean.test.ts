@@ -25,7 +25,7 @@ describe('Ocean', () => {
     })
 
     describe('#getInstance()', () => {
-        it('should get an instance of cean', async () => {
+        it('should get an instance of Ocean', async () => {
             const oceanInstance: Ocean = await Ocean.getInstance(config)
 
             assert(oceanInstance)

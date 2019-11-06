@@ -78,7 +78,7 @@ export class ServiceAgreement extends Instantiable {
         timelocks: number[],
         timeouts: number[]
     ): string {
-        const args: any = [
+        const args = [
             { type: 'address', value: zeroX(serviceAgreementTemplateId) },
             { type: 'bytes32[]', value: valueHashes.map(zeroX) },
             { type: 'uint256[]', value: timelocks },
@@ -86,7 +86,7 @@ export class ServiceAgreement extends Instantiable {
             { type: 'bytes32', value: zeroX(serviceAgreementId) }
         ]
 
-        return this.web3.utils.soliditySha3(...args)
+        return this.web3.utils.soliditySha3(...args).toString('hex')
     }
 
     private getTimeValuesFromService(

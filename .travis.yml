@@ -26,16 +26,17 @@ before_script:
   - export KEEPER_VERSION=v0.12.7
   - export EVENTS_HANDLER_VERSION=v0.1.2
   - export KEEPER_OWNER_ROLE_ADDRESS="0xe2DD09d719Da89e5a3D0F2549c7E24566e947260"
+  - rm -rf "${HOME}/.ocean/keeper-contracts/artifacts"
   - bash -x start_ocean.sh --no-commons --no-dashboard 2>&1 > start_ocean.log &
   - cd ..
 
 script:
   - npm run lint
-  - ./scripts/keeper.sh
   - export ETH_PORT=18545; npm run test:cover
   - npm run build
   - npm run doc
-  - export SEED_WORDS="taxi music thumb unique chat sand crew more leg another off lamp"; npm run integration:cover
+  - ./scripts/keeper.sh
+  - npm run integration:cover
   - npm run report-coverage
 
 after_script:

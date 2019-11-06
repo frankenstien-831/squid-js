@@ -1,3 +1,4 @@
+import Web3 from 'web3'
 import Web3Provider from '../keeper/Web3Provider'
 import LoggerInstance from '../utils/Logger'
 import { Ocean } from '../ocean/Ocean'
@@ -164,7 +165,7 @@ export class DDO {
      * @return {Promise<Proof>}           Proof object.
      */
     public async addProof(
-        web3: any,
+        web3: Web3,
         publicKey: string,
         password?: string
     ): Promise<void> {
