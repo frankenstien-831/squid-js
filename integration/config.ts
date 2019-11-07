@@ -1,5 +1,5 @@
-import HDWalletProvider from '@truffle/hdwallet-provider'
 import { Config } from '../src'
+const HDWalletProvider = require('@truffle/hdwallet-provider')
 
 const configJson: Config = {
     nodeUri: 'http://localhost:8545',

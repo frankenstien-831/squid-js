@@ -115,15 +115,13 @@
   },
   "release-it": {
     "hooks": {
-      "before:init": "npm run doc:json",
-      "after:bump": "npm run changelog"
+      "after:bump": "npm run changelog && npm run doc:json"
     },
     "plugins": {
       "@release-it/bumper": {
         "out": [
           "package.json",
-          "package-lock.json",
-          "dist/squid-js.json"
+          "package-lock.json"
         ]
       }
     },

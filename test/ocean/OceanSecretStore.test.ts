@@ -1,5 +1,5 @@
 import { assert, expect, spy, use } from 'chai'
-import spies from 'chai-spies'
+import * as spies from 'chai-spies'
 
 import Account from '../../src/ocean/Account'
 import { Ocean } from '../../src/ocean/Ocean'
