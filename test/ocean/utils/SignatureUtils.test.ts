@@ -1,5 +1,5 @@
 import { assert, expect, spy, use } from 'chai'
-import spies from 'chai-spies'
+import * as spies from 'chai-spies'
 
 import config from '../../config'
 
