@@ -1,4 +1,4 @@
-import * as Web3 from 'web3'
+import Web3 from 'web3'
 import Web3Provider from '../keeper/Web3Provider'
 import LoggerInstance from '../utils/Logger'
 import { Ocean } from '../ocean/Ocean'

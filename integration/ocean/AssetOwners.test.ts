@@ -1,9 +1,6 @@
 import { assert } from 'chai'
-
 import { config } from '../config'
-
 import { getMetadata } from '../utils'
-
 import { Ocean, Account } from '../../src' // @oceanprotocol/squid
 
 describe('Asset Owners', () => {
@@ -25,15 +22,14 @@ describe('Asset Owners', () => {
         }
     })
 
-    it('should be set correctly the owner of an asset', async () => {
+    it('should set the owner of an asset', async () => {
         const ddo = await ocean.assets.create(metadata as any, account1)
-
         const owner = await ocean.assets.owner(ddo.id)
 
         assert.equal(owner, account1.getId())
     })
 
-    it('should be set correctly the provider of an asset', async () => {
+    it('should set the provider of an asset', async () => {
         const ddo = await ocean.assets.create(metadata as any, account1)
 
         const isProvider = await ocean.keeper.didRegistry.isDIDProvider(
@@ -61,7 +57,7 @@ describe('Asset Owners', () => {
         assert.equal(finalLength - initialLength, 1)
     })
 
-    it('should get the assets that can be consumer by a user', async () => {
+    it('should get the assets that can be consumed by a user', async () => {
         const { length: initialLength } = await ocean.assets.consumerAssets(
             account2.getId()
         )

@@ -24,7 +24,7 @@ export class SignatureUtils extends Instantiable {
             this.logger.warn('Error on personal sign.')
             this.logger.warn(e)
             try {
-                return await this.web3.eth.sign(text, publicKey, password)
+                return await this.web3.eth.sign(text, publicKey)
             } catch (e2) {
                 this.logger.error('Error on sign.')
                 this.logger.error(e2)

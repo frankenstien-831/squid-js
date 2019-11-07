@@ -1,6 +1,6 @@
 import { assert, expect, spy, use } from 'chai'
-import * as spies from 'chai-spies'
-import * as Web3 from 'web3'
+import spies from 'chai-spies'
+import Web3 from 'web3'
 
 import { DDO } from '../../src/ddo/DDO'
 import { Service } from '../../src/ddo/Service'
@@ -177,7 +177,7 @@ describe('DDO', () => {
     beforeEach(async () => {
         await TestContractHandler.prepareContracts()
         ocean = await Ocean.getInstance(config)
-        web3 = (ocean as any).web3
+        ;({ web3 } = ocean as any)
     })
 
     afterEach(() => {

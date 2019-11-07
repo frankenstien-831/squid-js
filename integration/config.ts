@@ -1,4 +1,4 @@
-import * as HDWalletProvider from 'truffle-hdwallet-provider'
+import HDWalletProvider from '@truffle/hdwallet-provider'
 import { Config } from '../src'
 
 const configJson: Config = {

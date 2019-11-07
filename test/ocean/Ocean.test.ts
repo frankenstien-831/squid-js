@@ -1,5 +1,5 @@
 import { assert, spy, use } from 'chai'
-import * as spies from 'chai-spies'
+import spies from 'chai-spies'
 
 import { SearchQuery } from '../../src/aquarius/Aquarius'
 import Account from '../../src/ocean/Account'
@@ -25,7 +25,7 @@ describe('Ocean', () => {
     })
 
     describe('#getInstance()', () => {
-        it('should get an instance of cean', async () => {
+        it('should get an instance of Ocean', async () => {
             const oceanInstance: Ocean = await Ocean.getInstance(config)
 
             assert(oceanInstance)
