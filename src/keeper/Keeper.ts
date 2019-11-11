@@ -212,7 +212,7 @@ export class Keeper extends Instantiable {
      * @return {Promise<string>} Network name.
      */
     public getNetworkName(): Promise<string> {
-        return this.web3.eth.net.getId().then(networkId => {
+        return this.web3.eth.net.getId().then((networkId: number) => {
             switch (networkId) {
                 case 1:
                     return 'Main'

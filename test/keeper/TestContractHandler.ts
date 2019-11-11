@@ -1,8 +1,13 @@
-import Contract from 'web3-eth-contract'
+import { Contract } from 'web3-eth-contract'
 import ContractHandler from '../../src/keeper/ContractHandler'
 import Web3Provider from '../../src/keeper/Web3Provider'
 import Logger from '../../src/utils/Logger'
 import config from '../config'
+
+interface ContractTest extends Contract {
+    testContract?: boolean
+    $initialized?: boolean
+}
 
 export default class TestContractHandler extends ContractHandler {
     public static async prepareContracts() {
@@ -106,26 +111,26 @@ export default class TestContractHandler extends ContractHandler {
         from: string,
         args: any[] = [],
         tokens: { [name: string]: string } = {}
-    ): Promise<Contract & { $initialized: boolean }> {
+    ): Promise<ContractTest> {
         const where = this.networkId
 
         // dont redeploy if there is already something loaded
         if (TestContractHandler.hasContract(name, where)) {
-            const contract = await ContractHandler.getContract(name, where)
+            const contract: ContractTest = await ContractHandler.getContract(name, where)
             if (contract.testContract) {
-                return { ...contract, $initialized: true }
+                return { ...contract, $initialized: true } as any
             }
         }
 
         const web3 = Web3Provider.getWeb3(config)
 
-        let contractInstance: Contract
+        let contractInstance: ContractTest
         try {
             Logger.log('Deploying', name)
             const sendConfig = {
                 from,
                 gas: 3000000,
-                gasPrice: 10000000000
+                gasPrice: String(10000000000)
             }
             const artifact = require(`@oceanprotocol/keeper-contracts/artifacts/${name}.development.json`)
             const tempContract = new web3.eth.Contract(artifact.abi, artifact.address)
@@ -154,7 +159,7 @@ export default class TestContractHandler extends ContractHandler {
             }
             contractInstance.testContract = true
             ContractHandler.setContract(name, where, contractInstance)
-            // Logger.log("Deployed", name, "at", contractInstance.options.address);
+            // Logger.log('Deployed', name, 'at', contractInstance.options.address)
         } catch (err) {
             Logger.error('Deployment failed for', name, 'with args', JSON.stringify(args, null, 2), err.message)
             throw err
