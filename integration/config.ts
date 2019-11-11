@@ -1,9 +1,9 @@
 import { Config } from '../src'
-const HDWalletProvider = require('@truffle/hdwallet-provider')
+import HDWalletProvider from '@truffle/hdwallet-provider'
 
 const configJson: Config = {
     nodeUri: 'http://localhost:8545',
-    aquariusUri: 'http://172.15.0.15:5000',
+    aquariusUri: 'http://aquarius:5000',
     brizoUri: 'http://localhost:8030',
     secretStoreUri: 'http://localhost:12001',
     brizoAddress: '0x068ed00cf0441e4829d9784fcbe7b9e26d4bd8d0',

@@ -1,5 +1,5 @@
 import { assert, spy, use } from 'chai'
-import * as spies from 'chai-spies'
+import spies from 'chai-spies'
 import { Ocean } from '../../src/ocean/Ocean'
 import { Aquarius, SearchQuery } from '../../src/aquarius/Aquarius'
 import { DDO } from '../../src/ddo/DDO'

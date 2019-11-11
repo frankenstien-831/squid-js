@@ -1,4 +1,4 @@
-import * as assert from 'assert'
+import assert from 'assert'
 import * as squid from '../src/squid'
 
 describe('Squid', () => {
