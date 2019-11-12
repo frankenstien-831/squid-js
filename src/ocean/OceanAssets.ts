@@ -132,7 +132,6 @@ export class OceanAssets extends Instantiable {
                             // Cleaning not needed information
                             main: {
                                 ...metadata.main,
-                                contentUrls: undefined,
                                 files: metadata.main.files.map((file, index) => ({
                                     ...file,
                                     index,
@@ -352,7 +351,7 @@ export class OceanAssets extends Instantiable {
      * @param  {string} owner Owner address.
      * @return {Promise<string[]>} List of DIDs.
      */
-    public async ownerAssets(owner: string) {
+    public async ownerAssets(owner: string): Promise<string[]> {
         return this.ocean.keeper.didRegistry.getAttributesByOwner(owner)
     }
 
@@ -361,7 +360,7 @@ export class OceanAssets extends Instantiable {
      * @param  {string} consumer Consumer address.
      * @return {Promise<string[]>} List of DIDs.
      */
-    public async consumerAssets(consumer: string) {
+    public async consumerAssets(consumer: string): Promise<string[]> {
         return (await this.ocean.keeper.conditions.accessSecretStoreCondition.getGrantedDidByConsumer(consumer)).map(
             ({ did }) => did
         )
