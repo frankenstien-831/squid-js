@@ -32,10 +32,10 @@ before_script:
 
 script:
   - npm run lint
+  - ./scripts/keeper.sh
   - export ETH_PORT=18545; npm run test:cover
   - npm run build
   - npm run doc
-  - ./scripts/keeper.sh
   - npm run integration:cover
   - npm run report-coverage
 
