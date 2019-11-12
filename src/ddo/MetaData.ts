@@ -84,7 +84,14 @@ export interface File {
      * File index.
      * @type {number}
      */
-    index?: number
+    index: number
+
+    /**
+     * File format, if applicable.
+     * @type {string}
+     * @example "text/csv"
+     */
+    contentType: string
 
     /**
      * File checksum.
@@ -102,7 +109,7 @@ export interface File {
      * File content length.
      * @type {[type]}
      */
-    contentLength?: number
+    contentLength?: string
 
     /**
      * Resource ID (depending on the source).
@@ -123,13 +130,6 @@ export interface File {
      * @example "zip"
      */
     compression?: string
-
-    /**
-     * File format, if applicable.
-     * @type {string}
-     * @example "text/csv"
-     */
-    contentType?: string
 }
 
 /**
@@ -196,12 +196,6 @@ export interface MetaDataMain {
      * @type {File[]}
      */
     files: File[]
-
-    /**
-     * SHA3 hash of concatenated values: [list of all file checksums] + name + author + license + did
-     * @type {string}
-     */
-    checksum?: string
 
     encryptedService?: any
 
