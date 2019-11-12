@@ -84,7 +84,7 @@ export interface File {
      * File index.
      * @type {number}
      */
-    index: number
+    index?: number
 
     /**
      * File format, if applicable.
