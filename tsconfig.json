@@ -3,6 +3,7 @@
     "resolveJsonModule": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "lib": ["es2017", "es6", "es7", "dom"],
     "declaration": true,
     "module": "commonjs",
