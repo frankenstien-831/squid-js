@@ -32,11 +32,7 @@ xdescribe('Consume Asset (Large size)', () => {
             ...baseMetadata,
             main: {
                 ...baseMetadata.main,
-                files: [
-                    {
-                        url: 'https://speed.hetzner.de/1GB.bin'
-                    }
-                ]
+                files: [{ index: 0, contentType: 'hello/hello', url: 'https://speed.hetzner.de/1GB.bin' }]
             }
         }
     })

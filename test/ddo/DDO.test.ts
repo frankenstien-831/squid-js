@@ -96,7 +96,7 @@ describe('DDO', () => {
                         datePublished: '2012-10-10T17:00:000Z',
                         author: 'Met Office',
                         license: 'CC-BY',
-                        price: 10,
+                        price: '10',
                         files: [
                             {
                                 index: 0,
@@ -115,8 +115,7 @@ describe('DDO', () => {
                                 index: 2,
                                 contentType: ''
                             }
-                        ],
-                        checksum: ''
+                        ]
                     },
                     curation: {
                         rating: 0.93,

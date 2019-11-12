@@ -159,7 +159,6 @@ export class OceanAssets extends Instantiable {
             const conditions = fillConditionsWithDDO(rawConditions, ddo)
             serviceAgreementTemplate.conditions = conditions
 
-            ddo.addChecksum()
             this.logger.log('Generating proof')
             observer.next(CreateProgressStep.GeneratingProof)
             await ddo.addProof(this.ocean, publisher.getId(), publisher.getPassword())
