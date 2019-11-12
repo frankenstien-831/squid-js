@@ -101,14 +101,14 @@ describe('DDO', () => {
                             {
                                 index: 0,
                                 checksum: 'efb2c764274b745f5fc37f97c6b0e761',
-                                contentLength: 4535431,
+                                contentLength: '4535431',
                                 contentType: 'application/json',
                                 resourceId: 'access-log2018-02-13-15-17-29-18386C502CAEA932'
                             },
                             {
                                 index: 1,
                                 checksum: '085340abffh21495345af97c6b0e761',
-                                contentLength: 12324,
+                                contentLength: '12324',
                                 contentType: 'application/json'
                             },
                             {
