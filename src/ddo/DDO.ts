@@ -1,6 +1,5 @@
 import * as Web3 from 'web3'
 import Web3Provider from '../keeper/Web3Provider'
-import LoggerInstance from '../utils/Logger'
 import { Ocean } from '../ocean/Ocean'
 import { Authentication } from './Authentication'
 import { Proof } from './Proof'
@@ -130,22 +129,10 @@ export class DDO {
     }
 
     /**
-     * Generated and adds the checksum.
-     */
-    public addChecksum(): void {
-        const metadataService = this.findServiceByType('metadata')
-        if (metadataService.attributes.main.checksum) {
-            LoggerInstance.log('Checksum already exists')
-            return
-        }
-        metadataService.attributes.main.checksum = this.getChecksum()
-    }
-
-    /**
      * Generates and adds a proof using personal sing on the DDO.
      * @param  {Web3}           web3      Web3 instance.
      * @param  {string}         publicKey Public key to be used on personal sign.
-     * @param  {string}         password  Password if it's requirted.
+     * @param  {string}         password  Password if it's required.
      * @return {Promise<Proof>}           Proof object.
      */
     public async addProof(web3: Web3, publicKey: string, password?: string): Promise<void> {
