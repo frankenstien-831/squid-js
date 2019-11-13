@@ -1,3 +1,4 @@
+import { TransactionReceipt } from 'web3-core'
 import ContractBase from './ContractBase'
 import { zeroX, didPrefixed, didZeroX } from '../../utils'
 import { InstantiableConfig } from '../../Instantiable.abstract'
@@ -59,5 +60,9 @@ export default class DIDRegistry extends ContractBase {
 
     public async getPermission(did: string, grantee: string): Promise<boolean> {
         return this.call('getPermission', [didZeroX(did), zeroX(grantee)])
+    }
+
+    public async transferDIDOwnership(did: string, owner: string, newOwner: string): Promise<TransactionReceipt> {
+        return this.send('transferDIDOwnership', owner, [zeroX(did), zeroX(newOwner)])
     }
 }
