@@ -13,7 +13,7 @@ describe('DIDRegistry', () => {
     before(async () => {
         await TestContractHandler.prepareContracts()
         ocean = await Ocean.getInstance(config)
-        didRegistry = ocean.keeper.didRegistry
+        ;({ didRegistry } = ocean.keeper)
     })
 
     describe('#registerAttribute()', () => {
@@ -65,6 +65,24 @@ describe('DIDRegistry', () => {
         it('should get 0x0 for a not registered did', async () => {
             const owner = await didRegistry.getDIDOwner('1234')
             assert.equal(owner, `0x${'0'.repeat(40)}`)
+        })
+    })
+
+    describe('#transferDIDOwnership()', () => {
+        it('should be able to transfer ownership', async () => {
+            // create and register DID
+            const ownerAccount: Account = (await ocean.accounts.list())[0]
+            const did = generateId()
+            const data = 'my nice provider, is nice'
+            await didRegistry.registerAttribute(did, '0123456789abcdef', [], data, ownerAccount.getId())
+
+            // transfer
+            const newOwnerAccount: Account = (await ocean.accounts.list())[1]
+            await didRegistry.transferDIDOwnership(did, ownerAccount.getId(), newOwnerAccount.getId())
+
+            // check
+            const newOwner = await didRegistry.getDIDOwner(did)
+            assert.equal(newOwner, newOwnerAccount.getId(), `Got ${newOwner} but expected ${newOwnerAccount.getId()}`)
         })
     })
 })

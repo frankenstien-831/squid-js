@@ -1,3 +1,4 @@
+import { TransactionReceipt } from 'web3-core'
 import { SearchQuery } from '../aquarius/Aquarius'
 import { DDO } from '../ddo/DDO'
 import { MetaData } from '../ddo/MetaData'
@@ -353,6 +354,17 @@ export class OceanAssets extends Instantiable {
      */
     public async ownerAssets(owner: string): Promise<string[]> {
         return this.ocean.keeper.didRegistry.getAttributesByOwner(owner)
+    }
+
+    /**
+     * Transfer ownership of an asset.
+     * @param  {string} did Asset DID.
+     * @param  {string} owner Ethereum address of the current owner of the DID.
+     * @param  {string} newOwner Ethereum address of the new owner of the DID.
+     * @return {Promise<TransactionReceipt>} Returns Web3 transaction receipt.
+     */
+    public async transferOwnership(did: string, owner: string, newOwner: string): Promise<TransactionReceipt> {
+        return this.ocean.keeper.didRegistry.transferDIDOwnership(did, owner, newOwner)
     }
 
     /**
