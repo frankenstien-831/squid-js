@@ -21,7 +21,7 @@ before_script:
   - ganache-cli --port 18545 > ganache-cli.log &
   - git clone https://github.com/oceanprotocol/barge
   - cd barge
-  - export AQUARIUS_VERSION=v1.0.0
+  - export AQUARIUS_VERSION=v1.0.1
   - export BRIZO_VERSION=v0.6.0
   - export KEEPER_VERSION=v0.12.7
   - export EVENTS_HANDLER_VERSION=v0.3.0
