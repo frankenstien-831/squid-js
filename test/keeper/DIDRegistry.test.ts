@@ -78,7 +78,7 @@ describe('DIDRegistry', () => {
 
             // transfer
             const newOwnerAccount: Account = (await ocean.accounts.list())[1]
-            await didRegistry.transferDIDOwnership(did, ownerAccount.getId(), newOwnerAccount.getId())
+            await didRegistry.transferDIDOwnership(did, newOwnerAccount.getId(), ownerAccount.getId())
 
             // check
             const newOwner = await didRegistry.getDIDOwner(did)

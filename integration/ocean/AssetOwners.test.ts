@@ -81,4 +81,14 @@ describe('Asset Owners', () => {
         const { length: finalLength2 } = await ocean.assets.consumerAssets(account2.getId())
         assert.equal(finalLength2 - initialLength, 1)
     })
+
+    it('should be able to transfer ownership', async () => {
+        const { id } = await ocean.assets.create(metadata as any, account1)
+
+        // transfer
+        await ocean.assets.transferOwnership(id, account2.getId())
+        const newOwner = await ocean.keeper.didRegistry.getDIDOwner(id)
+
+        assert.equal(newOwner, account2.getId())
+    })
 })

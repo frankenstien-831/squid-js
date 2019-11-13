@@ -359,12 +359,12 @@ export class OceanAssets extends Instantiable {
     /**
      * Transfer ownership of an asset.
      * @param  {string} did Asset DID.
-     * @param  {string} owner Ethereum address of the current owner of the DID.
      * @param  {string} newOwner Ethereum address of the new owner of the DID.
      * @return {Promise<TransactionReceipt>} Returns Web3 transaction receipt.
      */
-    public async transferOwnership(did: string, owner: string, newOwner: string): Promise<TransactionReceipt> {
-        return this.ocean.keeper.didRegistry.transferDIDOwnership(did, owner, newOwner)
+    public async transferOwnership(did: string, newOwner: string): Promise<TransactionReceipt> {
+        const owner = await this.ocean.assets.owner(did)
+        return this.ocean.keeper.didRegistry.transferDIDOwnership(did, newOwner, owner)
     }
 
     /**

@@ -62,7 +62,11 @@ export default class DIDRegistry extends ContractBase {
         return this.call('getPermission', [didZeroX(did), zeroX(grantee)])
     }
 
-    public async transferDIDOwnership(did: string, owner: string, newOwner: string): Promise<TransactionReceipt> {
-        return this.send('transferDIDOwnership', owner, [zeroX(did), zeroX(newOwner)])
+    public async transferDIDOwnership(
+        did: string,
+        newOwnerAddress: string,
+        ownerAddress: string
+    ): Promise<TransactionReceipt> {
+        return this.send('transferDIDOwnership', ownerAddress, [didZeroX(did), newOwnerAddress])
     }
 }
