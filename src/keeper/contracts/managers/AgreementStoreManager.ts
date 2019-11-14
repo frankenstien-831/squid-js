@@ -23,10 +23,14 @@ export class AgreementStoreManager extends ContractBase {
     }
 
     public async getAgreement(agreementId: string) {
-        const { did, didOwner, templateId, conditionIds, lastUpdatedBy, blockNumberUpdated } = await this.call(
-            'getAgreement',
-            [zeroX(agreementId)]
-        )
+        const {
+            did,
+            didOwner,
+            templateId,
+            conditionIds,
+            lastUpdatedBy,
+            blockNumberUpdated
+        } = await this.call('getAgreement', [zeroX(agreementId)])
         return {
             did,
             didOwner,
