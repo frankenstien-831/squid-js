@@ -1,5 +1,5 @@
 import { assert, expect, spy, use } from 'chai'
-import * as spies from 'chai-spies'
+import spies from 'chai-spies'
 
 import { SubscribableObserver } from '../../src/utils/SubscribableObserver'
 

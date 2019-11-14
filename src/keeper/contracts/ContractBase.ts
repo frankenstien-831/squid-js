@@ -15,7 +15,7 @@ export abstract class ContractBase extends Instantiable {
         return this.contract.options.address
     }
 
-    constructor(contractName, private optional: boolean = false) {
+    constructor(contractName: string, private optional: boolean = false) {
         super()
         this.contractName = contractName
     }

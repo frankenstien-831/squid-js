@@ -1,8 +1,8 @@
-import fetch, { BodyInit, RequestInit, Response } from 'node-fetch'
-import * as fs from 'fs'
-
+import { BodyInit, RequestInit, Response } from 'node-fetch'
+import fs from 'fs'
 import { Instantiable, InstantiableConfig } from '../../Instantiable.abstract'
 
+const fetch = require('node-fetch')
 import save = require('save-file')
 
 /**
@@ -48,7 +48,7 @@ export class WebServiceConnector extends Instantiable {
         if (!response.ok) {
             throw new Error('Response error.')
         }
-        let filename
+        let filename: string
         try {
             filename = response.headers.get('content-disposition').match(/attachment;filename=(.+)/)[1]
         } catch {

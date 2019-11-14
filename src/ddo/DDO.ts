@@ -1,4 +1,3 @@
-import * as Web3 from 'web3'
 import Web3Provider from '../keeper/Web3Provider'
 import { Ocean } from '../ocean/Ocean'
 import { Authentication } from './Authentication'
@@ -110,7 +109,7 @@ export class DDO {
 
     /**
      * Generates proof using personal sing.
-     * @param  {Web3}           web3      Web3 instance.
+     * @param  {Ocean}          ocean     Ocean instance.
      * @param  {string}         publicKey Public key to be used on personal sign.
      * @param  {string}         password  Password if it's required.
      * @return {Promise<Proof>}           Proof object.
@@ -130,15 +129,15 @@ export class DDO {
 
     /**
      * Generates and adds a proof using personal sing on the DDO.
-     * @param  {Web3}           web3      Web3 instance.
+     * @param  {Ocean}          ocean     Ocean instance.
      * @param  {string}         publicKey Public key to be used on personal sign.
      * @param  {string}         password  Password if it's required.
      * @return {Promise<Proof>}           Proof object.
      */
-    public async addProof(web3: Web3, publicKey: string, password?: string): Promise<void> {
+    public async addProof(ocean: Ocean, publicKey: string, password?: string): Promise<void> {
         if (this.proof) {
             throw new Error('Proof already exists')
         }
-        this.proof = await this.generateProof(web3, publicKey, password)
+        this.proof = await this.generateProof(ocean, publicKey, password)
     }
 }
