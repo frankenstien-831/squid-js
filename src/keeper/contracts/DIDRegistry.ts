@@ -1,6 +1,6 @@
 import { TransactionReceipt } from 'web3-core'
 import ContractBase from './ContractBase'
-import { zeroX, didPrefixed, didZeroX } from '../../utils'
+import { zeroX, noZeroX, didPrefixed, didZeroX } from '../../utils'
 import { InstantiableConfig } from '../../Instantiable.abstract'
 
 export default class DIDRegistry extends ContractBase {
@@ -67,6 +67,6 @@ export default class DIDRegistry extends ContractBase {
         newOwnerAddress: string,
         ownerAddress: string
     ): Promise<TransactionReceipt> {
-        return this.send('transferDIDOwnership', ownerAddress, [didZeroX(did), newOwnerAddress])
+        return this.send('transferDIDOwnership', ownerAddress, [didZeroX(did), noZeroX(newOwnerAddress)])
     }
 }
