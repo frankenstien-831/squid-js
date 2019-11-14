@@ -33,17 +33,21 @@ export default class DIDRegistry extends ContractBase {
     }
 
     public async getAttributesByOwner(owner: string): Promise<string[]> {
-        return (await this.getPastEvents('DIDAttributeRegistered', {
-            _owner: zeroX(owner)
-        }))
+        return (
+            await this.getPastEvents('DIDAttributeRegistered', {
+                _owner: zeroX(owner)
+            })
+        )
             .map(({ returnValues }) => returnValues._did)
             .map(didPrefixed)
     }
 
     public async getAttributesByDid(did: string): Promise<{ did: string; serviceEndpoint: string; checksum: string }> {
-        return (await this.getPastEvents('DIDAttributeRegistered', {
-            _did: didZeroX(did)
-        })).map(({ returnValues: { _did, _checksum: checksum, _value: serviceEndpoint } }) => ({
+        return (
+            await this.getPastEvents('DIDAttributeRegistered', {
+                _did: didZeroX(did)
+            })
+        ).map(({ returnValues: { _did, _checksum: checksum, _value: serviceEndpoint } }) => ({
             did: didPrefixed(_did),
             serviceEndpoint,
             checksum
