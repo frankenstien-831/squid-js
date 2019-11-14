@@ -22,7 +22,9 @@ export abstract class ContractBase extends Instantiable {
 
     public async getEventData(eventName: string, options: any) {
         if (!this.contract.events[eventName]) {
-            throw new Error(`Event "${eventName}" not found on contract "${this.contractName}"`)
+            throw new Error(
+                `Event "${eventName}" not found on contract "${this.contractName}"`
+            )
         }
         return this.contract.getPastEvents(eventName, options)
     }
@@ -62,14 +64,24 @@ export abstract class ContractBase extends Instantiable {
         return from
     }
 
-    protected async sendFrom(name: string, args: any[], from?: string): Promise<TransactionReceipt> {
+    protected async sendFrom(
+        name: string,
+        args: any[],
+        from?: string
+    ): Promise<TransactionReceipt> {
         from = await this.getFromAddress(from)
         return this.send(name, from, args)
     }
 
-    protected async send(name: string, from: string, args: any[]): Promise<TransactionReceipt> {
+    protected async send(
+        name: string,
+        from: string,
+        args: any[]
+    ): Promise<TransactionReceipt> {
         if (!this.contract.methods[name]) {
-            throw new Error(`Method "${name}" is not part of contract "${this.contractName}"`)
+            throw new Error(
+                `Method "${name}" is not part of contract "${this.contractName}"`
+            )
         }
         // Logger.log(name, args)
         const method = this.contract.methods[name]
@@ -91,7 +103,9 @@ export abstract class ContractBase extends Instantiable {
                 }
             })
             this.logger.error('-'.repeat(40))
-            this.logger.error(`Sending transaction "${name}" on contract "${this.contractName}" failed.`)
+            this.logger.error(
+                `Sending transaction "${name}" on contract "${this.contractName}" failed.`
+            )
             this.logger.error(`Error: ${err.message}`)
             this.logger.error(`From: ${from}`)
             this.logger.error(`Parameters: ${JSON.stringify(mappedArgs, null, 2)}`)
@@ -100,7 +114,11 @@ export abstract class ContractBase extends Instantiable {
         }
     }
 
-    protected async call<T extends any>(name: string, args: any[], from?: string): Promise<T> {
+    protected async call<T extends any>(
+        name: string,
+        args: any[],
+        from?: string
+    ): Promise<T> {
         if (!this.contract.methods[name]) {
             throw new Error(`Method ${name} is not part of contract ${this.contractName}`)
         }
@@ -109,14 +127,19 @@ export abstract class ContractBase extends Instantiable {
             const method = this.contract.methods[name](...args)
             return method.call(from ? { from } : null)
         } catch (err) {
-            this.logger.error(`Calling method "${name}" on contract "${this.contractName}" failed. Args: ${args}`, err)
+            this.logger.error(
+                `Calling method "${name}" on contract "${this.contractName}" failed. Args: ${args}`,
+                err
+            )
             throw err
         }
     }
 
     protected getEvent(eventName: string, filter: { [key: string]: any }) {
         if (!this.contract.events[eventName]) {
-            throw new Error(`Event ${eventName} is not part of contract ${this.contractName}`)
+            throw new Error(
+                `Event ${eventName} is not part of contract ${this.contractName}`
+            )
         }
         return this.ocean.keeper.utils.eventHandler.getEvent(this, eventName, filter)
     }
@@ -128,9 +151,12 @@ export abstract class ContractBase extends Instantiable {
                 signature: (method as any).signature
             }))
             .filter((method: any) => method.name === methodName)
-        const foundMethod = methods.find(({ inputs }) => inputs.length === args.length) || methods[0]
+        const foundMethod =
+            methods.find(({ inputs }) => inputs.length === args.length) || methods[0]
         if (!foundMethod) {
-            throw new Error(`Method "${methodName}" is not part of contract "${this.contractName}"`)
+            throw new Error(
+                `Method "${methodName}" is not part of contract "${this.contractName}"`
+            )
         }
         return foundMethod
     }

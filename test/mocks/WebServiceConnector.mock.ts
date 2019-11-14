@@ -15,7 +15,9 @@ export default class WebServiceConnectorMock extends WebServiceConnector {
                     return this.returnData ? this.returnData : {}
                 },
                 text: () => {
-                    return this.returnData ? JSON.stringify(this.returnData.toString()) : ''
+                    return this.returnData
+                        ? JSON.stringify(this.returnData.toString())
+                        : ''
                 }
             })
         })

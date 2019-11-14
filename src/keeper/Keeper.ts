@@ -15,7 +15,11 @@ import {
     EscrowAccessSecretStoreTemplate,
     EscrowComputeExecutionTemplate
 } from './contracts/templates'
-import { TemplateStoreManager, AgreementStoreManager, ConditionStoreManager } from './contracts/managers'
+import {
+    TemplateStoreManager,
+    AgreementStoreManager,
+    ConditionStoreManager
+} from './contracts/managers'
 
 import { objectPromiseAll } from '../utils'
 import { EventHandler } from './EventHandler'
@@ -55,11 +59,17 @@ export class Keeper extends Instantiable {
                 // Conditions
                 lockRewardCondition: LockRewardCondition.getInstance(config),
                 escrowReward: EscrowReward.getInstance(config),
-                accessSecretStoreCondition: AccessSecretStoreCondition.getInstance(config),
+                accessSecretStoreCondition: AccessSecretStoreCondition.getInstance(
+                    config
+                ),
                 computeExecutionCondition: ComputeExecutionCondition.getInstance(config),
                 // Templates
-                escrowAccessSecretStoreTemplate: EscrowAccessSecretStoreTemplate.getInstance(config),
-                escrowComputeExecutionTemplate: EscrowComputeExecutionTemplate.getInstance(config)
+                escrowAccessSecretStoreTemplate: EscrowAccessSecretStoreTemplate.getInstance(
+                    config
+                ),
+                escrowComputeExecutionTemplate: EscrowComputeExecutionTemplate.getInstance(
+                    config
+                )
             })
 
             keeper.connected = true
@@ -92,8 +102,10 @@ export class Keeper extends Instantiable {
         }
         // Conditions
         keeper.templates = {
-            escrowAccessSecretStoreTemplate: keeper.instances.escrowAccessSecretStoreTemplate,
-            escrowComputeExecutionTemplate: keeper.instances.escrowComputeExecutionTemplate
+            escrowAccessSecretStoreTemplate:
+                keeper.instances.escrowAccessSecretStoreTemplate,
+            escrowComputeExecutionTemplate:
+                keeper.instances.escrowComputeExecutionTemplate
         }
         // Utils
         keeper.utils = {
@@ -178,7 +190,9 @@ export class Keeper extends Instantiable {
      * @return {Condition} Condition instance.
      */
     public getConditionByAddress(address: string): Condition {
-        return Object.values(this.conditions).find(condition => condition.getAddress() === address)
+        return Object.values(this.conditions).find(
+            condition => condition.getAddress() === address
+        )
     }
 
     /**
@@ -187,7 +201,9 @@ export class Keeper extends Instantiable {
      * @return {AgreementTemplate} Agreement template instance.
      */
     public getTemplateByName(name: string): AgreementTemplate {
-        return Object.values(this.templates).find(template => template.contractName === name)
+        return Object.values(this.templates).find(
+            template => template.contractName === name
+        )
     }
 
     /**
@@ -196,7 +212,9 @@ export class Keeper extends Instantiable {
      * @return {AgreementTemplate} Agreement template instance.
      */
     public getTemplateByAddress(address: string): AgreementTemplate {
-        return Object.values(this.templates).find(template => template.getAddress() === address)
+        return Object.values(this.templates).find(
+            template => template.getAddress() === address
+        )
     }
 
     /**

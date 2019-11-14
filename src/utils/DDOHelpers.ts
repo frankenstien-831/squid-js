@@ -1,5 +1,8 @@
 import { DDO } from '../ddo/DDO'
-import { ServiceAgreementTemplateCondition, ServiceAgreementTemplateParameter } from '../ddo/ServiceAgreementTemplate'
+import {
+    ServiceAgreementTemplateCondition,
+    ServiceAgreementTemplateParameter
+} from '../ddo/ServiceAgreementTemplate'
 
 function fillParameterWithDDO(
     parameter: ServiceAgreementTemplateParameter,

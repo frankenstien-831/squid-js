@@ -30,7 +30,11 @@ export class OceanAuth extends Instantiable {
         const message = `${this.getMessage()}\n${time}`
 
         try {
-            const signature = await this.ocean.utils.signature.signText(message, account.getId(), account.getPassword())
+            const signature = await this.ocean.utils.signature.signText(
+                message,
+                account.getId(),
+                account.getPassword()
+            )
 
             return `${signature}-${time}`
         } catch {
@@ -53,7 +57,9 @@ export class OceanAuth extends Instantiable {
             return `0x${'0'.repeat(40)}`
         }
 
-        return this.web3.utils.toChecksumAddress(await this.ocean.utils.signature.verifyText(message, signature))
+        return this.web3.utils.toChecksumAddress(
+            await this.ocean.utils.signature.verifyText(message, signature)
+        )
     }
 
     /**
@@ -121,7 +127,9 @@ export class OceanAuth extends Instantiable {
         try {
             localStorage.getItem('')
         } catch {
-            throw new Error('LocalStorage is not supported. This feature is only available on browsers.')
+            throw new Error(
+                'LocalStorage is not supported. This feature is only available on browsers.'
+            )
         }
         return localStorage
     }

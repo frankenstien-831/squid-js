@@ -1,5 +1,9 @@
 import ContractBase from '../ContractBase'
-import { Condition, ConditionState, conditionStateNames } from '../conditions/Condition.abstract'
+import {
+    Condition,
+    ConditionState,
+    conditionStateNames
+} from '../conditions/Condition.abstract'
 import { DDO } from '../../../ddo/DDO'
 import { ServiceAgreementTemplate } from '../../../ddo/ServiceAgreementTemplate'
 import { zeroX } from '../../../utils'
@@ -50,7 +54,14 @@ export abstract class AgreementTemplate extends ContractBase {
     ) {
         return this.sendFrom(
             'createAgreement',
-            [zeroX(agreementId), zeroX(did), conditionIds.map(zeroX), timeLocks, timeOuts, ...extraArgs],
+            [
+                zeroX(agreementId),
+                zeroX(did),
+                conditionIds.map(zeroX),
+                timeLocks,
+                timeOuts,
+                ...extraArgs
+            ],
             from
         )
     }
@@ -68,7 +79,9 @@ export abstract class AgreementTemplate extends ContractBase {
      * @return {Promise<Condition[]>} Conditions contracts.
      */
     public async getConditions(): Promise<Condition[]> {
-        return (await this.getConditionTypes()).map(address => this.ocean.keeper.getConditionByAddress(address))
+        return (await this.getConditionTypes()).map(address =>
+            this.ocean.keeper.getConditionByAddress(address)
+        )
     }
 
     /**
@@ -110,7 +123,9 @@ export abstract class AgreementTemplate extends ContractBase {
         const name = (await this.getServiceAgreementTemplateConditions()).find(
             ({ name: conditionRef }) => conditionRef === ref
         ).contractName
-        return (await this.getConditions()).find(condition => condition.contractName === name)
+        return (await this.getConditions()).find(
+            condition => condition.contractName === name
+        )
     }
 
     public async getServiceAgreementTemplateDependencies() {
@@ -123,7 +138,9 @@ export abstract class AgreementTemplate extends ContractBase {
      * @param  {string}  agreementId Agreement ID.
      * @return {Promise}             Conditions status.
      */
-    public async getAgreementStatus(agreementId: string): Promise<AgreementConditionsStatus | false> {
+    public async getAgreementStatus(
+        agreementId: string
+    ): Promise<AgreementConditionsStatus | false> {
         const agreementStore = this.ocean.keeper.agreementStoreManager
         const conditionStore = this.ocean.keeper.conditionStoreManager
 
@@ -144,11 +161,17 @@ export abstract class AgreementTemplate extends ContractBase {
         )
 
         const statesPromises = Object.keys(dependencies).map(async (ref, i) => {
-            const { contractName } = await this.getServiceAgreementTemplateConditionByRef(ref)
+            const { contractName } = await this.getServiceAgreementTemplateConditionByRef(
+                ref
+            )
             return {
                 ref,
                 contractName,
-                state: (await conditionStore.getCondition(conditionIdByConddition[contractName])).state
+                state: (
+                    await conditionStore.getCondition(
+                        conditionIdByConddition[contractName]
+                    )
+                ).state
             }
         })
         const states = await Promise.all(statesPromises)
@@ -184,16 +207,18 @@ export abstract class AgreementTemplate extends ContractBase {
         if (!status) {
             this.logger.bypass('Agreement not created yet!')
         }
-        Object.values(status || []).forEach(({ condition, contractName, state, blocked, blockedBy }, i) => {
-            if (i) {
-                this.logger.bypass('-'.repeat(20))
+        Object.values(status || []).forEach(
+            ({ condition, contractName, state, blocked, blockedBy }, i) => {
+                if (i) {
+                    this.logger.bypass('-'.repeat(20))
+                }
+                this.logger.bypass(`${condition} (${contractName})`)
+                this.logger.bypass('  Status:', state, `(${conditionStateNames[state]})`)
+                if (blocked) {
+                    this.logger.bypass('  Blocked by:', blockedBy)
+                }
             }
-            this.logger.bypass(`${condition} (${contractName})`)
-            this.logger.bypass('  Status:', state, `(${conditionStateNames[state]})`)
-            if (blocked) {
-                this.logger.bypass('  Blocked by:', blockedBy)
-            }
-        })
+        )
         this.logger.bypass('-'.repeat(80))
     }
 

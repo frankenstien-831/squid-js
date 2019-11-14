@@ -6,8 +6,15 @@ export class SignatureUtils extends Instantiable {
         this.setInstanceConfig(config)
     }
 
-    public async signText(text: string, publicKey: string, password?: string): Promise<string> {
-        const isMetaMask = this.web3 && this.web3.currentProvider && (this.web3.currentProvider as any).isMetaMask
+    public async signText(
+        text: string,
+        publicKey: string,
+        password?: string
+    ): Promise<string> {
+        const isMetaMask =
+            this.web3 &&
+            this.web3.currentProvider &&
+            (this.web3.currentProvider as any).isMetaMask
         try {
             return await this.web3.eth.personal.sign(text, publicKey, password)
         } catch (e) {

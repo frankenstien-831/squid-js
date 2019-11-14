@@ -14,7 +14,10 @@ export class EscrowReward extends Condition {
         lockCondition: string,
         releaseCondition: string
     ) {
-        return super.hashValues(amount, ...[receiver, sender, lockCondition, releaseCondition].map(zeroX))
+        return super.hashValues(
+            amount,
+            ...[receiver, sender, lockCondition, releaseCondition].map(zeroX)
+        )
     }
 
     public fulfill(

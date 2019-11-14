@@ -9,7 +9,9 @@ export class OceanAgreementsConditions extends Instantiable {
      * Returns the instance of OceanAgreementsConditions.
      * @return {Promise<OceanAgreementsConditions>}
      */
-    public static async getInstance(config: InstantiableConfig): Promise<OceanAgreementsConditions> {
+    public static async getInstance(
+        config: InstantiableConfig
+    ): Promise<OceanAgreementsConditions> {
         const instance = new OceanAgreementsConditions()
         instance.setInstanceConfig(config)
 
@@ -23,11 +25,19 @@ export class OceanAgreementsConditions extends Instantiable {
      * @param {number}  amount      Asset amount.
      * @param {Account} from        Account of sender.
      */
-    public async lockReward(agreementId: string, amount: number | string, from?: Account) {
+    public async lockReward(
+        agreementId: string,
+        amount: number | string,
+        from?: Account
+    ) {
         const { lockRewardCondition, escrowReward } = this.ocean.keeper.conditions
 
         try {
-            await this.ocean.keeper.token.approve(lockRewardCondition.getAddress(), amount, from.getId())
+            await this.ocean.keeper.token.approve(
+                lockRewardCondition.getAddress(),
+                amount,
+                from.getId()
+            )
 
             const receipt = await lockRewardCondition.fulfill(
                 agreementId,
@@ -49,11 +59,21 @@ export class OceanAgreementsConditions extends Instantiable {
      * @param {string}  grantee     Consumer address.
      * @param {Account} from        Account of sender.
      */
-    public async grantAccess(agreementId: string, did: string, grantee: string, from?: Account) {
+    public async grantAccess(
+        agreementId: string,
+        did: string,
+        grantee: string,
+        from?: Account
+    ) {
         try {
             const { accessSecretStoreCondition } = this.ocean.keeper.conditions
 
-            const receipt = await accessSecretStoreCondition.fulfill(agreementId, did, grantee, from && from.getId())
+            const receipt = await accessSecretStoreCondition.fulfill(
+                agreementId,
+                did,
+                grantee,
+                from && from.getId()
+            )
             return !!receipt.events.Fulfilled
         } catch {
             return false
@@ -67,11 +87,21 @@ export class OceanAgreementsConditions extends Instantiable {
      * @param {string}  grantee     Consumer address.
      * @param {Account} from        Account of sender.
      */
-    public async grantServiceExecution(agreementId: string, did: string, grantee: string, from?: Account) {
+    public async grantServiceExecution(
+        agreementId: string,
+        did: string,
+        grantee: string,
+        from?: Account
+    ) {
         try {
             const { computeExecutionCondition } = this.ocean.keeper.conditions
 
-            const receipt = await computeExecutionCondition.fulfill(agreementId, did, grantee, from && from.getId())
+            const receipt = await computeExecutionCondition.fulfill(
+                agreementId,
+                did,
+                grantee,
+                from && from.getId()
+            )
             return !!receipt.events.Fulfilled
         } catch {
             return false
@@ -100,9 +130,17 @@ export class OceanAgreementsConditions extends Instantiable {
         from?: Account
     ) {
         try {
-            const { escrowReward, accessSecretStoreCondition, lockRewardCondition } = this.ocean.keeper.conditions
+            const {
+                escrowReward,
+                accessSecretStoreCondition,
+                lockRewardCondition
+            } = this.ocean.keeper.conditions
 
-            const conditionIdAccess = await accessSecretStoreCondition.generateIdHash(agreementId, did, consumer)
+            const conditionIdAccess = await accessSecretStoreCondition.generateIdHash(
+                agreementId,
+                did,
+                consumer
+            )
             const conditionIdLock = await lockRewardCondition.generateIdHash(
                 agreementId,
                 escrowReward.getAddress(),

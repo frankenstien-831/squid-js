@@ -7,7 +7,11 @@ export class SubscribableObserver<T, P> {
         onError?: (error: any) => void
     }>()
 
-    public subscribe(onNext?: (next: T) => void, onComplete?: (complete: P) => void, onError?: (error: any) => void) {
+    public subscribe(
+        onNext?: (next: T) => void,
+        onComplete?: (complete: P) => void,
+        onError?: (error: any) => void
+    ) {
         if (this.completed) {
             throw new Error('Observer completed.')
         }

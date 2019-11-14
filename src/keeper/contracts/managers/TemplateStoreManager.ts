@@ -17,8 +17,12 @@ export interface TemplateMetadata {
 }
 
 export class TemplateStoreManager extends ContractBase {
-    public static async getInstance(config: InstantiableConfig): Promise<TemplateStoreManager> {
-        const templateStoreManeger: TemplateStoreManager = new TemplateStoreManager('TemplateStoreManager')
+    public static async getInstance(
+        config: InstantiableConfig
+    ): Promise<TemplateStoreManager> {
+        const templateStoreManeger: TemplateStoreManager = new TemplateStoreManager(
+            'TemplateStoreManager'
+        )
         await templateStoreManeger.init(config)
         return templateStoreManeger
     }
@@ -39,7 +43,11 @@ export class TemplateStoreManager extends ContractBase {
         }
     }
 
-    public async approveTemplate(address: string, from?: string, ignoreApproved?: boolean) {
+    public async approveTemplate(
+        address: string,
+        from?: string,
+        ignoreApproved?: boolean
+    ) {
         const template = await this.getTemplate(address)
         if (template.state !== TemplateState.Proposed) {
             this.logger.warn(`Template "${address}" is not in "proposed" state.`)
@@ -56,7 +64,12 @@ export class TemplateStoreManager extends ContractBase {
     }
 
     public async getTemplate(address: string) {
-        const { state, owner, lastUpdatedBy, blockNumberUpdated } = await this.call('getTemplate', [zeroX(address)])
+        const {
+            state,
+            owner,
+            lastUpdatedBy,
+            blockNumberUpdated
+        } = await this.call('getTemplate', [zeroX(address)])
         return {
             state: +state,
             owner,

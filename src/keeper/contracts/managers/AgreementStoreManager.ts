@@ -12,8 +12,12 @@ export interface AgreementData {
 }
 
 export class AgreementStoreManager extends ContractBase {
-    public static async getInstance(config: InstantiableConfig): Promise<AgreementStoreManager> {
-        const templateStoreManeger: AgreementStoreManager = new AgreementStoreManager('AgreementStoreManager')
+    public static async getInstance(
+        config: InstantiableConfig
+    ): Promise<AgreementStoreManager> {
+        const templateStoreManeger: AgreementStoreManager = new AgreementStoreManager(
+            'AgreementStoreManager'
+        )
         await templateStoreManeger.init(config)
         return templateStoreManeger
     }

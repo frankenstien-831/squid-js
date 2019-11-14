@@ -54,7 +54,8 @@ describe('DDO', () => {
             },
             {
                 type: 'HubService',
-                serviceEndpoint: 'https://hub.example.com/.identity/did:op:0123456789abcdef/'
+                serviceEndpoint:
+                    'https://hub.example.com/.identity/did:op:0123456789abcdef/'
             },
             {
                 type: 'MessagingService',
@@ -87,7 +88,8 @@ describe('DDO', () => {
             {
                 type: 'metadata',
                 index: 0,
-                serviceEndpoint: 'http://myaquarius.org/api/v1/provider/assets/metadata/{did}',
+                serviceEndpoint:
+                    'http://myaquarius.org/api/v1/provider/assets/metadata/{did}',
                 attributes: {
                     main: {
                         name: 'UK Weather information 2011',
@@ -103,7 +105,8 @@ describe('DDO', () => {
                                 checksum: 'efb2c764274b745f5fc37f97c6b0e761',
                                 contentLength: '4535431',
                                 contentType: 'application/json',
-                                resourceId: 'access-log2018-02-13-15-17-29-18386C502CAEA932'
+                                resourceId:
+                                    'access-log2018-02-13-15-17-29-18386C502CAEA932'
                             },
                             {
                                 index: 1,
@@ -123,9 +126,11 @@ describe('DDO', () => {
                         schema: 'Binary Voting'
                     },
                     additionalInformation: {
-                        description: 'Weather information of UK including temperature and humidity',
+                        description:
+                            'Weather information of UK including temperature and humidity',
                         copyrightHolder: 'Met Office',
-                        workExample: '423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68',
+                        workExample:
+                            '423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68',
                         links: [
                             {
                                 sample1:
@@ -235,7 +240,10 @@ describe('DDO', () => {
             const ddo = new DDO(testDDO)
             const checksum = ddo.getChecksum()
 
-            assert.equal(checksum, '0x15f27a7a3c7b15d2b06dec7347c6b8da168adddd7df51a8ebbbe87b59b80049b')
+            assert.equal(
+                checksum,
+                '0x15f27a7a3c7b15d2b06dec7347c6b8da168adddd7df51a8ebbbe87b59b80049b'
+            )
         })
     })
 
