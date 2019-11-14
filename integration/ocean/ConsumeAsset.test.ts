@@ -37,28 +37,48 @@ describe('Consume Asset', () => {
         assert.isDefined(ddo, 'Register has not returned a DDO')
         assert.match(ddo.id, /^did:op:[a-f0-9]{64}$/, 'DDO id is not valid')
         assert.isAtLeast(ddo.authentication.length, 1, 'Default authentication not added')
-        assert.isDefined(ddo.findServiceByType('access'), "DDO access service doesn't exist")
+        assert.isDefined(
+            ddo.findServiceByType('access'),
+            "DDO access service doesn't exist"
+        )
     })
 
     it('should be able to request tokens for consumer', async () => {
         const initialBalance = (await consumer.getBalance()).ocn
-        const claimedTokens = +metadata.main.price * 10 ** -(await ocean.keeper.token.decimals())
+        const claimedTokens =
+            +metadata.main.price * 10 ** -(await ocean.keeper.token.decimals())
 
         try {
             await consumer.requestTokens(claimedTokens)
         } catch {}
 
-        assert.equal((await consumer.getBalance()).ocn, initialBalance + claimedTokens, 'OCN Tokens not delivered')
+        assert.equal(
+            (await consumer.getBalance()).ocn,
+            initialBalance + claimedTokens,
+            'OCN Tokens not delivered'
+        )
     })
 
     it('should sign the service agreement', async () => {
         const accessService = ddo.findServiceByType('access')
 
-        serviceAgreementSignatureResult = await ocean.agreements.prepare(ddo.id, accessService.index, consumer)
+        serviceAgreementSignatureResult = await ocean.agreements.prepare(
+            ddo.id,
+            accessService.index,
+            consumer
+        )
 
         const { agreementId, signature } = serviceAgreementSignatureResult
-        assert.match(agreementId, /^0x[a-f0-9]{64}$/, 'Service agreement ID seems not valid')
-        assert.match(signature, /^0x[a-f0-9]{130}$/, 'Service agreement signature seems not valid')
+        assert.match(
+            agreementId,
+            /^0x[a-f0-9]{64}$/,
+            'Service agreement ID seems not valid'
+        )
+        assert.match(
+            signature,
+            /^0x[a-f0-9]{130}$/,
+            'Service agreement signature seems not valid'
+        )
     })
 
     it('should execute the service agreement', async () => {
@@ -77,7 +97,9 @@ describe('Consume Asset', () => {
     })
 
     it('should get the agreement conditions status not fulfilled', async () => {
-        const status = await ocean.agreements.status(serviceAgreementSignatureResult.agreementId)
+        const status = await ocean.agreements.status(
+            serviceAgreementSignatureResult.agreementId
+        )
 
         assert.deepEqual(status, {
             lockReward: ConditionState.Unfulfilled,
@@ -118,7 +140,9 @@ describe('Consume Asset', () => {
     })
 
     it('should get the agreement conditions status fulfilled', async () => {
-        const status = await ocean.agreements.status(serviceAgreementSignatureResult.agreementId)
+        const status = await ocean.agreements.status(
+            serviceAgreementSignatureResult.agreementId
+        )
 
         assert.deepEqual(status, {
             lockReward: ConditionState.Fulfilled,
@@ -147,7 +171,11 @@ describe('Consume Asset', () => {
             })
         })
 
-        assert.deepEqual(files, ['README.md', 'package.json'], 'Stored files are not correct.')
+        assert.deepEqual(
+            files,
+            ['README.md', 'package.json'],
+            'Stored files are not correct.'
+        )
     })
 
     it('should consume and store one asset', async () => {

@@ -11,7 +11,9 @@ export interface InstantiableConfig {
     logger?: Logger
 }
 
-export function generateIntantiableConfigFromConfig(config: Config): Partial<InstantiableConfig> {
+export function generateIntantiableConfigFromConfig(
+    config: Config
+): Partial<InstantiableConfig> {
     const logLevel =
         typeof config.verbose !== 'number'
             ? config.verbose

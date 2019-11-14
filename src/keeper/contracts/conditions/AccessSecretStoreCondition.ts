@@ -3,8 +3,14 @@ import { zeroX, didZeroX, didPrefixed } from '../../../utils'
 import { InstantiableConfig } from '../../../Instantiable.abstract'
 
 export class AccessSecretStoreCondition extends Condition {
-    public static async getInstance(config: InstantiableConfig): Promise<AccessSecretStoreCondition> {
-        return Condition.getInstance(config, 'AccessSecretStoreCondition', AccessSecretStoreCondition)
+    public static async getInstance(
+        config: InstantiableConfig
+    ): Promise<AccessSecretStoreCondition> {
+        return Condition.getInstance(
+            config,
+            'AccessSecretStoreCondition',
+            AccessSecretStoreCondition
+        )
     }
 
     public hashValues(did: string, grantee: string) {
@@ -16,10 +22,16 @@ export class AccessSecretStoreCondition extends Condition {
     }
 
     public checkPermissions(grantee: string, did: string, from?: string) {
-        return this.call<boolean>('checkPermissions', [grantee, didZeroX(did)].map(zeroX), from)
+        return this.call<boolean>(
+            'checkPermissions',
+            [grantee, didZeroX(did)].map(zeroX),
+            from
+        )
     }
 
-    public async getGrantedDidByConsumer(consumer: string): Promise<{ did: string; agreementId: string }[]> {
+    public async getGrantedDidByConsumer(
+        consumer: string
+    ): Promise<{ did: string; agreementId: string }[]> {
         return (
             await this.getPastEvents('Fulfilled', {
                 _grantee: zeroX(consumer)

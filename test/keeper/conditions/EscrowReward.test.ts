@@ -21,13 +21,27 @@ describe('EscrowReward', () => {
         await TestContractHandler.prepareContracts()
         condition = keeper.conditions.escrowReward
 
-        lockCondition = await keeper.conditions.lockRewardCondition.generateIdHash(agreementId, publisher, amount)
-        releaseCondition = await keeper.conditions.accessSecretStoreCondition.generateIdHash(agreementId, did, consumer)
+        lockCondition = await keeper.conditions.lockRewardCondition.generateIdHash(
+            agreementId,
+            publisher,
+            amount
+        )
+        releaseCondition = await keeper.conditions.accessSecretStoreCondition.generateIdHash(
+            agreementId,
+            did,
+            consumer
+        )
     })
 
     describe('#hashValues()', () => {
         it('should hash the values', async () => {
-            const hash = await condition.hashValues(amount, consumer, publisher, lockCondition, releaseCondition)
+            const hash = await condition.hashValues(
+                amount,
+                consumer,
+                publisher,
+                lockCondition,
+                releaseCondition
+            )
 
             assert.match(hash, /^0x[a-f0-9]{64}$/i)
         })
@@ -35,7 +49,13 @@ describe('EscrowReward', () => {
 
     describe('#generateId()', () => {
         it('should generate an ID', async () => {
-            const hash = await condition.hashValues(amount, consumer, publisher, lockCondition, releaseCondition)
+            const hash = await condition.hashValues(
+                amount,
+                consumer,
+                publisher,
+                lockCondition,
+                releaseCondition
+            )
             const id = await condition.generateId(agreementId, hash)
 
             assert.match(id, /^0x[a-f0-9]{64}$/i)

@@ -43,14 +43,20 @@ export class WebServiceConnector extends Instantiable {
         })
     }
 
-    public async downloadFile(url: string, destination?: string, index?: number): Promise<string> {
+    public async downloadFile(
+        url: string,
+        destination?: string,
+        index?: number
+    ): Promise<string> {
         const response = await this.get(url)
         if (!response.ok) {
             throw new Error('Response error.')
         }
         let filename: string
         try {
-            filename = response.headers.get('content-disposition').match(/attachment;filename=(.+)/)[1]
+            filename = response.headers
+                .get('content-disposition')
+                .match(/attachment;filename=(.+)/)[1]
         } catch {
             try {
                 filename = url.split('/').pop()

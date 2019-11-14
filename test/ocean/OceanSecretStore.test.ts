@@ -27,7 +27,11 @@ describe('OceanSecretStore', () => {
 
     describe('#encrypt()', () => {
         it('should encrypt a content', async () => {
-            const secretStoreEncryptSpy = spy.on(ocean.brizo, 'encrypt', () => 'encryptedResult')
+            const secretStoreEncryptSpy = spy.on(
+                ocean.brizo,
+                'encrypt',
+                () => 'encryptedResult'
+            )
 
             const result = await oceanSecretStore.encrypt(did, 'test', accounts[0])
 

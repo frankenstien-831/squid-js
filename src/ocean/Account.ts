@@ -87,9 +87,11 @@ export default class Account extends Instantiable {
      * @return {Promise<number>}
      */
     public async getEtherBalance(): Promise<number> {
-        return this.web3.eth.getBalance(this.id, 'latest').then((balance: string): number => {
-            return new BigNumber(balance).toNumber()
-        })
+        return this.web3.eth
+            .getBalance(this.id, 'latest')
+            .then((balance: string): number => {
+                return new BigNumber(balance).toNumber()
+            })
     }
 
     /**

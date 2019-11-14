@@ -50,7 +50,8 @@ export class DDO {
 
     public constructor(ddo: Partial<DDO> = {}) {
         Object.assign(this, ddo, {
-            created: (ddo && ddo.created) || new Date().toISOString().replace(/\.[0-9]{3}/, '')
+            created:
+                (ddo && ddo.created) || new Date().toISOString().replace(/\.[0-9]{3}/, '')
         })
     }
 
@@ -114,10 +115,18 @@ export class DDO {
      * @param  {string}         password  Password if it's required.
      * @return {Promise<Proof>}           Proof object.
      */
-    public async generateProof(ocean: Ocean, publicKey: string, password?: string): Promise<Proof> {
+    public async generateProof(
+        ocean: Ocean,
+        publicKey: string,
+        password?: string
+    ): Promise<Proof> {
         const checksum = this.getChecksum()
 
-        const signature = await ocean.utils.signature.signText(checksum, publicKey, password)
+        const signature = await ocean.utils.signature.signText(
+            checksum,
+            publicKey,
+            password
+        )
 
         return {
             created: new Date().toISOString().replace(/\.[0-9]{3}/, ''),
@@ -134,7 +143,11 @@ export class DDO {
      * @param  {string}         password  Password if it's required.
      * @return {Promise<Proof>}           Proof object.
      */
-    public async addProof(ocean: Ocean, publicKey: string, password?: string): Promise<void> {
+    public async addProof(
+        ocean: Ocean,
+        publicKey: string,
+        password?: string
+    ): Promise<void> {
         if (this.proof) {
             throw new Error('Proof already exists')
         }

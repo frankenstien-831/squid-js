@@ -17,7 +17,12 @@ describe('Aquarius', () => {
     let ocean: Ocean
     let aquarius: Aquarius
     /* eslint-disable @typescript-eslint/camelcase */
-    const getResults = (results: DDO[], page = 0, total_pages = 1, total_results = 1) => ({
+    const getResults = (
+        results: DDO[],
+        page = 0,
+        total_pages = 1,
+        total_results = 1
+    ) => ({
         results,
         page,
         total_pages,

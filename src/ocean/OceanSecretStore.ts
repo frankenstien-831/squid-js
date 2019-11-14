@@ -13,7 +13,9 @@ export class OceanSecretStore extends Instantiable {
      * Returns the instance of OceanSecretStore.
      * @return {Promise<OceanSecretStore>}
      */
-    public static async getInstance(config: InstantiableConfig): Promise<OceanSecretStore> {
+    public static async getInstance(
+        config: InstantiableConfig
+    ): Promise<OceanSecretStore> {
         const instance = new OceanSecretStore()
         instance.setInstanceConfig(config)
 
@@ -28,12 +30,25 @@ export class OceanSecretStore extends Instantiable {
      * @param  {string}          publisher Publisher account.
      * @return {Promise<string>}           Encrypted text.
      */
-    public async encrypt(did: string, document: any, publisher: Account): Promise<string> {
+    public async encrypt(
+        did: string,
+        document: any,
+        publisher: Account
+    ): Promise<string> {
         const signature =
             (await publisher.getToken()) ||
-            (await this.ocean.utils.signature.signText(noDidPrefixed(did), publisher.getId(), publisher.getPassword()))
+            (await this.ocean.utils.signature.signText(
+                noDidPrefixed(did),
+                publisher.getId(),
+                publisher.getPassword()
+            ))
 
-        return this.ocean.brizo.encrypt(noDidPrefixed(did), signature, document, publisher.getId())
+        return this.ocean.brizo.encrypt(
+            noDidPrefixed(did),
+            signature,
+            document,
+            publisher.getId()
+        )
     }
 
     /**
@@ -44,8 +59,16 @@ export class OceanSecretStore extends Instantiable {
      * @param  {string}          consumer cONSUMER account.
      * @return {Promise<string>}          Encrypted text.
      */
-    public async decrypt(did: string, content: string, consumer?: Account, secretStoreUrl?: string): Promise<any> {
-        return this.getSecretStoreByAccount(consumer, secretStoreUrl).decryptDocument(noDidPrefixed(did), content)
+    public async decrypt(
+        did: string,
+        content: string,
+        consumer?: Account,
+        secretStoreUrl?: string
+    ): Promise<any> {
+        return this.getSecretStoreByAccount(consumer, secretStoreUrl).decryptDocument(
+            noDidPrefixed(did),
+            content
+        )
     }
 
     private getSecretStoreByAccount(account: Account, secretStoreUrl?: string) {

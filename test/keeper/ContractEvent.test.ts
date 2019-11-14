@@ -22,7 +22,9 @@ describe('ContractEvent', () => {
 
     describe('#subscribe()', () => {
         it('should be able to listen to events', async () => {
-            const event = eventHandler.getEvent(ocean.keeper.token, 'Transfer', { to: account })
+            const event = eventHandler.getEvent(ocean.keeper.token, 'Transfer', {
+                to: account
+            })
             let validResolve = false
             let subscription: ContractEventSubscription
 

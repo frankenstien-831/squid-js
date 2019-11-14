@@ -47,13 +47,21 @@ describe('Register Escrow Compute Execution Template', () => {
 
     describe('Propose and approve template', () => {
         it('should propose the template', async () => {
-            await keeper.templateStoreManager.proposeTemplate(template.getAddress(), consumer.getId(), true)
+            await keeper.templateStoreManager.proposeTemplate(
+                template.getAddress(),
+                consumer.getId(),
+                true
+            )
             // TODO: Use a event to detect template mined
             await new Promise(resolve => setTimeout(resolve, 2 * 1000))
         })
 
         it('should approve the template', async () => {
-            await keeper.templateStoreManager.approveTemplate(template.getAddress(), templateManagerOwner.getId(), true)
+            await keeper.templateStoreManager.approveTemplate(
+                template.getAddress(),
+                templateManagerOwner.getId(),
+                true
+            )
             // TODO: Use a event to detect template mined
             await new Promise(resolve => setTimeout(resolve, 2 * 1000))
         })
@@ -68,11 +76,21 @@ describe('Register Escrow Compute Execution Template', () => {
         let conditionIdEscrow: string
 
         it('should register a DID', async () => {
-            await keeper.didRegistry.registerAttribute(did, checksum, [], url, publisher.getId())
+            await keeper.didRegistry.registerAttribute(
+                did,
+                checksum,
+                [],
+                url,
+                publisher.getId()
+            )
         })
 
         it('should generate the condition IDs', async () => {
-            conditionIdCompute = await computeExecutionCondition.generateIdHash(agreementId, did, consumer.getId())
+            conditionIdCompute = await computeExecutionCondition.generateIdHash(
+                agreementId,
+                did,
+                consumer.getId()
+            )
             conditionIdLock = await lockRewardCondition.generateIdHash(
                 agreementId,
                 await escrowReward.getAddress(),
@@ -108,10 +126,20 @@ describe('Register Escrow Compute Execution Template', () => {
 
             assert.equal(conditionInstances.length, 3, 'Expected 3 conditions.')
 
-            const conditionClasses = [ComputeExecutionCondition, EscrowReward, LockRewardCondition]
+            const conditionClasses = [
+                ComputeExecutionCondition,
+                EscrowReward,
+                LockRewardCondition
+            ]
             conditionClasses.forEach(conditionClass => {
-                if (!conditionInstances.find(condition => condition instanceof conditionClass)) {
-                    throw new Error(`${conditionClass.name} is not part of the conditions.`)
+                if (
+                    !conditionInstances.find(
+                        condition => condition instanceof conditionClass
+                    )
+                ) {
+                    throw new Error(
+                        `${conditionClass.name} is not part of the conditions.`
+                    )
                 }
             })
         })
@@ -131,7 +159,10 @@ describe('Register Escrow Compute Execution Template', () => {
         })
 
         it('should not trigger the compute', async () => {
-            const computeTriggered = await computeExecutionCondition.wasComputeTriggered(did, consumer.getId())
+            const computeTriggered = await computeExecutionCondition.wasComputeTriggered(
+                did,
+                consumer.getId()
+            )
 
             assert.isFalse(computeTriggered, 'Compute has been triggered.')
         })
@@ -141,7 +172,11 @@ describe('Register Escrow Compute Execution Template', () => {
                 await consumer.requestTokens(escrowAmount)
             } catch {}
 
-            await keeper.token.approve(lockRewardCondition.getAddress(), escrowAmount, consumer.getId())
+            await keeper.token.approve(
+                lockRewardCondition.getAddress(),
+                escrowAmount,
+                consumer.getId()
+            )
 
             const fulfill = await lockRewardCondition.fulfill(
                 agreementId,
@@ -179,7 +214,10 @@ describe('Register Escrow Compute Execution Template', () => {
         })
 
         it('should grant the access to the consumer', async () => {
-            const computeTriggered = await computeExecutionCondition.wasComputeTriggered(did, consumer.getId())
+            const computeTriggered = await computeExecutionCondition.wasComputeTriggered(
+                did,
+                consumer.getId()
+            )
 
             assert.isTrue(computeTriggered, 'Compute has not been triggered.')
         })
@@ -192,17 +230,31 @@ describe('Register Escrow Compute Execution Template', () => {
 
         it('should register a DID', async () => {
             // This part is executed inside Ocean.assets.create()
-            await keeper.didRegistry.registerAttribute(did, checksum, [], url, publisher.getId())
+            await keeper.didRegistry.registerAttribute(
+                did,
+                checksum,
+                [],
+                url,
+                publisher.getId()
+            )
         })
 
         it('should create a new agreement (short way)', async () => {
-            agreementId = await template.createFullAgreement(did, escrowAmount, consumer.getId(), publisher.getId())
+            agreementId = await template.createFullAgreement(
+                did,
+                escrowAmount,
+                consumer.getId(),
+                publisher.getId()
+            )
 
             assert.match(agreementId, /^0x[a-f0-9]{64}$/i)
         })
 
         it('should not grant the access to the consumer', async () => {
-            const computeTriggered = await computeExecutionCondition.wasComputeTriggered(did, consumer.getId())
+            const computeTriggered = await computeExecutionCondition.wasComputeTriggered(
+                did,
+                consumer.getId()
+            )
 
             assert.isFalse(computeTriggered, 'Compute has been triggered.')
         })
@@ -212,11 +264,20 @@ describe('Register Escrow Compute Execution Template', () => {
                 await consumer.requestTokens(escrowAmount)
             } catch {}
 
-            await ocean.agreements.conditions.lockReward(agreementId, escrowAmount, consumer)
+            await ocean.agreements.conditions.lockReward(
+                agreementId,
+                escrowAmount,
+                consumer
+            )
         })
 
         it('should fulfill the conditions from computing side', async () => {
-            await ocean.agreements.conditions.grantServiceExecution(agreementId, did, consumer.getId(), publisher)
+            await ocean.agreements.conditions.grantServiceExecution(
+                agreementId,
+                did,
+                consumer.getId(),
+                publisher
+            )
             await ocean.agreements.conditions.releaseReward(
                 agreementId,
                 escrowAmount,
@@ -228,7 +289,10 @@ describe('Register Escrow Compute Execution Template', () => {
         })
 
         it('should grant the access to the consumer', async () => {
-            const computeTriggered = await computeExecutionCondition.wasComputeTriggered(did, consumer.getId())
+            const computeTriggered = await computeExecutionCondition.wasComputeTriggered(
+                did,
+                consumer.getId()
+            )
 
             assert.isTrue(computeTriggered, 'Compute has not been triggered.')
         })

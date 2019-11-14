@@ -19,7 +19,10 @@ export class ServiceAgreement extends Instantiable {
         consumer: Account
     ): Promise<string> {
         const service = ddo.findServiceById<'access'>(index)
-        const timelockValues: number[] = this.getTimeValuesFromService(service, 'timelock')
+        const timelockValues: number[] = this.getTimeValuesFromService(
+            service,
+            'timelock'
+        )
         const timeoutValues: number[] = this.getTimeValuesFromService(service, 'timeout')
 
         if (!service.templateId) {
@@ -83,7 +86,10 @@ export class ServiceAgreement extends Instantiable {
         return this.web3.utils.soliditySha3(...args)
     }
 
-    private getTimeValuesFromService(service: ServiceAccess, type: 'timeout' | 'timelock'): number[] {
+    private getTimeValuesFromService(
+        service: ServiceAccess,
+        type: 'timeout' | 'timelock'
+    ): number[] {
         const timeoutValues: number[] = service.attributes.serviceAgreementTemplate.conditions.map(
             (condition: ServiceAgreementTemplateCondition) => condition[type]
         )

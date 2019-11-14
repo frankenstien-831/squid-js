@@ -14,8 +14,12 @@ export interface ConditionData {
 }
 
 export class ConditionStoreManager extends ContractBase {
-    public static async getInstance(config: InstantiableConfig): Promise<ConditionStoreManager> {
-        const templateStoreManeger: ConditionStoreManager = new ConditionStoreManager('ConditionStoreManager')
+    public static async getInstance(
+        config: InstantiableConfig
+    ): Promise<ConditionStoreManager> {
+        const templateStoreManeger: ConditionStoreManager = new ConditionStoreManager(
+            'ConditionStoreManager'
+        )
         await templateStoreManeger.init(config)
         return templateStoreManeger
     }

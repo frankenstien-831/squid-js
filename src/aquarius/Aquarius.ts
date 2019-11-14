@@ -53,7 +53,10 @@ export class Aquarius extends Instantiable {
                 return consumptionUrl
             })
             .catch(error => {
-                this.logger.error('Error fetching the data asset consumption url: ', error)
+                this.logger.error(
+                    'Error fetching the data asset consumption url: ',
+                    error
+                )
                 return null
             })
 
@@ -72,7 +75,11 @@ export class Aquarius extends Instantiable {
                 if (response.ok) {
                     return response.json() as DDO[]
                 }
-                this.logger.error('queryMetadata failed:', response.status, response.statusText)
+                this.logger.error(
+                    'queryMetadata failed:',
+                    response.status,
+                    response.statusText
+                )
                 return this.transformResult()
             })
             .then(results => {
@@ -94,7 +101,10 @@ export class Aquarius extends Instantiable {
     public async queryMetadataByText(query: SearchQuery): Promise<QueryResult> {
         const fullUrl = new URL(`${this.url}${apiPath}/query`)
         fullUrl.searchParams.append('text', query.text)
-        fullUrl.searchParams.append('sort', decodeURIComponent(JSON.stringify(query.sort)))
+        fullUrl.searchParams.append(
+            'sort',
+            decodeURIComponent(JSON.stringify(query.sort))
+        )
         fullUrl.searchParams.append('offset', query.offset.toString())
         fullUrl.searchParams.append('page', query.page.toString())
         const result: QueryResult = await this.ocean.utils.fetch
@@ -103,7 +113,11 @@ export class Aquarius extends Instantiable {
                 if (response.ok) {
                     return response.json() as DDO[]
                 }
-                this.logger.log('queryMetadataByText failed:', response.status, response.statusText)
+                this.logger.log(
+                    'queryMetadataByText failed:',
+                    response.status,
+                    response.statusText
+                )
                 return this.transformResult()
             })
             .then(results => {
@@ -130,7 +144,12 @@ export class Aquarius extends Instantiable {
                 if (response.ok) {
                     return response.json()
                 }
-                this.logger.error('storeDDO failed:', response.status, response.statusText, ddo)
+                this.logger.error(
+                    'storeDDO failed:',
+                    response.status,
+                    response.statusText,
+                    ddo
+                )
                 return null as DDO
             })
             .then((response: DDO) => {
@@ -149,7 +168,10 @@ export class Aquarius extends Instantiable {
      * @param  {DID | string} did DID of the asset.
      * @return {Promise<DDO>} DDO of the asset.
      */
-    public async retrieveDDO(did: DID | string, metadataServiceEndpoint?: string): Promise<DDO> {
+    public async retrieveDDO(
+        did: DID | string,
+        metadataServiceEndpoint?: string
+    ): Promise<DDO> {
         did = did && DID.parse(did)
         const fullUrl = metadataServiceEndpoint || `${this.url}${apiPath}/${did.getDid()}`
         const result = await this.ocean.utils.fetch
@@ -158,7 +180,12 @@ export class Aquarius extends Instantiable {
                 if (response.ok) {
                     return response.json()
                 }
-                this.logger.log('retrieveDDO failed:', response.status, response.statusText, did)
+                this.logger.log(
+                    'retrieveDDO failed:',
+                    response.status,
+                    response.statusText,
+                    did
+                )
                 return null as DDO
             })
             .then((response: DDO) => {

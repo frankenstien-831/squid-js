@@ -26,7 +26,15 @@ export abstract class BaseEscrowTemplate extends AgreementTemplate {
         accessConsumer: string,
         from?: string
     ) {
-        return super.createAgreement(agreementId, did, conditionIds, timeLocks, timeOuts, [accessConsumer], from)
+        return super.createAgreement(
+            agreementId,
+            did,
+            conditionIds,
+            timeLocks,
+            timeOuts,
+            [accessConsumer],
+            from
+        )
     }
 
     public async getAgreementData(agreementId: string) {

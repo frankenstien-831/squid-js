@@ -17,7 +17,12 @@ export default class DIDRegistry extends ContractBase {
         value: string,
         ownerAddress: string
     ) {
-        return this.send('registerAttribute', ownerAddress, [zeroX(did), zeroX(checksum), providers.map(zeroX), value])
+        return this.send('registerAttribute', ownerAddress, [
+            zeroX(did),
+            zeroX(checksum),
+            providers.map(zeroX),
+            value
+        ])
     }
 
     public async getDIDOwner(did: string): Promise<string> {
@@ -42,16 +47,22 @@ export default class DIDRegistry extends ContractBase {
             .map(didPrefixed)
     }
 
-    public async getAttributesByDid(did: string): Promise<{ did: string; serviceEndpoint: string; checksum: string }> {
+    public async getAttributesByDid(
+        did: string
+    ): Promise<{ did: string; serviceEndpoint: string; checksum: string }> {
         return (
             await this.getPastEvents('DIDAttributeRegistered', {
                 _did: didZeroX(did)
             })
-        ).map(({ returnValues: { _did, _checksum: checksum, _value: serviceEndpoint } }) => ({
-            did: didPrefixed(_did),
-            serviceEndpoint,
-            checksum
-        }))[0]
+        ).map(
+            ({
+                returnValues: { _did, _checksum: checksum, _value: serviceEndpoint }
+            }) => ({
+                did: didPrefixed(_did),
+                serviceEndpoint,
+                checksum
+            })
+        )[0]
     }
 
     public async grantPermission(did: string, grantee: string, ownerAddress: string) {
@@ -71,6 +82,9 @@ export default class DIDRegistry extends ContractBase {
         newOwnerAddress: string,
         ownerAddress: string
     ): Promise<TransactionReceipt> {
-        return this.send('transferDIDOwnership', ownerAddress, [didZeroX(did), noZeroX(newOwnerAddress)])
+        return this.send('transferDIDOwnership', ownerAddress, [
+            didZeroX(did),
+            noZeroX(newOwnerAddress)
+        ])
     }
 }

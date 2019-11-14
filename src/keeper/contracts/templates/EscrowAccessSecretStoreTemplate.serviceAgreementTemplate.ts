@@ -13,7 +13,11 @@ export const escrowAccessSecretStoreTemplateServiceAgreementTemplate: ServiceAgr
             }
         }
     ],
-    fulfillmentOrder: ['lockReward.fulfill', 'accessSecretStore.fulfill', 'escrowReward.fulfill'],
+    fulfillmentOrder: [
+        'lockReward.fulfill',
+        'accessSecretStore.fulfill',
+        'escrowReward.fulfill'
+    ],
     conditionDependency: {
         lockReward: [],
         accessSecretStore: [],

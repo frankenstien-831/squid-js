@@ -14,7 +14,10 @@ import Keeper from '../keeper/Keeper'
 
 import { Config } from '../models/Config'
 
-import { Instantiable, generateIntantiableConfigFromConfig } from '../Instantiable.abstract'
+import {
+    Instantiable,
+    generateIntantiableConfigFromConfig
+} from '../Instantiable.abstract'
 
 /**
  * Main interface for Ocean Protocol.

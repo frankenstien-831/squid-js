@@ -13,7 +13,8 @@ describe('AccessSecretStoreCondition', () => {
 
     before(async () => {
         await TestContractHandler.prepareContracts()
-        condition = (await Ocean.getInstance(config)).keeper.conditions.accessSecretStoreCondition
+        condition = (await Ocean.getInstance(config)).keeper.conditions
+            .accessSecretStoreCondition
     })
 
     describe('#hashValues()', () => {

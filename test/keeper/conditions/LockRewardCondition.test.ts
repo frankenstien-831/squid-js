@@ -13,7 +13,8 @@ describe('LockRewardCondition', () => {
 
     before(async () => {
         await TestContractHandler.prepareContracts()
-        condition = (await Ocean.getInstance(config)).keeper.conditions.lockRewardCondition
+        condition = (await Ocean.getInstance(config)).keeper.conditions
+            .lockRewardCondition
     })
 
     describe('#hashValues()', () => {

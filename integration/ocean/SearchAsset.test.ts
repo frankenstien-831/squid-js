@@ -15,7 +15,8 @@ describe('Search Asset', () => {
         .toString(36)
         .substr(2)
     let price
-    const metadataGenerator = (name: string) => generateMetadata(`${name}${testHash}`, price)
+    const metadataGenerator = (name: string) =>
+        generateMetadata(`${name}${testHash}`, price)
 
     let test1length
     let test2length
@@ -43,10 +44,22 @@ describe('Search Asset', () => {
     })
 
     it('should register an asset', async () => {
-        assert.instanceOf(await ocean.assets.create(metadataGenerator('Test1') as any, publisher), DDO)
-        assert.instanceOf(await ocean.assets.create(metadataGenerator('Test2') as any, publisher), DDO)
-        assert.instanceOf(await ocean.assets.create(metadataGenerator('Test2') as any, publisher), DDO)
-        assert.instanceOf(await ocean.assets.create(metadataGenerator('Test3') as any, publisher), DDO)
+        assert.instanceOf(
+            await ocean.assets.create(metadataGenerator('Test1') as any, publisher),
+            DDO
+        )
+        assert.instanceOf(
+            await ocean.assets.create(metadataGenerator('Test2') as any, publisher),
+            DDO
+        )
+        assert.instanceOf(
+            await ocean.assets.create(metadataGenerator('Test2') as any, publisher),
+            DDO
+        )
+        assert.instanceOf(
+            await ocean.assets.create(metadataGenerator('Test3') as any, publisher),
+            DDO
+        )
     })
 
     it('should search by text and see the increment of DDOs', async () => {
@@ -65,8 +78,14 @@ describe('Search Asset', () => {
     it('should return a list of DDOs', async () => {
         const { results: ddos } = await ocean.assets.search(`Test1${testHash}`)
 
-        assert.equal(ddos.length - test1length, 1, 'Something was wrong searching the assets')
-        ddos.map(ddo => assert.instanceOf(ddo, DDO, 'The DDO is not an instance of a DDO'))
+        assert.equal(
+            ddos.length - test1length,
+            1,
+            'Something was wrong searching the assets'
+        )
+        ddos.map(ddo =>
+            assert.instanceOf(ddo, DDO, 'The DDO is not an instance of a DDO')
+        )
     })
 
     it('should be able to do a query to get a list of DDOs', async () => {
@@ -82,6 +101,8 @@ describe('Search Asset', () => {
         })
 
         assert.equal(ddos.length, 1, 'Something was wrong searching the assets')
-        ddos.map(ddo => assert.instanceOf(ddo, DDO, 'The DDO is not an instance of a DDO'))
+        ddos.map(ddo =>
+            assert.instanceOf(ddo, DDO, 'The DDO is not an instance of a DDO')
+        )
     })
 })
