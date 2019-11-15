@@ -2,9 +2,18 @@
 
 Instructions on how to migrate between breaking versions.
 
-## 0.8.3 → 1.0.0
+## v0.8.3 → v1.0.0
 
-### DDO structure
+### Ocean Protocol Components Requirements
+
+squid-js v1.0.0 only works against:
+
+- Aquarius v1.0.2+
+- Brizo v0.7.0+
+- Events Handler v0.3.0+
+- Keeper Contracts v0.12.7+
+
+### DDO Structure
 
 The whole structure of the DDO has been changed based on [OEP-12](https://github.com/oceanprotocol/OEPs/tree/master/12) and [OEP-8 v0.4](https://github.com/oceanprotocol/OEPs/tree/master/8/v0.4) to better accomodate the DDOs to hold additional services, like execution of workflows and algorithms.
 
@@ -96,7 +105,7 @@ NEW. Where `main` now holds the non-changable attributes only, everything else h
 
 Those changes require updates to your code whenever you fetch or create a new DDO as outlined below.
 
-### Lowercase service names
+### Lowercase Service Names
 
 All the service names are now in lowercase:
 
@@ -112,7 +121,7 @@ NEW:
 const service = ddo.findServiceByType('access')
 ```
 
-### Accessing new metadata structure
+### Accessing New Metadata Structure
 
 Typically you would grab and restructure asset metadata for display. This works the same as before but the key names have changed:
 
@@ -148,7 +157,7 @@ NEW:
 await ocean.assets.order(ddo.id, service.index, accounts[0])
 ```
 
-### File attribute changes
+### File Attribute Changes
 
 In the file attributes, the `contentLength` is now a string.
 
