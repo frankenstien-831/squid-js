@@ -17,7 +17,7 @@ squid-js v1.0.0 only works against:
 
 The whole structure of the DDO has been changed based on [OEP-12](https://github.com/oceanprotocol/OEPs/tree/master/12) and [OEP-8 v0.4](https://github.com/oceanprotocol/OEPs/tree/master/8/v0.4) to better accomodate the DDOs to hold additional services, like execution of workflows and algorithms.
 
-For migrating we only have to deal with the `metadata` service holding the asset metadata, which was restructured too:
+For migrating, you only have to deal with the `metadata` service holding the asset metadata, which was restructured too:
 
 old:
 
@@ -105,6 +105,10 @@ NEW. Where `main` now holds the non-changable attributes only, everything else h
 
 Those changes require updates to your code whenever you fetch or create a new DDO as outlined below.
 
+Likewise, you have to migrate the DDOs of existing registered assets to the new structure. For this you can run our migration script on your respective Aquarius instance.
+
+- [script: CHANGEME](https://github.com/oceanprotocol/CHANGEME)
+
 ### Lowercase Service Names
 
 All the service names are now in lowercase:
@@ -156,6 +160,8 @@ NEW:
 ```js
 await ocean.assets.order(ddo.id, service.index, accounts[0])
 ```
+
+The value of of `service.index` is now also a number, and not a string.
 
 ### File Attribute Changes
 
