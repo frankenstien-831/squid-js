@@ -243,6 +243,8 @@ export class Keeper extends Instantiable {
                     return 'POA_Core'
                 case 42:
                     return 'Kovan'
+                case 100:
+                    return 'xDai'
                 case 2199:
                     return 'Duero'
                 case 8996:
