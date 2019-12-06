@@ -41,7 +41,7 @@ export class OceanAccounts extends Instantiable {
     }
 
     /**
-     * Request tokens for a account.
+     * Request tokens for an account.
      * @param  {Account}          account Account instance.
      * @param  {number}           amount  Token amount.
      * @return {Promise<boolean>}         Success.

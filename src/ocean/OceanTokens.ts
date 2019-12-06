@@ -18,7 +18,7 @@ export class OceanTokens extends Instantiable {
 
     /**
      * Transfer a number of tokens to the mentioned account.
-     * @param  {string}           to     Address that receives the account.
+     * @param  {string}           to     Address that receives the tokens.
      * @param  {number}           amount Tokens to transfer.
      * @param  {Account}          from   Sender account address.
      * @return {Promise<boolean>}        Success,
@@ -29,7 +29,7 @@ export class OceanTokens extends Instantiable {
     }
 
     /**
-     * Request tokens for a account.
+     * Request tokens for an account.
      * @param  {Account}          account Account instance.
      * @param  {number}           amount  Token amount.
      * @return {Promise<boolean>}         Success.
