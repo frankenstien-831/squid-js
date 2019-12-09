@@ -1,5 +1,5 @@
 import { assert, expect, spy, use } from 'chai'
-import * as spies from 'chai-spies'
+import spies from 'chai-spies'
 
 import config from '../config'
 import Account from '../../src/ocean/Account'
@@ -54,11 +54,7 @@ describe('OceanAuth', () => {
 
     describe('#store()', () => {
         it('should sign and store the token', async () => {
-            const writeTokenSpy = spy.on(
-                oceanAuth as any,
-                'writeToken',
-                () => {}
-            )
+            const writeTokenSpy = spy.on(oceanAuth as any, 'writeToken', () => null)
 
             await oceanAuth.store(account)
 

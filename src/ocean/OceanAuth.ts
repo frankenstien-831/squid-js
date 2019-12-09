@@ -13,9 +13,7 @@ export class OceanAuth extends Instantiable {
      * Returns the instance of OceanAuth.
      * @return {Promise<OceanAuth>}
      */
-    public static async getInstance(
-        config: InstantiableConfig
-    ): Promise<OceanAuth> {
+    public static async getInstance(config: InstantiableConfig): Promise<OceanAuth> {
         const instance = new OceanAuth()
         instance.setInstanceConfig(config)
 

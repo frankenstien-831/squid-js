@@ -25,9 +25,7 @@ export abstract class AgreementTemplate extends ContractBase {
         conditionName: string,
         templateClass: any
     ): Promise<AgreementTemplate & any> {
-        const condition: AgreementTemplate = new (templateClass as any)(
-            conditionName
-        )
+        const condition: AgreementTemplate = new (templateClass as any)(conditionName)
         await condition.init(config)
         return condition
     }
@@ -114,9 +112,7 @@ export abstract class AgreementTemplate extends ContractBase {
         from?: string
     ): Promise<boolean>
 
-    public abstract async getServiceAgreementTemplate(): Promise<
-        ServiceAgreementTemplate
-    >
+    public abstract async getServiceAgreementTemplate(): Promise<ServiceAgreementTemplate>
 
     public async getServiceAgreementTemplateConditions() {
         const serviceAgreementTemplate = await this.getServiceAgreementTemplate()
@@ -165,15 +161,17 @@ export abstract class AgreementTemplate extends ContractBase {
         )
 
         const statesPromises = Object.keys(dependencies).map(async (ref, i) => {
-            const {
-                contractName
-            } = await this.getServiceAgreementTemplateConditionByRef(ref)
+            const { contractName } = await this.getServiceAgreementTemplateConditionByRef(
+                ref
+            )
             return {
                 ref,
                 contractName,
-                state: (await conditionStore.getCondition(
-                    conditionIdByConddition[contractName]
-                )).state
+                state: (
+                    await conditionStore.getCondition(
+                        conditionIdByConddition[contractName]
+                    )
+                ).state
             }
         })
         const states = await Promise.all(statesPromises)
@@ -181,9 +179,7 @@ export abstract class AgreementTemplate extends ContractBase {
         return states.reduce((acc, { contractName, ref, state }) => {
             const blockers = dependencies[ref]
                 .map(dependency => states.find(_ => _.ref === dependency))
-                .filter(
-                    condition => condition.state !== ConditionState.Fulfilled
-                )
+                .filter(condition => condition.state !== ConditionState.Fulfilled)
             return {
                 ...acc,
                 [ref]: {
@@ -217,11 +213,7 @@ export abstract class AgreementTemplate extends ContractBase {
                     this.logger.bypass('-'.repeat(20))
                 }
                 this.logger.bypass(`${condition} (${contractName})`)
-                this.logger.bypass(
-                    '  Status:',
-                    state,
-                    `(${conditionStateNames[state]})`
-                )
+                this.logger.bypass('  Status:', state, `(${conditionStateNames[state]})`)
                 if (blocked) {
                     this.logger.bypass('  Blocked by:', blockedBy)
                 }

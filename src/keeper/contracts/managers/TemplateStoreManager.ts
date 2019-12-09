@@ -31,11 +31,7 @@ export class TemplateStoreManager extends ContractBase {
         return this.call('owner', [])
     }
 
-    public async proposeTemplate(
-        address: string,
-        from?: string,
-        ignoreExists?: boolean
-    ) {
+    public async proposeTemplate(address: string, from?: string, ignoreExists?: boolean) {
         const template = await this.getTemplate(address)
         if (template.blockNumberUpdated !== 0) {
             this.logger.warn(`Template "${address}" already exist.`)
@@ -54,9 +50,7 @@ export class TemplateStoreManager extends ContractBase {
     ) {
         const template = await this.getTemplate(address)
         if (template.state !== TemplateState.Proposed) {
-            this.logger.warn(
-                `Template "${address}" is not in "proposed" state.`
-            )
+            this.logger.warn(`Template "${address}" is not in "proposed" state.`)
             if (!ignoreApproved) {
                 throw new Error(`Template not in "proposed" state.`)
             }

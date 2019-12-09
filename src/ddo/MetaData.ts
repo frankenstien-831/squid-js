@@ -1,3 +1,72 @@
+export interface StageRequirements {
+    container: {
+        image: string
+        tag: string
+        checksum: string
+    }
+}
+
+export interface StageInput {
+    index: number
+    id: string
+}
+
+export interface StageTransformation {
+    id: string
+}
+
+export interface StageOutput {
+    metadataUrl: string
+    secretStoreUrl: string
+    accessProxyUrl: string
+    metadata: MetaDataMain
+}
+
+export interface Stage {
+    index: number
+    stageType?: string
+    requirements: StageRequirements
+    input: StageInput
+    transformation: StageTransformation
+    output: StageOutput
+}
+
+export interface Workflow {
+    stages: Stage[]
+}
+
+export interface Algorithm {
+    language: string
+    format?: string
+    version?: string
+    entrypoint: string
+    requirements: {
+        requirement: string
+        version: string
+    }
+}
+
+export interface ServiceDefinition {
+    auth: {
+        type: string
+        user?: string
+        password?: string
+        token?: string
+    }
+    endpoints: {
+        index: number
+        url: string
+        method: string
+        contentTypes: string[]
+    }
+}
+
+export interface Service {
+    spec?: string
+    specChecksum?: string
+    definition: ServiceDefinition
+}
+
 export interface File {
     /**
      * File name.
@@ -18,6 +87,13 @@ export interface File {
     index?: number
 
     /**
+     * File format, if applicable.
+     * @type {string}
+     * @example "text/csv"
+     */
+    contentType: string
+
+    /**
      * File checksum.
      * @type {[type]}
      */
@@ -33,7 +109,7 @@ export interface File {
      * File content length.
      * @type {[type]}
      */
-    contentLength?: number
+    contentLength?: string
 
     /**
      * Resource ID (depending on the source).
@@ -54,20 +130,13 @@ export interface File {
      * @example "zip"
      */
     compression?: string
-
-    /**
-     * File format, if applicable.
-     * @type {string}
-     * @example "text/csv"
-     */
-    contentType?: string
 }
 
 /**
- * Base attributes of Assets Metadata.
- * @see https://github.com/oceanprotocol/OEPs/tree/master/8#base-attributes
+ * Main attributes of assets metadata.
+ * @see https://github.com/oceanprotocol/OEPs/tree/master/8
  */
-export interface MetaDataBase {
+export interface MetaDataMain {
     /**
      * Descriptive name of the Asset.
      * @type {string}
@@ -82,14 +151,6 @@ export interface MetaDataBase {
      * @example "dataset"
      */
     type: 'dataset' | 'algorithm' | 'container' | 'workflow' | 'other'
-
-    /**
-     * Details of what the resource is. For a dataset, this attribute
-     * explains what the data represents and what it can be used for.
-     * @type {string}
-     * @example "Weather information of UK including temperature and humidity"
-     */
-    description?: string
 
     /**
      * The date on which the asset was created by the originator in
@@ -122,6 +183,75 @@ export interface MetaDataBase {
      * @example "CC-BY"
      */
     license: string
+
+    /**
+     * Price of the asset.
+     * @type {string}
+     * @example "1000000000000000000"
+     */
+    price: string
+
+    /**
+     * Array of File objects including the encrypted file urls and some additional information.
+     * @type {File[]}
+     */
+    files: File[]
+
+    encryptedService?: any
+
+    workflow?: Workflow
+
+    algorithm?: Algorithm
+
+    service?: Service
+}
+
+/**
+ * Curation attributes of Assets Metadata.
+ * @see https://github.com/oceanprotocol/OEPs/tree/master/8
+ */
+export interface Curation {
+    /**
+     * Decimal value between 0 and 1. 0 is the default value.
+     * @type {number}
+     * @example 0.93
+     */
+    rating: number
+
+    /**
+     * Number of votes. 0 is the default value.
+     * @type {number}
+     * @example 123
+     */
+    numVotes: number
+
+    /**
+     * Schema applied to calculate the rating.
+     * @type {string}
+     * @example "Binary Voting"
+     */
+    schema?: string
+
+    /**
+     * Flag unsuitable content.
+     * @type {boolean}
+     * @example true
+     */
+    isListed?: boolean
+}
+
+/**
+ * Additional Information of Assets Metadata.
+ * @see https://github.com/oceanprotocol/OEPs/tree/master/8#additional-information
+ */
+export interface AdditionalInformation {
+    /**
+     * Details of what the resource is. For a dataset, this attribute
+     * explains what the data represents and what it can be used for.
+     * @type {string}
+     * @example "Weather information of UK including temperature and humidity"
+     */
+    description?: string
 
     /**
      * The party holding the legal copyright. Empty by default.
@@ -180,88 +310,28 @@ export interface MetaDataBase {
     tags?: string[]
 
     /**
-     * Price of the asset.
-     * @type {string}
-     * @example "1000000000000000000"
-     */
-    price: string
-
-    /**
-     * Array of File objects including the encrypted file urls and some additional information.
-     * @type {File[]}
-     */
-    files: File[]
-
-    /**
-     * SHA3 hash of concatenated values: [list of all file checksums] + name + author + license + did
-     * @type {string}
-     */
-    checksum?: string
-
-    encryptedFiles?: any
-}
-
-/**
- * Curation attributes of Assets Metadata.
- * @see https://github.com/oceanprotocol/OEPs/tree/master/8#curation-attributes
- */
-export interface Curation {
-    /**
-     * Decimal value between 0 and 1. 0 is the default value.
-     * @type {number}
-     * @example 0.93
-     */
-    rating: number
-
-    /**
-     * Number of votes. 0 is the default value.
-     * @type {number}
-     * @example 123
-     */
-    numVotes: number
-
-    /**
-     * Schema applied to calculate the rating.
-     * @type {string}
-     * @example "Binary Voting"
-     */
-    schema?: string
-}
-
-/**
- * Additional Information of Assets Metadata.
- * @see https://github.com/oceanprotocol/OEPs/tree/master/8#additional-information
- */
-export interface AdditionalInformation {
-    /**
      * An indication of update latency - i.e. How often are updates expected (seldom,
      * annually, quarterly, etc.), or is the resource static that is never expected
      * to get updated.
      * @type {string}
      * @example "yearly"
      */
-    updateFrequency: string
+    updateFrequency?: string
 
     /**
      * A link to machine-readable structured markup (such as ttl/json-ld/rdf)
      * describing the dataset.
      * @type {StructuredMarkup[]}
      */
-    structuredMarkup: {
+    structuredMarkup?: {
         uri: string
         mediaType: string
     }[]
-
-    /**
-     * Checksum of attributes to be able to compare if there are changes in
-     * the asset that you are purchasing.
-     * @type {string}
-     */
-    checksum: string
 }
 
 export interface MetaData {
+    main: MetaDataMain
+    encryptedFiles?: string
     additionalInformation?: AdditionalInformation
-    base: MetaDataBase
     curation?: Curation
 }

@@ -8,9 +8,7 @@ const zipObject = (keys = [], values = []) => {
     )
 }
 
-export const objectPromiseAll = async (obj: {
-    [key: string]: Promise<any>
-}) => {
+export const objectPromiseAll = async (obj: { [key: string]: Promise<any> }) => {
     const keys = Object.keys(obj)
     const result = await Promise.all(Object.values(obj))
     return zipObject(keys, result)

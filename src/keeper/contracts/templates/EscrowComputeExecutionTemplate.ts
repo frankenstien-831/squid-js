@@ -4,21 +4,21 @@ import { DDO } from '../../../ddo/DDO'
 import { generateId, zeroX } from '../../../utils'
 import { InstantiableConfig } from '../../../Instantiable.abstract'
 
-import { escrowAccessSecretStoreTemplateServiceAgreementTemplate } from './EscrowAccessSecretStoreTemplate.serviceAgreementTemplate'
+import { escrowComputeExecutionTemplateServiceAgreementTemplate } from './EscrowComputeExecutionTemplate.serviceAgreementTemplate'
 
-export class EscrowAccessSecretStoreTemplate extends BaseEscrowTemplate {
+export class EscrowComputeExecutionTemplate extends BaseEscrowTemplate {
     public static async getInstance(
         config: InstantiableConfig
-    ): Promise<EscrowAccessSecretStoreTemplate> {
+    ): Promise<EscrowComputeExecutionTemplate> {
         return AgreementTemplate.getInstance(
             config,
-            'EscrowAccessSecretStoreTemplate',
-            EscrowAccessSecretStoreTemplate
+            'EscrowComputeExecutionTemplate',
+            EscrowComputeExecutionTemplate
         )
     }
 
     public async getServiceAgreementTemplate() {
-        return escrowAccessSecretStoreTemplateServiceAgreementTemplate
+        return escrowComputeExecutionTemplateServiceAgreementTemplate
     }
 
     public async createAgreementFromDDO(
@@ -43,7 +43,7 @@ export class EscrowAccessSecretStoreTemplate extends BaseEscrowTemplate {
         from?: string
     ) {
         const {
-            accessSecretStoreConditionId,
+            computeExecutionConditionId,
             lockRewardConditionId,
             escrowRewardId
         } = await this.createFullAgreementData(
@@ -52,11 +52,11 @@ export class EscrowAccessSecretStoreTemplate extends BaseEscrowTemplate {
             ddo.findServiceByType('metadata').attributes.main.price,
             consumer
         )
-        return [accessSecretStoreConditionId, lockRewardConditionId, escrowRewardId]
+        return [computeExecutionConditionId, lockRewardConditionId, escrowRewardId]
     }
 
     /**
-     * Create a agreement using EscrowAccessSecretStoreTemplate using only the most important information.
+     * Create a agreement using EscrowAccess____SecretStoreTemplate using only the most important information.
      * @param  {string}          did    Asset DID.
      * @param  {number}          amount Asset price.
      * @param  {string}          from   Consumer address.
@@ -70,7 +70,7 @@ export class EscrowAccessSecretStoreTemplate extends BaseEscrowTemplate {
         agreementId: string = generateId()
     ): Promise<string> {
         const {
-            accessSecretStoreConditionId,
+            computeExecutionConditionId,
             lockRewardConditionId,
             escrowRewardId
         } = await this.createFullAgreementData(agreementId, did, amount, consumer)
@@ -78,7 +78,7 @@ export class EscrowAccessSecretStoreTemplate extends BaseEscrowTemplate {
         await this.createAgreement(
             agreementId,
             did,
-            [accessSecretStoreConditionId, lockRewardConditionId, escrowRewardId],
+            [computeExecutionConditionId, lockRewardConditionId, escrowRewardId],
             [0, 0, 0],
             [0, 0, 0],
             consumer,
@@ -97,7 +97,7 @@ export class EscrowAccessSecretStoreTemplate extends BaseEscrowTemplate {
         const { didRegistry, conditions } = this.ocean.keeper
 
         const {
-            accessSecretStoreCondition,
+            computeExecutionCondition,
             lockRewardCondition,
             escrowReward
         } = conditions
@@ -109,7 +109,7 @@ export class EscrowAccessSecretStoreTemplate extends BaseEscrowTemplate {
             await escrowReward.getAddress(),
             amount
         )
-        const accessSecretStoreConditionId = await accessSecretStoreCondition.generateIdHash(
+        const computeExecutionConditionId = await computeExecutionCondition.generateIdHash(
             agreementId,
             did,
             consumer
@@ -120,12 +120,12 @@ export class EscrowAccessSecretStoreTemplate extends BaseEscrowTemplate {
             publisher,
             consumer,
             lockRewardConditionId,
-            accessSecretStoreConditionId
+            computeExecutionConditionId
         )
 
         return {
             lockRewardConditionId,
-            accessSecretStoreConditionId,
+            computeExecutionConditionId,
             escrowRewardId
         }
     }

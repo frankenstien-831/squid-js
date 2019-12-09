@@ -15,7 +15,7 @@ export abstract class ContractBase extends Instantiable {
         return this.contract.options.address
     }
 
-    constructor(contractName, private optional: boolean = false) {
+    constructor(contractName: string, private optional: boolean = false) {
         super()
         this.contractName = contractName
     }
@@ -54,10 +54,7 @@ export abstract class ContractBase extends Instantiable {
     protected async init(config: InstantiableConfig) {
         this.setInstanceConfig(config)
         const contractHandler = new ContractHandler(config)
-        this.contract = await contractHandler.get(
-            this.contractName,
-            this.optional
-        )
+        this.contract = await contractHandler.get(this.contractName, this.optional)
     }
 
     protected async getFromAddress(from?: string): Promise<string> {
@@ -99,23 +96,19 @@ export abstract class ContractBase extends Instantiable {
             })
             return tx
         } catch (err) {
-            const mappedArgs = this.searchMethod(name, args).inputs.map(
-                (input, i) => {
-                    return {
-                        name: input.name,
-                        value: args[i]
-                    }
+            const mappedArgs = this.searchMethod(name, args).inputs.map((input, i) => {
+                return {
+                    name: input.name,
+                    value: args[i]
                 }
-            )
+            })
             this.logger.error('-'.repeat(40))
             this.logger.error(
                 `Sending transaction "${name}" on contract "${this.contractName}" failed.`
             )
             this.logger.error(`Error: ${err.message}`)
             this.logger.error(`From: ${from}`)
-            this.logger.error(
-                `Parameters: ${JSON.stringify(mappedArgs, null, 2)}`
-            )
+            this.logger.error(`Parameters: ${JSON.stringify(mappedArgs, null, 2)}`)
             this.logger.error('-'.repeat(40))
             throw err
         }
@@ -127,9 +120,7 @@ export abstract class ContractBase extends Instantiable {
         from?: string
     ): Promise<T> {
         if (!this.contract.methods[name]) {
-            throw new Error(
-                `Method ${name} is not part of contract ${this.contractName}`
-            )
+            throw new Error(`Method ${name} is not part of contract ${this.contractName}`)
         }
         // Logger.log(name)
         try {
@@ -150,11 +141,7 @@ export abstract class ContractBase extends Instantiable {
                 `Event ${eventName} is not part of contract ${this.contractName}`
             )
         }
-        return this.ocean.keeper.utils.eventHandler.getEvent(
-            this,
-            eventName,
-            filter
-        )
+        return this.ocean.keeper.utils.eventHandler.getEvent(this, eventName, filter)
     }
 
     private searchMethod(methodName: string, args: any[] = []) {
@@ -165,8 +152,7 @@ export abstract class ContractBase extends Instantiable {
             }))
             .filter((method: any) => method.name === methodName)
         const foundMethod =
-            methods.find(({ inputs }) => inputs.length === args.length) ||
-            methods[0]
+            methods.find(({ inputs }) => inputs.length === args.length) || methods[0]
         if (!foundMethod) {
             throw new Error(
                 `Method "${methodName}" is not part of contract "${this.contractName}"`

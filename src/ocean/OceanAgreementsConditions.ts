@@ -30,10 +30,7 @@ export class OceanAgreementsConditions extends Instantiable {
         amount: number | string,
         from?: Account
     ) {
-        const {
-            lockRewardCondition,
-            escrowReward
-        } = this.ocean.keeper.conditions
+        const { lockRewardCondition, escrowReward } = this.ocean.keeper.conditions
 
         try {
             await this.ocean.keeper.token.approve(
@@ -72,6 +69,34 @@ export class OceanAgreementsConditions extends Instantiable {
             const { accessSecretStoreCondition } = this.ocean.keeper.conditions
 
             const receipt = await accessSecretStoreCondition.fulfill(
+                agreementId,
+                did,
+                grantee,
+                from && from.getId()
+            )
+            return !!receipt.events.Fulfilled
+        } catch {
+            return false
+        }
+    }
+
+    /**
+     * Authorize the consumer defined in the agreement to execute a remote service associated with this asset.
+     * @param {string}  agreementId Agreement ID.
+     * @param {string}  did         Asset ID.
+     * @param {string}  grantee     Consumer address.
+     * @param {Account} from        Account of sender.
+     */
+    public async grantServiceExecution(
+        agreementId: string,
+        did: string,
+        grantee: string,
+        from?: Account
+    ) {
+        try {
+            const { computeExecutionCondition } = this.ocean.keeper.conditions
+
+            const receipt = await computeExecutionCondition.fulfill(
                 agreementId,
                 did,
                 grantee,

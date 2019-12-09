@@ -10,9 +10,7 @@ export class OceanAccounts extends Instantiable {
      * Returns the instance of OceanAccounts.
      * @return {Promise<OceanAccounts>}
      */
-    public static async getInstance(
-        config: InstantiableConfig
-    ): Promise<OceanAccounts> {
+    public static async getInstance(config: InstantiableConfig): Promise<OceanAccounts> {
         const instance = new OceanAccounts()
         instance.setInstanceConfig(config)
 
@@ -43,15 +41,12 @@ export class OceanAccounts extends Instantiable {
     }
 
     /**
-     * Request tokens for a account.
+     * Request tokens for an account.
      * @param  {Account}          account Account instance.
      * @param  {number}           amount  Token amount.
      * @return {Promise<boolean>}         Success.
      */
-    public async requestTokens(
-        account: Account,
-        amount: number
-    ): Promise<boolean> {
+    public async requestTokens(account: Account, amount: number): Promise<boolean> {
         try {
             await account.requestTokens(amount)
             return true

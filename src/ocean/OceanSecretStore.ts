@@ -65,10 +65,10 @@ export class OceanSecretStore extends Instantiable {
         consumer?: Account,
         secretStoreUrl?: string
     ): Promise<any> {
-        return this.getSecretStoreByAccount(
-            consumer,
-            secretStoreUrl
-        ).decryptDocument(noDidPrefixed(did), content)
+        return this.getSecretStoreByAccount(consumer, secretStoreUrl).decryptDocument(
+            noDidPrefixed(did),
+            content
+        )
     }
 
     private getSecretStoreByAccount(account: Account, secretStoreUrl?: string) {
@@ -86,13 +86,7 @@ export class OceanSecretStore extends Instantiable {
     }
 
     private getSecretStore(config: SecretStoreConfig): SecretStore {
-        const {
-            secretStoreUri,
-            parityUri,
-            password,
-            address,
-            threshold
-        } = config
+        const { secretStoreUri, parityUri, password, address, threshold } = config
         config = { secretStoreUri, parityUri, password, address, threshold }
 
         return new SecretStore(config)

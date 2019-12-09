@@ -12,9 +12,7 @@ function fillParameterWithDDO(
         switch (name) {
             case 'amount':
             case 'price':
-                return String(
-                    ddo.findServiceByType('Metadata').metadata.base.price
-                )
+                return String(ddo.findServiceByType('metadata').attributes.main.price)
             case 'assetId':
             case 'documentId':
             case 'documentKeyId':

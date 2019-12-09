@@ -31,26 +31,22 @@ describe('Consume Asset', () => {
         }
     })
 
-    it('should regiester a asset', async () => {
+    it('should register an asset', async () => {
         ddo = await ocean.assets.create(metadata as any, publisher)
 
         assert.isDefined(ddo, 'Register has not returned a DDO')
         assert.match(ddo.id, /^did:op:[a-f0-9]{64}$/, 'DDO id is not valid')
-        assert.isAtLeast(
-            ddo.authentication.length,
-            1,
-            'Default authentication not added'
-        )
+        assert.isAtLeast(ddo.authentication.length, 1, 'Default authentication not added')
         assert.isDefined(
-            ddo.findServiceByType('Access'),
-            "DDO Access service doesn't exist"
+            ddo.findServiceByType('access'),
+            "DDO access service doesn't exist"
         )
     })
 
     it('should be able to request tokens for consumer', async () => {
         const initialBalance = (await consumer.getBalance()).ocn
         const claimedTokens =
-            +metadata.base.price * 10 ** -(await ocean.keeper.token.decimals())
+            +metadata.main.price * 10 ** -(await ocean.keeper.token.decimals())
 
         try {
             await consumer.requestTokens(claimedTokens)
@@ -64,11 +60,11 @@ describe('Consume Asset', () => {
     })
 
     it('should sign the service agreement', async () => {
-        const accessService = ddo.findServiceByType('Access')
+        const accessService = ddo.findServiceByType('access')
 
         serviceAgreementSignatureResult = await ocean.agreements.prepare(
             ddo.id,
-            accessService.serviceDefinitionId,
+            accessService.index,
             consumer
         )
 
@@ -86,12 +82,12 @@ describe('Consume Asset', () => {
     })
 
     it('should execute the service agreement', async () => {
-        const accessService = ddo.findServiceByType('Access')
+        const accessService = ddo.findServiceByType('access')
 
         const success = await ocean.agreements.create(
             ddo.id,
             serviceAgreementSignatureResult.agreementId,
-            accessService.serviceDefinitionId,
+            accessService.index,
             serviceAgreementSignatureResult.signature,
             consumer,
             publisher
@@ -115,7 +111,7 @@ describe('Consume Asset', () => {
     it('should lock the payment by the consumer', async () => {
         const paid = await ocean.agreements.conditions.lockReward(
             serviceAgreementSignatureResult.agreementId,
-            ddo.findServiceByType('Metadata').metadata.base.price,
+            ddo.findServiceByType('metadata').attributes.main.price,
             consumer
         )
 
@@ -156,13 +152,13 @@ describe('Consume Asset', () => {
     })
 
     it('should consume and store the assets', async () => {
-        const accessService = ddo.findServiceByType('Access')
+        const accessService = ddo.findServiceByType('access')
 
         const folder = '/tmp/ocean/squid-js-1'
         const path = await ocean.assets.consume(
             serviceAgreementSignatureResult.agreementId,
             ddo.id,
-            accessService.serviceDefinitionId,
+            accessService.index,
             consumer,
             folder
         )
@@ -182,14 +178,14 @@ describe('Consume Asset', () => {
         )
     })
 
-    it('should consume and store one assets', async () => {
-        const accessService = ddo.findServiceByType('Access')
+    it('should consume and store one asset', async () => {
+        const accessService = ddo.findServiceByType('access')
 
         const folder = '/tmp/ocean/squid-js-2'
         const path = await ocean.assets.consume(
             serviceAgreementSignatureResult.agreementId,
             ddo.id,
-            accessService.serviceDefinitionId,
+            accessService.index,
             consumer,
             folder,
             1

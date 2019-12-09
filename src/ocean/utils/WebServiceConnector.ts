@@ -1,8 +1,8 @@
-import fetch, { BodyInit, RequestInit, Response } from 'node-fetch'
-import * as fs from 'fs'
-
+import { BodyInit, RequestInit, Response } from 'node-fetch'
+import fs from 'fs'
 import { Instantiable, InstantiableConfig } from '../../Instantiable.abstract'
 
+const fetch = require('node-fetch')
 import save = require('save-file')
 
 /**
@@ -52,7 +52,7 @@ export class WebServiceConnector extends Instantiable {
         if (!response.ok) {
             throw new Error('Response error.')
         }
-        let filename
+        let filename: string
         try {
             filename = response.headers
                 .get('content-disposition')
@@ -69,9 +69,7 @@ export class WebServiceConnector extends Instantiable {
             // eslint-disable-next-line no-async-promise-executor
             await new Promise(async (resolve, reject) => {
                 fs.mkdirSync(destination, { recursive: true })
-                const fileStream = fs.createWriteStream(
-                    `${destination}${filename}`
-                )
+                const fileStream = fs.createWriteStream(`${destination}${filename}`)
                 response.body.pipe(fileStream)
                 response.body.on('error', reject)
                 fileStream.on('finish', resolve)

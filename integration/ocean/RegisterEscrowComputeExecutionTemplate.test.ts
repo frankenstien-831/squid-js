@@ -4,13 +4,13 @@ import { config } from '../config'
 
 import { Ocean, templates, conditions, utils, Account, Keeper } from '../../src' // @oceanprotocol/squid
 
-const { LockRewardCondition, EscrowReward, AccessSecretStoreCondition } = conditions
+const { LockRewardCondition, EscrowReward, ComputeExecutionCondition } = conditions
 
-describe('Register Escrow Access Secret Store Template', () => {
+describe('Register Escrow Compute Execution Template', () => {
     let ocean: Ocean
     let keeper: Keeper
 
-    let template: templates.EscrowAccessSecretStoreTemplate
+    let template: templates.EscrowComputeExecutionTemplate
 
     const url = 'https://example.com/did/ocean/test-attr-example.txt'
     const checksum = 'b'.repeat(32)
@@ -20,7 +20,7 @@ describe('Register Escrow Access Secret Store Template', () => {
     let publisher: Account
     let consumer: Account
 
-    let accessSecretStoreCondition: conditions.AccessSecretStoreCondition
+    let computeExecutionCondition: conditions.ComputeExecutionCondition
     let lockRewardCondition: conditions.LockRewardCondition
     let escrowReward: conditions.EscrowReward
 
@@ -28,7 +28,7 @@ describe('Register Escrow Access Secret Store Template', () => {
         ocean = await Ocean.getInstance(config)
         keeper = ocean.keeper
 
-        template = keeper.templates.escrowAccessSecretStoreTemplate
+        template = keeper.templates.escrowComputeExecutionTemplate
 
         // Accounts
         templateManagerOwner = (await ocean.accounts.list())[0]
@@ -36,7 +36,7 @@ describe('Register Escrow Access Secret Store Template', () => {
         consumer = (await ocean.accounts.list())[2]
 
         // Conditions
-        accessSecretStoreCondition = keeper.conditions.accessSecretStoreCondition
+        computeExecutionCondition = keeper.conditions.computeExecutionCondition
         lockRewardCondition = keeper.conditions.lockRewardCondition
         escrowReward = keeper.conditions.escrowReward
 
@@ -71,7 +71,7 @@ describe('Register Escrow Access Secret Store Template', () => {
         const agreementId = `0x${utils.generateId()}`
         const did = `0x${utils.generateId()}`
 
-        let conditionIdAccess: string
+        let conditionIdCompute: string
         let conditionIdLock: string
         let conditionIdEscrow: string
 
@@ -86,7 +86,7 @@ describe('Register Escrow Access Secret Store Template', () => {
         })
 
         it('should generate the condition IDs', async () => {
-            conditionIdAccess = await accessSecretStoreCondition.generateIdHash(
+            conditionIdCompute = await computeExecutionCondition.generateIdHash(
                 agreementId,
                 did,
                 consumer.getId()
@@ -102,7 +102,7 @@ describe('Register Escrow Access Secret Store Template', () => {
                 publisher.getId(),
                 consumer.getId(),
                 conditionIdLock,
-                conditionIdAccess
+                conditionIdCompute
             )
         })
 
@@ -113,7 +113,7 @@ describe('Register Escrow Access Secret Store Template', () => {
             assert.deepEqual(
                 [...conditionTypes].sort(),
                 [
-                    accessSecretStoreCondition.getAddress(),
+                    computeExecutionCondition.getAddress(),
                     escrowReward.getAddress(),
                     lockRewardCondition.getAddress()
                 ].sort(),
@@ -127,7 +127,7 @@ describe('Register Escrow Access Secret Store Template', () => {
             assert.equal(conditionInstances.length, 3, 'Expected 3 conditions.')
 
             const conditionClasses = [
-                AccessSecretStoreCondition,
+                ComputeExecutionCondition,
                 EscrowReward,
                 LockRewardCondition
             ]
@@ -148,7 +148,7 @@ describe('Register Escrow Access Secret Store Template', () => {
             const agreement = await template.createAgreement(
                 agreementId,
                 did,
-                [conditionIdAccess, conditionIdLock, conditionIdEscrow],
+                [conditionIdCompute, conditionIdLock, conditionIdEscrow],
                 [0, 0, 0],
                 [0, 0, 0],
                 consumer.getId(),
@@ -158,13 +158,13 @@ describe('Register Escrow Access Secret Store Template', () => {
             assert.isTrue(agreement.status)
         })
 
-        it('should not grant the access to the consumer', async () => {
-            const accessGranted = await accessSecretStoreCondition.checkPermissions(
-                consumer.getId(),
-                did
+        it('should not trigger the compute', async () => {
+            const computeTriggered = await computeExecutionCondition.wasComputeTriggered(
+                did,
+                consumer.getId()
             )
 
-            assert.isFalse(accessGranted, 'Consumer has been granted.')
+            assert.isFalse(computeTriggered, 'Compute has been triggered.')
         })
 
         it('should fulfill LockRewardCondition', async () => {
@@ -188,8 +188,8 @@ describe('Register Escrow Access Secret Store Template', () => {
             assert.isDefined(fulfill.events.Fulfilled, 'Not Fulfilled event.')
         })
 
-        it('should fulfill AccessSecretStoreCondition', async () => {
-            const fulfill = await accessSecretStoreCondition.fulfill(
+        it('should fulfill ComputeExecutionCondition', async () => {
+            const fulfill = await computeExecutionCondition.fulfill(
                 agreementId,
                 did,
                 consumer.getId(),
@@ -206,7 +206,7 @@ describe('Register Escrow Access Secret Store Template', () => {
                 publisher.getId(),
                 consumer.getId(),
                 conditionIdLock,
-                conditionIdAccess,
+                conditionIdCompute,
                 consumer.getId()
             )
 
@@ -214,12 +214,12 @@ describe('Register Escrow Access Secret Store Template', () => {
         })
 
         it('should grant the access to the consumer', async () => {
-            const accessGranted = await accessSecretStoreCondition.checkPermissions(
-                consumer.getId(),
-                did
+            const computeTriggered = await computeExecutionCondition.wasComputeTriggered(
+                did,
+                consumer.getId()
             )
 
-            assert.isTrue(accessGranted, 'Consumer has not been granted.')
+            assert.isTrue(computeTriggered, 'Compute has not been triggered.')
         })
     })
 
@@ -251,12 +251,12 @@ describe('Register Escrow Access Secret Store Template', () => {
         })
 
         it('should not grant the access to the consumer', async () => {
-            const accessGranted = await accessSecretStoreCondition.checkPermissions(
-                consumer.getId(),
-                did
+            const computeTriggered = await computeExecutionCondition.wasComputeTriggered(
+                did,
+                consumer.getId()
             )
 
-            assert.isFalse(accessGranted, 'Consumer has been granted.')
+            assert.isFalse(computeTriggered, 'Compute has been triggered.')
         })
 
         it('should fulfill the conditions from consumer side', async () => {
@@ -271,8 +271,8 @@ describe('Register Escrow Access Secret Store Template', () => {
             )
         })
 
-        it('should fulfill the conditions from publisher side', async () => {
-            await ocean.agreements.conditions.grantAccess(
+        it('should fulfill the conditions from computing side', async () => {
+            await ocean.agreements.conditions.grantServiceExecution(
                 agreementId,
                 did,
                 consumer.getId(),
@@ -289,12 +289,12 @@ describe('Register Escrow Access Secret Store Template', () => {
         })
 
         it('should grant the access to the consumer', async () => {
-            const accessGranted = await accessSecretStoreCondition.checkPermissions(
-                consumer.getId(),
-                did
+            const computeTriggered = await computeExecutionCondition.wasComputeTriggered(
+                did,
+                consumer.getId()
             )
 
-            assert.isTrue(accessGranted, 'Consumer has not been granted.')
+            assert.isTrue(computeTriggered, 'Compute has not been triggered.')
         })
     })
 })

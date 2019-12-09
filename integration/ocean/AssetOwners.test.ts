@@ -40,19 +40,33 @@ describe('Asset Owners', () => {
         assert.isTrue(isProvider)
     })
 
-    it('should get the assets owned by a user', async () => {
-        const { length: initialLength } = await ocean.assets.ownerAssets(
-            account2.getId()
+    it('should be added correctly a permission on an asset', async () => {
+        const ddo = await ocean.assets.create(metadata as any, account1)
+
+        assert.isFalse(
+            await ocean.keeper.didRegistry.getPermission(ddo.id, account2.getId())
         )
+
+        await ocean.keeper.didRegistry.grantPermission(
+            ddo.id,
+            account2.getId(),
+            account1.getId()
+        )
+
+        assert.isTrue(
+            await ocean.keeper.didRegistry.getPermission(ddo.id, account2.getId())
+        )
+    })
+
+    it('should get the assets owned by a user', async () => {
+        const { length: initialLength } = await ocean.assets.ownerAssets(account2.getId())
 
         await ocean.assets.create(metadata as any, account1)
         await ocean.assets.create(metadata as any, account1)
 
         await ocean.assets.create(metadata as any, account2)
 
-        const { length: finalLength } = await ocean.assets.ownerAssets(
-            account2.getId()
-        )
+        const { length: finalLength } = await ocean.assets.ownerAssets(account2.getId())
 
         assert.equal(finalLength - initialLength, 1)
     })
@@ -72,21 +86,28 @@ describe('Asset Owners', () => {
         // Granting access
         try {
             await account2.requestTokens(
-                +metadata.base.price *
-                    10 ** -(await ocean.keeper.token.decimals())
+                +metadata.main.price * 10 ** -(await ocean.keeper.token.decimals())
             )
         } catch {}
 
-        await ocean.assets.order(
-            ddo.id,
-            ddo.findServiceByType('Access').serviceDefinitionId,
-            account2
-        )
+        const { index } = ddo.findServiceByType('access')
+
+        await ocean.assets.order(ddo.id, index, account2)
         // Access granted
 
         const { length: finalLength2 } = await ocean.assets.consumerAssets(
             account2.getId()
         )
         assert.equal(finalLength2 - initialLength, 1)
+    })
+
+    it('should be able to transfer ownership', async () => {
+        const { id } = await ocean.assets.create(metadata as any, account1)
+
+        // transfer
+        await ocean.assets.transferOwnership(id, account2.getId())
+        const newOwner = await ocean.keeper.didRegistry.getDIDOwner(id)
+
+        assert.equal(newOwner, account2.getId())
     })
 })

@@ -1,5 +1,5 @@
 import { assert, expect, spy, use } from 'chai'
-import * as spies from 'chai-spies'
+import spies from 'chai-spies'
 
 import Account from '../../src/ocean/Account'
 import { Ocean } from '../../src/ocean/Ocean'
@@ -33,11 +33,7 @@ describe('OceanSecretStore', () => {
                 () => 'encryptedResult'
             )
 
-            const result = await oceanSecretStore.encrypt(
-                did,
-                'test',
-                accounts[0]
-            )
+            const result = await oceanSecretStore.encrypt(did, 'test', accounts[0])
 
             expect(secretStoreEncryptSpy).to.have.been.called.with(did, 'test')
 

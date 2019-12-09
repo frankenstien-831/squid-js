@@ -1,6 +1,6 @@
 import { assert, expect, spy, use } from 'chai'
-import * as spies from 'chai-spies'
-
+import spies from 'chai-spies'
+import Web3 from 'web3'
 import config from '../../config'
 
 import { Ocean } from '../../../src/ocean/Ocean'
@@ -11,7 +11,7 @@ describe('SignatureUtils', () => {
     const publicKey = `0x${'a'.repeat(40)}`
     const text = '0123456789abcde'
     const signature = `0x${'a'.repeat(130)}`
-    let web3
+    let web3: Web3
     let ocean: Ocean
 
     before(async () => {
@@ -38,18 +38,10 @@ describe('SignatureUtils', () => {
         })
 
         it('should sign a text as expected using password', async () => {
-            const signed = await ocean.utils.signature.signText(
-                text,
-                publicKey,
-                'test'
-            )
+            const signed = await ocean.utils.signature.signText(text, publicKey, 'test')
 
             assert.equal(signed, signature)
-            expect(personalSignSpy).to.have.been.called.with(
-                text,
-                publicKey,
-                'test'
-            )
+            expect(personalSignSpy).to.have.been.called.with(text, publicKey, 'test')
         })
     })
 

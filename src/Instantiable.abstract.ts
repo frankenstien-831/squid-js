@@ -1,4 +1,4 @@
-import * as Web3 from 'web3'
+import Web3 from 'web3'
 import Config from './models/Config'
 import { Logger, LoggerInstance, LogLevel } from './utils'
 import Web3Provider from './keeper/Web3Provider'
@@ -68,9 +68,7 @@ export abstract class Instantiable {
     public static async getInstance(...args: any[]): Promise<any>
 
     public static async getInstance(config: InstantiableConfig): Promise<any> {
-        LoggerInstance.warn(
-            'getInstance() methods has needs to be added to child class.'
-        )
+        LoggerInstance.warn('getInstance() methods has needs to be added to child class.')
     }
 
     protected static setInstanceConfig<T extends Instantiable>(

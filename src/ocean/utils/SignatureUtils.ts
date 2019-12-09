@@ -14,7 +14,7 @@ export class SignatureUtils extends Instantiable {
         const isMetaMask =
             this.web3 &&
             this.web3.currentProvider &&
-            this.web3.currentProvider.isMetaMask
+            (this.web3.currentProvider as any).isMetaMask
         try {
             return await this.web3.eth.personal.sign(text, publicKey, password)
         } catch (e) {

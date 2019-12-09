@@ -50,18 +50,17 @@ describe('Consume Asset (Brizo)', () => {
     })
 
     it('should order the asset', async () => {
-        const accessService = ddo.findServiceByType('Access')
+        const accessService = ddo.findServiceByType('access')
 
         try {
             await consumer.requestTokens(
-                +metadata.base.price *
-                    10 ** -(await ocean.keeper.token.decimals())
+                +metadata.main.price * 10 ** -(await ocean.keeper.token.decimals())
             )
         } catch {}
 
         const steps = []
         agreementId = await ocean.assets
-            .order(ddo.id, accessService.serviceDefinitionId, consumer)
+            .order(ddo.id, accessService.index, consumer)
             .next(step => steps.push(step))
 
         assert.isDefined(agreementId)
@@ -69,13 +68,13 @@ describe('Consume Asset (Brizo)', () => {
     })
 
     it('should consume and store the assets', async () => {
-        const accessService = ddo.findServiceByType('Access')
+        const accessService = ddo.findServiceByType('access')
 
         const folder = '/tmp/ocean/squid-js'
         const path = await ocean.assets.consume(
             agreementId,
             ddo.id,
-            accessService.serviceDefinitionId,
+            accessService.index,
             consumer,
             folder
         )

@@ -7,11 +7,13 @@ import {
     Condition,
     LockRewardCondition,
     EscrowReward,
-    AccessSecretStoreCondition
+    AccessSecretStoreCondition,
+    ComputeExecutionCondition
 } from './contracts/conditions'
 import {
     AgreementTemplate,
-    EscrowAccessSecretStoreTemplate
+    EscrowAccessSecretStoreTemplate,
+    EscrowComputeExecutionTemplate
 } from './contracts/templates'
 import {
     TemplateStoreManager,
@@ -36,9 +38,7 @@ export class Keeper extends Instantiable {
      * Returns Keeper instance.
      * @return {Promise<Keeper>}
      */
-    public static async getInstance(
-        config: InstantiableConfig
-    ): Promise<Keeper> {
+    public static async getInstance(config: InstantiableConfig): Promise<Keeper> {
         const keeper = new Keeper()
         keeper.setInstanceConfig(config)
 
@@ -54,20 +54,20 @@ export class Keeper extends Instantiable {
                 didRegistry: DIDRegistry.getInstance(config),
                 // Managers
                 templateStoreManager: TemplateStoreManager.getInstance(config),
-                agreementStoreManager: AgreementStoreManager.getInstance(
-                    config
-                ),
-                conditionStoreManager: ConditionStoreManager.getInstance(
-                    config
-                ),
+                agreementStoreManager: AgreementStoreManager.getInstance(config),
+                conditionStoreManager: ConditionStoreManager.getInstance(config),
                 // Conditions
                 lockRewardCondition: LockRewardCondition.getInstance(config),
                 escrowReward: EscrowReward.getInstance(config),
                 accessSecretStoreCondition: AccessSecretStoreCondition.getInstance(
                     config
                 ),
+                computeExecutionCondition: ComputeExecutionCondition.getInstance(config),
                 // Templates
                 escrowAccessSecretStoreTemplate: EscrowAccessSecretStoreTemplate.getInstance(
+                    config
+                ),
+                escrowComputeExecutionTemplate: EscrowComputeExecutionTemplate.getInstance(
                     config
                 )
             })
@@ -97,15 +97,16 @@ export class Keeper extends Instantiable {
         keeper.conditions = {
             lockRewardCondition: keeper.instances.lockRewardCondition,
             escrowReward: keeper.instances.escrowReward,
-            accessSecretStoreCondition:
-                keeper.instances.accessSecretStoreCondition
+            accessSecretStoreCondition: keeper.instances.accessSecretStoreCondition,
+            computeExecutionCondition: keeper.instances.computeExecutionCondition
         }
         // Conditions
         keeper.templates = {
             escrowAccessSecretStoreTemplate:
-                keeper.instances.escrowAccessSecretStoreTemplate
+                keeper.instances.escrowAccessSecretStoreTemplate,
+            escrowComputeExecutionTemplate:
+                keeper.instances.escrowComputeExecutionTemplate
         }
-
         // Utils
         keeper.utils = {
             eventHandler: new EventHandler(config)
@@ -163,6 +164,7 @@ export class Keeper extends Instantiable {
         lockRewardCondition: LockRewardCondition
         escrowReward: EscrowReward
         accessSecretStoreCondition: AccessSecretStoreCondition
+        computeExecutionCondition: ComputeExecutionCondition
     }
 
     /**
@@ -170,6 +172,7 @@ export class Keeper extends Instantiable {
      */
     public templates: {
         escrowAccessSecretStoreTemplate: EscrowAccessSecretStoreTemplate
+        escrowComputeExecutionTemplate: EscrowComputeExecutionTemplate
     }
 
     /**
@@ -227,7 +230,7 @@ export class Keeper extends Instantiable {
      * @return {Promise<string>} Network name.
      */
     public getNetworkName(): Promise<string> {
-        return this.web3.eth.net.getId().then(networkId => {
+        return this.web3.eth.net.getId().then((networkId: number) => {
             switch (networkId) {
                 case 1:
                     return 'Main'

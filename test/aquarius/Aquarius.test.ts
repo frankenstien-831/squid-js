@@ -1,5 +1,5 @@
 import { assert, spy, use } from 'chai'
-import * as spies from 'chai-spies'
+import spies from 'chai-spies'
 import { Ocean } from '../../src/ocean/Ocean'
 import { Aquarius, SearchQuery } from '../../src/aquarius/Aquarius'
 import { DDO } from '../../src/ddo/DDO'
@@ -22,7 +22,12 @@ describe('Aquarius', () => {
         page = 0,
         total_pages = 1,
         total_results = 1
-    ) => ({ results, page, total_pages, total_results })
+    ) => ({
+        results,
+        page,
+        total_pages,
+        total_results
+    })
     /* eslint-enable @typescript-eslint/camelcase */
 
     beforeEach(async () => {
@@ -48,9 +53,7 @@ describe('Aquarius', () => {
         } as SearchQuery
 
         it('should query metadata', async () => {
-            spy.on(ocean.utils.fetch, 'post', () =>
-                reponsify(getResults([new DDO()]))
-            )
+            spy.on(ocean.utils.fetch, 'post', () => reponsify(getResults([new DDO()])))
 
             const result = await aquarius.queryMetadata(query)
             assert.typeOf(result.results, 'array')
@@ -61,9 +64,7 @@ describe('Aquarius', () => {
         })
 
         it('should query metadata and return real ddo', async () => {
-            spy.on(ocean.utils.fetch, 'post', () =>
-                reponsify(getResults([new DDO()]))
-            )
+            spy.on(ocean.utils.fetch, 'post', () => reponsify(getResults([new DDO()])))
 
             const result = await aquarius.queryMetadata(query)
             assert.typeOf(result.results, 'array')
@@ -86,9 +87,7 @@ describe('Aquarius', () => {
         } as SearchQuery
 
         it('should query metadata by text', async () => {
-            spy.on(ocean.utils.fetch, 'get', () =>
-                reponsify(getResults([new DDO()]))
-            )
+            spy.on(ocean.utils.fetch, 'get', () => reponsify(getResults([new DDO()])))
 
             const result = await aquarius.queryMetadataByText(query)
             assert.typeOf(result.results, 'array')
@@ -99,9 +98,7 @@ describe('Aquarius', () => {
         })
 
         it('should query metadata and return real ddo', async () => {
-            spy.on(ocean.utils.fetch, 'get', () =>
-                reponsify(getResults([new DDO()]))
-            )
+            spy.on(ocean.utils.fetch, 'get', () => reponsify(getResults([new DDO()])))
 
             const result = await aquarius.queryMetadataByText(query)
             assert.typeOf(result.results, 'array')

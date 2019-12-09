@@ -21,6 +21,7 @@
 - [Get started](#get-started)
   - [Examples](#examples)
 - [Documentation](#documentation)
+  - [Migration Guide](#migration-guide)
 - [Development](#development)
 - [Testing](#testing)
   - [Unit Tests](#unit-tests)
@@ -75,6 +76,7 @@ For an overview of endpoint configurations making up various Ocean networks, ple
 
 You can see how `squid-js` is used on:
 
+- [Docs: React Tutorial](https://docs.oceanprotocol.com/tutorials/react-setup/)
 - [Integration test](/src/integration/ocean/)
 - [Tuna](https://github.com/oceanprotocol/tuna/tree/develop/node)
 
@@ -88,6 +90,12 @@ Alternatively, you can generate the raw TypeDoc documentation locally by running
 # will output to ./doc folder
 npm run doc
 ```
+
+### Migration Guide
+
+Instructions on how to migrate between breaking versions:
+
+- [Migration Guide](MIGRATION.md)
 
 ## Development
 

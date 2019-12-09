@@ -9,9 +9,7 @@ export class OceanTokens extends Instantiable {
      * Returns the instance of OceanTokens.
      * @return {Promise<OceanTokens>}
      */
-    public static async getInstance(
-        config: InstantiableConfig
-    ): Promise<OceanTokens> {
+    public static async getInstance(config: InstantiableConfig): Promise<OceanTokens> {
         const instance = new OceanTokens()
         instance.setInstanceConfig(config)
 
@@ -20,22 +18,18 @@ export class OceanTokens extends Instantiable {
 
     /**
      * Transfer a number of tokens to the mentioned account.
-     * @param  {string}           to     Address that receives the account.
+     * @param  {string}           to     Address that receives the tokens.
      * @param  {number}           amount Tokens to transfer.
      * @param  {Account}          from   Sender account address.
      * @return {Promise<boolean>}        Success,
      */
-    public async transfer(
-        to: string,
-        amount: number,
-        from: Account
-    ): Promise<boolean> {
+    public async transfer(to: string, amount: number, from: Account): Promise<boolean> {
         this.ocean.keeper.token.transfer(to, amount, from.getId())
         return true
     }
 
     /**
-     * Request tokens for a account.
+     * Request tokens for an account.
      * @param  {Account}          account Account instance.
      * @param  {number}           amount  Token amount.
      * @return {Promise<boolean>}         Success.

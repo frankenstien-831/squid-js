@@ -1,6 +1,4 @@
-import * as Web3 from 'web3'
 import Web3Provider from '../keeper/Web3Provider'
-import LoggerInstance from '../utils/Logger'
 import { Ocean } from '../ocean/Ocean'
 import { Authentication } from './Authentication'
 import { Proof } from './Proof'
@@ -53,8 +51,7 @@ export class DDO {
     public constructor(ddo: Partial<DDO> = {}) {
         Object.assign(this, ddo, {
             created:
-                (ddo && ddo.created) ||
-                new Date().toISOString().replace(/\.[0-9]{3}/, '')
+                (ddo && ddo.created) || new Date().toISOString().replace(/\.[0-9]{3}/, '')
         })
     }
 
@@ -63,20 +60,16 @@ export class DDO {
     }
 
     /**
-     * Finds a service of a DDO by ID.
-     * @param  {string} serviceDefinitionId Service ID.
+     * Finds a service of a DDO by index.
+     * @param  {number} Service index.
      * @return {Service} Service.
      */
-    public findServiceById<T extends ServiceType>(
-        serviceDefinitionId: string
-    ): Service<T> {
-        if (!serviceDefinitionId) {
-            throw new Error('serviceDefinitionId not set')
+    public findServiceById<T extends ServiceType>(index: number): Service<T> {
+        if (isNaN(index)) {
+            throw new Error('index is not set')
         }
 
-        const service = this.service.find(
-            s => s.serviceDefinitionId === serviceDefinitionId
-        )
+        const service = this.service.find(s => s.index === index)
 
         return service as Service<T>
     }
@@ -86,9 +79,7 @@ export class DDO {
      * @param  {string} serviceType Service type.
      * @return {Service} Service.
      */
-    public findServiceByType<T extends ServiceType>(
-        serviceType: T
-    ): Service<T> {
+    public findServiceByType<T extends ServiceType>(serviceType: T): Service<T> {
         if (!serviceType) {
             throw new Error('serviceType not set')
         }
@@ -101,8 +92,8 @@ export class DDO {
      * @return {string[]} DDO checksum.
      */
     public getChecksum(): string {
-        const { metadata } = this.findServiceByType('Metadata')
-        const { files, name, author, license } = metadata.base
+        const { attributes } = this.findServiceByType('metadata')
+        const { files, name, author, license } = attributes.main
 
         const values = [
             ...(files || []).map(({ checksum }) => checksum).filter(_ => !!_),
@@ -119,9 +110,9 @@ export class DDO {
 
     /**
      * Generates proof using personal sing.
-     * @param  {Web3}           web3      Web3 instance.
+     * @param  {Ocean}          ocean     Ocean instance.
      * @param  {string}         publicKey Public key to be used on personal sign.
-     * @param  {string}         password  Password if it's requirted.
+     * @param  {string}         password  Password if it's required.
      * @return {Promise<Proof>}           Proof object.
      */
     public async generateProof(
@@ -146,32 +137,20 @@ export class DDO {
     }
 
     /**
-     * Generated and adds the checksum.
-     */
-    public addChecksum(): void {
-        const metadataService = this.findServiceByType('Metadata')
-        if (metadataService.metadata.base.checksum) {
-            LoggerInstance.log('Checksum already exists')
-            return
-        }
-        metadataService.metadata.base.checksum = this.getChecksum()
-    }
-
-    /**
      * Generates and adds a proof using personal sing on the DDO.
-     * @param  {Web3}           web3      Web3 instance.
+     * @param  {Ocean}          ocean     Ocean instance.
      * @param  {string}         publicKey Public key to be used on personal sign.
-     * @param  {string}         password  Password if it's requirted.
+     * @param  {string}         password  Password if it's required.
      * @return {Promise<Proof>}           Proof object.
      */
     public async addProof(
-        web3: Web3,
+        ocean: Ocean,
         publicKey: string,
         password?: string
     ): Promise<void> {
         if (this.proof) {
             throw new Error('Proof already exists')
         }
-        this.proof = await this.generateProof(web3, publicKey, password)
+        this.proof = await this.generateProof(ocean, publicKey, password)
     }
 }

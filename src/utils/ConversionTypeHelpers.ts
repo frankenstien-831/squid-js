@@ -36,9 +36,7 @@ function inputMatch(
     if (typeof input !== 'string') {
         LoggerInstance.debug('Not input string:')
         LoggerInstance.debug(input)
-        throw new Error(
-            `[${conversorName}] Expected string, input type: ${typeof input}`
-        )
+        throw new Error(`[${conversorName}] Expected string, input type: ${typeof input}`)
     }
     const match = input.match(regexp)
     if (!match) {

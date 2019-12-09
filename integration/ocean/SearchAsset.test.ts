@@ -35,57 +35,41 @@ describe('Search Asset', () => {
         assert.isArray(ddos, 'A search should return an array')
 
         test1length = ddos.length
-        test2length = (await ocean.assets.search(`Test2${testHash}`)).results
-            .length
-        test3length = (await ocean.assets.search(`Test3${testHash}`)).results
-            .length
+        test2length = (await ocean.assets.search(`Test2${testHash}`)).results.length
+        test3length = (await ocean.assets.search(`Test3${testHash}`)).results.length
 
         if (!ocean.keeper.dispenser) {
             price = 0
         }
     })
 
-    it('should regiester some a asset', async () => {
+    it('should register an asset', async () => {
         assert.instanceOf(
-            await ocean.assets.create(
-                metadataGenerator('Test1') as any,
-                publisher
-            ),
+            await ocean.assets.create(metadataGenerator('Test1') as any, publisher),
             DDO
         )
         assert.instanceOf(
-            await ocean.assets.create(
-                metadataGenerator('Test2') as any,
-                publisher
-            ),
+            await ocean.assets.create(metadataGenerator('Test2') as any, publisher),
             DDO
         )
         assert.instanceOf(
-            await ocean.assets.create(
-                metadataGenerator('Test2') as any,
-                publisher
-            ),
+            await ocean.assets.create(metadataGenerator('Test2') as any, publisher),
             DDO
         )
         assert.instanceOf(
-            await ocean.assets.create(
-                metadataGenerator('Test3') as any,
-                publisher
-            ),
+            await ocean.assets.create(metadataGenerator('Test3') as any, publisher),
             DDO
         )
     })
 
     it('should search by text and see the increment of DDOs', async () => {
         assert.equal(
-            (await ocean.assets.search(`Test2${testHash}`)).results.length -
-                test2length,
+            (await ocean.assets.search(`Test2${testHash}`)).results.length - test2length,
             2,
             'Something was wrong searching the assets'
         )
         assert.equal(
-            (await ocean.assets.search(`Test3${testHash}`)).results.length -
-                test3length,
+            (await ocean.assets.search(`Test3${testHash}`)).results.length - test3length,
             1,
             'Something was wrong searching the assets'
         )

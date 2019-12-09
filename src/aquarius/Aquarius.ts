@@ -40,26 +40,16 @@ export class Aquarius extends Instantiable {
 
     public async getAccessUrl(accessToken: any, payload: any): Promise<string> {
         const accessUrl: string = await this.ocean.utils.fetch
-            .post(
-                `${accessToken.service_endpoint}/${accessToken.resource_id}`,
-                payload
-            )
+            .post(`${accessToken.service_endpoint}/${accessToken.resource_id}`, payload)
             .then((response: any): string => {
                 if (response.ok) {
                     return response.text()
                 }
-                this.logger.error(
-                    'Failed: ',
-                    response.status,
-                    response.statusText
-                )
+                this.logger.error('Failed: ', response.status, response.statusText)
                 return null
             })
             .then((consumptionUrl: string): string => {
-                this.logger.error(
-                    'Success accessing consume endpoint: ',
-                    consumptionUrl
-                )
+                this.logger.error('Success accessing consume endpoint: ', consumptionUrl)
                 return consumptionUrl
             })
             .catch(error => {
@@ -134,10 +124,7 @@ export class Aquarius extends Instantiable {
                 return this.transformResult(results)
             })
             .catch(error => {
-                this.logger.error(
-                    'Error fetching querying metadata by text: ',
-                    error
-                )
+                this.logger.error('Error fetching querying metadata by text: ', error)
                 return this.transformResult()
             })
 
@@ -186,8 +173,7 @@ export class Aquarius extends Instantiable {
         metadataServiceEndpoint?: string
     ): Promise<DDO> {
         did = did && DID.parse(did)
-        const fullUrl =
-            metadataServiceEndpoint || `${this.url}${apiPath}/${did.getDid()}`
+        const fullUrl = metadataServiceEndpoint || `${this.url}${apiPath}/${did.getDid()}`
         const result = await this.ocean.utils.fetch
             .get(fullUrl)
             .then((response: any) => {
@@ -222,12 +208,7 @@ export class Aquarius extends Instantiable {
     }
 
     private transformResult(
-        {
-            results,
-            page,
-            total_pages: totalPages,
-            total_results: totalResults
-        }: any = {
+        { results, page, total_pages: totalPages, total_results: totalResults }: any = {
             result: [],
             page: 0,
             total_pages: 0, // eslint-disable-line @typescript-eslint/camelcase

@@ -1,5 +1,5 @@
 import { assert, expect, spy, use } from 'chai'
-import * as spies from 'chai-spies'
+import spies from 'chai-spies'
 import { EventHandler } from '../../src/keeper/EventHandler'
 import { Ocean } from '../../src/ocean/Ocean'
 import config from '../config'
@@ -27,11 +27,7 @@ describe('EventHandler', () => {
             assert.isDefined(subscription)
 
             const countAfter = eventHandler.count
-            assert.equal(
-                countBefore + 1,
-                countAfter,
-                'The event seems not added.'
-            )
+            assert.equal(countBefore + 1, countAfter, 'The event seems not added.')
 
             subscription.unsubscribe()
         })
@@ -58,11 +54,7 @@ describe('EventHandler', () => {
             eventHandler.unsubscribe(callback)
 
             const countAfter = eventHandler.count
-            assert.equal(
-                countBefore,
-                countAfter,
-                'The event seems not removed.'
-            )
+            assert.equal(countBefore, countAfter, 'The event seems not removed.')
         })
     })
 

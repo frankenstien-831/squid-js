@@ -40,9 +40,7 @@ export class SubscribableObserver<T, P> {
     private emit(type: 'onNext' | 'onComplete' | 'onError', value: any) {
         Array.from(this.subscriptions)
             .map(subscription => subscription[type])
-            .filter(
-                (callback: any) => callback && typeof callback === 'function'
-            )
+            .filter((callback: any) => callback && typeof callback === 'function')
             .forEach((callback: any) => callback(value))
     }
 

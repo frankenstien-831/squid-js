@@ -17,17 +17,14 @@ describe('ContractEvent', () => {
         eventHandler = new EventHandler((ocean as any).instanceConfig)
         account = (await ocean.accounts.list())[0].getId()
 
-        executeTransaction = () =>
-            ocean.keeper.dispenser.requestTokens(10, account)
+        executeTransaction = () => ocean.keeper.dispenser.requestTokens(10, account)
     })
 
     describe('#subscribe()', () => {
         it('should be able to listen to events', async () => {
-            const event = eventHandler.getEvent(
-                ocean.keeper.token,
-                'Transfer',
-                { to: account }
-            )
+            const event = eventHandler.getEvent(ocean.keeper.token, 'Transfer', {
+                to: account
+            })
             let validResolve = false
             let subscription: ContractEventSubscription
 
@@ -57,11 +54,7 @@ describe('ContractEvent', () => {
     describe('#once()', () => {
         it('should listen to event only once', async () => {
             const to = account
-            const event = eventHandler.getEvent(
-                ocean.keeper.token,
-                'Transfer',
-                { to }
-            )
+            const event = eventHandler.getEvent(ocean.keeper.token, 'Transfer', { to })
             let canBeRejected = false
 
             const waitUntilEvent = new Promise((resolve, reject) => {
@@ -85,11 +78,7 @@ describe('ContractEvent', () => {
 
         it('should get the event like a promise', async () => {
             const to = account
-            const event = eventHandler.getEvent(
-                ocean.keeper.token,
-                'Transfer',
-                { to }
-            )
+            const event = eventHandler.getEvent(ocean.keeper.token, 'Transfer', { to })
 
             const waitUntilEvent = event.once()
 

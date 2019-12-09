@@ -17,17 +17,8 @@ export class AccessSecretStoreCondition extends Condition {
         return super.hashValues(didZeroX(did), zeroX(grantee))
     }
 
-    public fulfill(
-        agreementId: string,
-        did: string,
-        grantee: string,
-        from?: string
-    ) {
-        return super.fulfill(
-            agreementId,
-            [didZeroX(did), grantee].map(zeroX),
-            from
-        )
+    public fulfill(agreementId: string, did: string, grantee: string, from?: string) {
+        return super.fulfill(agreementId, [didZeroX(did), grantee].map(zeroX), from)
     }
 
     public checkPermissions(grantee: string, did: string, from?: string) {
@@ -41,9 +32,11 @@ export class AccessSecretStoreCondition extends Condition {
     public async getGrantedDidByConsumer(
         consumer: string
     ): Promise<{ did: string; agreementId: string }[]> {
-        return (await this.getPastEvents('Fulfilled', {
-            _grantee: zeroX(consumer)
-        })).map(({ returnValues }) => ({
+        return (
+            await this.getPastEvents('Fulfilled', {
+                _grantee: zeroX(consumer)
+            })
+        ).map(({ returnValues }) => ({
             did: didPrefixed(returnValues._documentId),
             agreementId: zeroX(returnValues._agreementId)
         }))

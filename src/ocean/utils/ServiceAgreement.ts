@@ -13,20 +13,17 @@ export class ServiceAgreement extends Instantiable {
 
     public async signServiceAgreement(
         ddo: DDO,
-        serviceDefinitionId: string,
+        index: number,
         serviceAgreementId: string,
         agreementConditionsIds: string[],
         consumer: Account
     ): Promise<string> {
-        const service = ddo.findServiceById<'Access'>(serviceDefinitionId)
+        const service = ddo.findServiceById<'access'>(index)
         const timelockValues: number[] = this.getTimeValuesFromService(
             service,
             'timelock'
         )
-        const timeoutValues: number[] = this.getTimeValuesFromService(
-            service,
-            'timeout'
-        )
+        const timeoutValues: number[] = this.getTimeValuesFromService(service, 'timeout')
 
         if (!service.templateId) {
             throw new Error('TemplateId not found in DDO.')
@@ -78,7 +75,7 @@ export class ServiceAgreement extends Instantiable {
         timelocks: number[],
         timeouts: number[]
     ): string {
-        const args = [
+        const args: any = [
             { type: 'address', value: zeroX(serviceAgreementTemplateId) },
             { type: 'bytes32[]', value: valueHashes.map(zeroX) },
             { type: 'uint256[]', value: timelocks },
@@ -86,14 +83,14 @@ export class ServiceAgreement extends Instantiable {
             { type: 'bytes32', value: zeroX(serviceAgreementId) }
         ]
 
-        return this.web3.utils.soliditySha3(...args).toString('hex')
+        return this.web3.utils.soliditySha3(...args)
     }
 
     private getTimeValuesFromService(
         service: ServiceAccess,
         type: 'timeout' | 'timelock'
     ): number[] {
-        const timeoutValues: number[] = service.serviceAgreementTemplate.conditions.map(
+        const timeoutValues: number[] = service.attributes.serviceAgreementTemplate.conditions.map(
             (condition: ServiceAgreementTemplateCondition) => condition[type]
         )
 

@@ -3,9 +3,7 @@ import { zeroX } from '../../../utils'
 import { InstantiableConfig } from '../../../Instantiable.abstract'
 
 export class EscrowReward extends Condition {
-    public static async getInstance(
-        config: InstantiableConfig
-    ): Promise<EscrowReward> {
+    public static async getInstance(config: InstantiableConfig): Promise<EscrowReward> {
         return Condition.getInstance(config, 'EscrowReward', EscrowReward)
     }
 
@@ -33,12 +31,7 @@ export class EscrowReward extends Condition {
     ) {
         return super.fulfill(
             agreementId,
-            [
-                amount,
-                ...[receiver, sender, lockCondition, releaseCondition].map(
-                    zeroX
-                )
-            ],
+            [amount, ...[receiver, sender, lockCondition, releaseCondition].map(zeroX)],
             from
         )
     }
