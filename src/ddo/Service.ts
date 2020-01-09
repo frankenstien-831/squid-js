@@ -1,14 +1,7 @@
 import { MetaData } from './MetaData'
 import { ServiceAgreementTemplate } from './ServiceAgreementTemplate'
-import { Provider } from './ComputingProvider'
 
-export type ServiceType =
-    | 'authorization'
-    | 'metadata'
-    | 'access'
-    | 'compute'
-    | 'computing'
-    | 'fitchainCompute'
+export type ServiceType = 'authorization' | 'metadata' | 'access' | 'compute'
 
 export interface ServiceCommon {
     type: ServiceType
@@ -47,15 +40,45 @@ export interface ServiceAccess extends ServiceCommon {
     }
 }
 
-export interface ServiceComputing extends ServiceCommon {
-    type: 'computing'
+export interface ServiceCompute extends ServiceCommon {
+    type: 'compute'
     templateId?: string
-    provider?: Provider
-    serviceAgreementTemplate?: ServiceAgreementTemplate
+    attributes: {
+        main: {
+            creator: string
+            datePublished: string
+            price: string
+            timeout: number
+            provider?: ServiceComputeProvider
+            serviceAgreementTemplate?: ServiceAgreementTemplate
+        }
+    }
 }
 
-export interface ServiceCompute extends ServiceCommon {
-    templateId?: string
+export interface ServiceComputeProvider {
+    type: string
+    description: string
+    environment: {
+        cluster: {
+            type: string
+            url: string
+        }
+        supportedContainers: {
+            image: string
+            tag: string
+            checksum: string
+        }[]
+        supportedServers: {
+            serverId: string
+            serverType: string
+            price: string
+            cpu: string
+            gpu: string
+            memory: string
+            disk: string
+            maxExecutionTime: number
+        }[]
+    }
 }
 
 export type Service<
@@ -64,8 +87,6 @@ export type Service<
     ? ServiceAuthorization
     : T extends 'metadata'
     ? ServiceMetadata
-    : T extends 'computing'
-    ? ServiceComputing
     : T extends 'access'
     ? ServiceAccess
     : T extends 'compute'

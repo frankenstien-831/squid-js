@@ -206,6 +206,7 @@ export class OceanAssets extends Instantiable {
         useSecretStore?: boolean
     ): Promise<string>
 
+    /* eslint-disable no-dupe-class-members */
     public async consume(
         agreementId: string,
         did: string,
@@ -276,19 +277,20 @@ export class OceanAssets extends Instantiable {
         }
         return true
     }
+    /* eslint-enable no-dupe-class-members */
 
     /**
      * Start the purchase/order of an asset's service. Starts by signing the service agreement
      * then sends the request to the publisher via the service endpoint (Brizo http service).
      * @param  {string} did Decentralized ID.
      * @param  {number} index Service index.
-     * @param  {Account} consumer Consumer account.
+     * @param  {Account} consumerAccount Consumer account.
      * @return {Promise<string>} Returns Agreement ID
      */
     public order(
         did: string,
         index: number,
-        consumer: Account
+        consumerAccount: Account
     ): SubscribablePromise<OrderProgressStep, string> {
         return new SubscribablePromise(async observer => {
             const oceanAgreements = this.ocean.agreements
@@ -321,7 +323,7 @@ export class OceanAssets extends Instantiable {
                 const paid = await oceanAgreements.conditions.lockReward(
                     agreementId,
                     attributes.main.price,
-                    consumer
+                    consumerAccount
                 )
                 observer.next(OrderProgressStep.LockedPayment)
 
@@ -347,8 +349,8 @@ export class OceanAssets extends Instantiable {
                 agreementId,
                 index,
                 undefined,
-                consumer,
-                consumer
+                consumerAccount,
+                consumerAccount
             )
             this.logger.log('Agreement created')
 
@@ -360,6 +362,38 @@ export class OceanAssets extends Instantiable {
 
             return agreementId
         })
+    }
+
+    /**
+     * Start the execution of a compute job.
+     * @param  {string} agreementId ID of the agreement.
+     * @param  {DDO} computeDdo DDO of the compute asset.
+     * @param  {Account} consumerAccount Consumer account.
+     * @param  {string} algorithmDid The asset DID (of type `algorithm`) which consist of `did:op:` and the `assetId` hex str (without `0x` prefix).
+     * @param  {string} algorithm The text of the algorithm to run in the compute job (e.g. a jupyter notebook)
+     * @param  {MetaData} algorithmMeta Metadata about the algorithm being run if `algorithm` is being used. This is ignored when `algorithmDID` is specified.
+     * @return {Promise<string>} Returns Workflow ID
+     */
+    public async execute(
+        agreementId: string,
+        computeDdo: DDO,
+        consumerAccount: Account,
+        algorithmDid: string,
+        algorithm: string,
+        algorithmMeta?: MetaData
+    ): Promise<string> {
+        const { serviceEndpoint } = computeDdo.findServiceByType('compute')
+
+        const workflowId = await this.ocean.brizo.executeService(
+            agreementId,
+            serviceEndpoint,
+            consumerAccount,
+            algorithmDid,
+            algorithm,
+            algorithmMeta
+        )
+
+        return workflowId
     }
 
     /**
