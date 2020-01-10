@@ -95,7 +95,7 @@ export class Brizo extends Instantiable {
         return destination
     }
 
-    public async executeService(
+    public async computeService(
         agreementId: string,
         serviceEndpoint: string,
         account: Account,
@@ -105,16 +105,16 @@ export class Brizo extends Instantiable {
     ): Promise<string> {
         const signature = await this.createSignature(account, agreementId)
 
-        let executeUrl = serviceEndpoint
-        executeUrl += `&signature=${signature}`
-        executeUrl += `&serviceAgreementId=${noZeroX(agreementId)}`
-        executeUrl += `&consumerAddress=${account.getId()}`
-        executeUrl += `&algorithmDID=${algorithmDid}`
-        executeUrl += `&algorithm=${algorithm}`
-        executeUrl += `&algorithmMeta=${algorithmMeta}`
+        let url = serviceEndpoint
+        url += `&signature=${signature}`
+        url += `&serviceAgreementId=${noZeroX(agreementId)}`
+        url += `&consumerAddress=${account.getId()}`
+        url += `&algorithmDID=${algorithmDid}`
+        url += `&algorithm=${algorithm}`
+        url += `&algorithmMeta=${algorithmMeta}`
 
-        const result: { workflowId: string } = await this.ocean.utils.fetch
-            .post(executeUrl, '')
+        const result: { jobId: string } = await this.ocean.utils.fetch
+            .post(url, '')
             .then((response: any) => {
                 if (response.ok) {
                     return response.json()
@@ -134,7 +134,7 @@ export class Brizo extends Instantiable {
                 throw error
             })
 
-        return result.workflowId
+        return result.jobId
     }
 
     public async createSignature(account: Account, agreementId: string): Promise<string> {

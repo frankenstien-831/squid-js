@@ -365,38 +365,6 @@ export class OceanAssets extends Instantiable {
     }
 
     /**
-     * Start the execution of a compute job.
-     * @param  {string} agreementId ID of the agreement.
-     * @param  {DDO} computeDdo DDO of the compute asset.
-     * @param  {Account} consumerAccount Consumer account.
-     * @param  {string} algorithmDid The asset DID (of type `algorithm`) which consist of `did:op:` and the `assetId` hex str (without `0x` prefix).
-     * @param  {string} algorithm The text of the algorithm to run in the compute job (e.g. a jupyter notebook)
-     * @param  {MetaData} algorithmMeta Metadata about the algorithm being run if `algorithm` is being used. This is ignored when `algorithmDID` is specified.
-     * @return {Promise<string>} Returns Workflow ID
-     */
-    public async execute(
-        agreementId: string,
-        computeDdo: DDO,
-        consumerAccount: Account,
-        algorithmDid: string,
-        algorithm: string,
-        algorithmMeta?: MetaData
-    ): Promise<string> {
-        const { serviceEndpoint } = computeDdo.findServiceByType('compute')
-
-        const workflowId = await this.ocean.brizo.executeService(
-            agreementId,
-            serviceEndpoint,
-            consumerAccount,
-            algorithmDid,
-            algorithm,
-            algorithmMeta
-        )
-
-        return workflowId
-    }
-
-    /**
      * Returns the owner of a asset.
      * @param  {string} did Decentralized ID.
      * @return {Promise<string>} Returns Agreement ID

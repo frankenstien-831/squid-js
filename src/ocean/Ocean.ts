@@ -2,6 +2,7 @@ import { OceanAccounts } from './OceanAccounts'
 import { OceanAgreements } from './OceanAgreements'
 import { OceanAssets } from './OceanAssets'
 import { OceanAuth } from './OceanAuth'
+import { OceanCompute } from './OceanCompute'
 import { OceanSecretStore } from './OceanSecretStore'
 import { OceanTokens } from './OceanTokens'
 import { OceanVersions } from './OceanVersions'
@@ -45,6 +46,7 @@ export class Ocean extends Instantiable {
         instance.accounts = await OceanAccounts.getInstance(instanceConfig)
         instance.auth = await OceanAuth.getInstance(instanceConfig)
         instance.assets = await OceanAssets.getInstance(instanceConfig)
+        instance.compute = await OceanCompute.getInstance(instanceConfig)
         instance.agreements = await OceanAgreements.getInstance(instanceConfig)
         instance.secretStore = await OceanSecretStore.getInstance(instanceConfig)
         instance.tokens = await OceanTokens.getInstance(instanceConfig)
@@ -96,6 +98,12 @@ export class Ocean extends Instantiable {
      * @type {OceanAgreements}
      */
     public agreements: OceanAgreements
+
+    /**
+     * Ocean compute submodule
+     * @type {OceanCompute}
+     */
+    public compute: OceanCompute
 
     /**
      * Ocean secretStore submodule
