@@ -22,9 +22,9 @@ before_script:
   - git clone https://github.com/oceanprotocol/barge
   - cd barge
   - export AQUARIUS_VERSION=v1.0.5
-  - export BRIZO_VERSION=v0.7.2
+  - export BRIZO_VERSION=v0.8.0
   - export KEEPER_VERSION=v0.13.2
-  - export EVENTS_HANDLER_VERSION=v0.3.4
+  - export EVENTS_HANDLER_VERSION=v0.4.0
   - export KEEPER_OWNER_ROLE_ADDRESS="0xe2DD09d719Da89e5a3D0F2549c7E24566e947260"
   - rm -rf "${HOME}/.ocean/keeper-contracts/artifacts"
   - bash -x start_ocean.sh --no-commons --no-dashboard 2>&1 > start_ocean.log &
