@@ -1,4 +1,5 @@
 [![banner](https://raw.githubusercontent.com/oceanprotocol/art/master/github/repo-banner%402x.png)](https://oceanprotocol.com)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ffrankenstien-831%2Fsquid-js.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffrankenstien-831%2Fsquid-js?ref=badge_shield)
 
 <h1 align="center">Squid-js</h1>
 
@@ -225,3 +226,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ffrankenstien-831%2Fsquid-js.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffrankenstien-831%2Fsquid-js?ref=badge_large)
